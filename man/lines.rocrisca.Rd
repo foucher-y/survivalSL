@@ -1,6 +1,6 @@
 \name{lines.rocrisca}
 \alias{lines.rocrisca}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
 Add Lines to a ROC Plot
 }
@@ -32,7 +32,7 @@ dataDIVAT3 <- dataDIVAT3[1:400,]
 # donor age and the recipient gender.
 
 # 0. Compute the raw sensitivity and specificity
-roc1 <- roc.time(times="death.time", failures="death", variable="ageR",
+roc1 <- roc(times="death.time", failures="death", variable="ageR",
 confounders=~1, data=dataDIVAT3, pro.time=2000,
 precision=seq(0.1,0.9, by=0.2))
 
@@ -42,7 +42,7 @@ dataDIVAT3$ageR_std <- (dataDIVAT3$ageR - (lm1$coef[1] + lm1$coef[2] * dataDIVAT
  lm1$coef[3] * dataDIVAT3$sexeR)) / sd(lm1$residuals)
 
 # 2. Compute the sensitivity and specificity from the proposed IPW estimators
-roc2 <- roc.time(times="death.time", failures="death", variable="ageR_std",
+roc2 <- roc(times="death.time", failures="death", variable="ageR_std",
 confounders=~bs(ageD, df=3) + sexeR, data=dataDIVAT3, pro.time=2000,
 precision=seq(0.1,0.9, by=0.2))
 
@@ -59,6 +59,5 @@ legend("bottomright", lty=1:2, lwd=1, pch=1:2, col=1:2,
  c(paste("Crude estimation, (AUC=", round(roc1$auc, 2), ")", sep=""),
  paste("Adjusted estimation, (AUC=", round(roc2$auc, 2), ")", sep="") ) )
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{Plotting}

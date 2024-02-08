@@ -9,7 +9,7 @@ A calibration plot of an object of the class \code{flexsurv}.
 }
 
 \usage{
-\method{plot}{flexsurv}(x, ..., col, lty, lwd, type, pch, ylab, xlab, ylim, xlim, 
+\method{plot}{flexsurv}(x, ..., col, lty, lwd, type, pch, ylab, xlab, ylim, xlim,
    cex, cex.lab, cex.axis, cex.main, n.groups, pro.time, newdata, times, failures)
 }
 
@@ -36,17 +36,21 @@ A calibration plot of an object of the class \code{flexsurv}.
   \item{failures}{The name of the variable related the numeric vector with the event indicators (0=right censored, 1=event) in \code{newdata} (optional argument only necessary when newdata is not NULL).}
 }
 
+\details{
+The plot represents the observed survival and the related 95\% confidence intervals, which are respectively estimated by the Kaplan and Meier estimator and the Greenwood formula, against the mean of the predictive values for individuals stratified into groups of the same size according to the percentiles. The identity line is usually included for reference.
+}
+
 \value{No return value for this S3 method.}
 
 \seealso{
-  \code{\link{aft.gamma}}, \code{\link{aft.ggamma}}, \code{\link{aft.llogis}}, \code{\link{aft.weibull}}, \code{\link{ph.exponential}}, \code{\link{ph.gompertz}}.
+  \code{\link{AFTgamma}}, \code{\link{AFTggamma}}, \code{\link{AFTllogis}}, \code{\link{AFTweibull}}, \code{\link{PHexponential}}, \code{\link{PHgompertz}}.
 }
 
 \examples{
 
 data(dataDIVAT2)
 # The estimation of the model from the first 200 lignes
-model<-aft.gamma(times="times", failures="failures", data=dataDIVAT2[1:200,],
+model<-AFTgamma(times="times", failures="failures", data=dataDIVAT2[1:200,],
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"))
 
 # The calibration plot from the validation sample of 150 patients

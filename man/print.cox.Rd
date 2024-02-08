@@ -20,13 +20,13 @@ Print the Cox-like model.
 \value{No return value for this S3 method.}
 
 \seealso{
-\code{\link{cox.all}}, \code{\link{cox.en}}, \code{\link{cox.lasso}}, \code{\link{cox.ridge}}.
+\code{\link{COXall}}, \code{\link{COXen}}, \code{\link{COXlasso}}, \code{\link{COXridge}}.
 }
 
 \examples{
 data(dataDIVAT2)
 
-model<-cox.all(times="times", failures="failures", data=dataDIVAT2,
+model <- COXall(times="times", failures="failures", data=dataDIVAT2,
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"))
 
 print(model)

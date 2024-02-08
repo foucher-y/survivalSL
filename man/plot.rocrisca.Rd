@@ -1,6 +1,6 @@
 \name{plot.rocrisca}
 \alias{plot.rocrisca}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
 Plot Method for 'rocrisca' Objects
 }
@@ -30,12 +30,11 @@ dataDIVAT3 <- dataDIVAT3[1:400,]
 # transplant mortality up to 2000 days.
 
 # Compute the raw sensitivity and specificity
-roc1 <- roc.time(times="death.time", failures="death", variable="ageR",
+roc1 <- roc(times="death.time", failures="death", variable="ageR",
 confounders=~1, data=dataDIVAT3, pro.time=2000,
 precision=seq(0.1,0.9, by=0.2))
 
 plot(roc1, type="b", col=1, pch=2, lty=2, xlab="1-specificity", ylab="sensibility")
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+
 \keyword{Plotting}

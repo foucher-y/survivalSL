@@ -13,7 +13,7 @@ Predict the survival of new observations based on a penalized Cox regression est
 }
 
 \arguments{
-  \item{object}{An object returned by one of the following functions: \code{cox.lasso}, \code{cox.ridge}, or \code{cox.en}.}
+  \item{object}{An object returned by one of the following functions: \code{COXlasso}, \code{COXridge}, or \code{COXen}.}
   \item{...}{Further arguments passed.}
   \item{newdata}{An optional data frame containing covariate values at which to produce predicted values. There must be a column for every covariate included in \code{cov.quanti} and \code{cov.quali} included in the training sample. The default value is \code{NULL}, the predicted values are computed for the subjects of the training sample.}
   \item{newtimes}{The times at which to produce predicted values. The default value is \code{NULL}, the predicted values are computed for the observed times in the training data frame.}
@@ -25,14 +25,14 @@ Predict the survival of new observations based on a penalized Cox regression est
 }
 
 \seealso{
-\code{\link{cox.all}}, \code{\link{cox.en}}, \code{\link{cox.lasso}}, \code{\link{cox.ridge}}.
+\code{\link{COXall}}, \code{\link{COXen}}, \code{\link{COXlasso}}, \code{\link{COXridge}}.
 }
 
 \examples{
 data(dataDIVAT2)
 
 # The estimation of the training model
-model<-cox.lasso(times="times", failures="failures", data=dataDIVAT2,
+model<-COXlasso(times="times", failures="failures", data=dataDIVAT2,
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"), lambda=.01)
 
 # Predicted survival from the validation sample

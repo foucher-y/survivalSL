@@ -20,13 +20,13 @@ Print the model.
 \value{No return value for this S3 method.}
 
 \seealso{
-  \code{\link{aft.gamma}}, \code{\link{aft.ggamma}}, \code{\link{aft.llogis}}, \code{\link{aft.weibull}}, \code{\link{ph.exponential}}, \code{\link{ph.gompertz}}.
+  \code{\link{AFTgamma}}, \code{\link{AFTggamma}}, \code{\link{AFTllogis}}, \code{\link{AFTweibull}}, \code{\link{PHexponential}}, \code{\link{PHgompertz}}.
 }
 
 \examples{
 data(dataDIVAT2)
 
-model<-aft.gamma(times="times", failures="failures",  data=dataDIVAT2[1:100,],
+model<-AFTgamma(times="times", failures="failures",  data=dataDIVAT2[1:100,],
         cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"))
 
 print(model)

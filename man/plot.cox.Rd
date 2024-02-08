@@ -9,7 +9,7 @@ A calibration plot of an object of the class \code{cox}.
 }
 
 \usage{
-\method{plot}{cox}(x, ..., col, lty, lwd, type, pch, ylab, xlab, ylim, xlim, 
+\method{plot}{cox}(x, ..., col, lty, lwd, type, pch, ylab, xlab, ylim, xlim,
    cex, cex.lab, cex.axis, cex.main, n.groups, pro.time, newdata, times, failures)
 }
 
@@ -36,17 +36,21 @@ A calibration plot of an object of the class \code{cox}.
   \item{failures}{The name of the variable related the numeric vector with the event indicators (0=right censored, 1=event) in \code{newdata} (optional argument only necessary when newdata is not \code{NULL}).}
 }
 
+\details{
+The plot represents the observed survival and the related 95\% confidence intervals, which are respectively estimated by the Kaplan and Meier estimator and the Greenwood formula, against the mean of the predictive values for individuals stratified into groups of the same size according to the percentiles. The identity line is usually included for reference.
+}
+
 \value{No return value for this S3 method.}
 
 \seealso{
-\code{\link{cox.all}}, \code{\link{cox.en}}, \code{\link{cox.lasso}}, \code{\link{cox.ridge}}.
+\code{\link{COXall}}, \code{\link{COXen}}, \code{\link{COXlasso}}, \code{\link{COXridge}}.
 }
 
 \examples{
 
 data(dataDIVAT2)
 # The estimation of the model from the first 200 lignes
-model<-cox.all(times="times", failures="failures", data=dataDIVAT2,
+model<-COXall(times="times", failures="failures", data=dataDIVAT2,
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"))
 
 # The calibration plot from the validation sample of 150 patients

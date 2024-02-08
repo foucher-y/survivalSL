@@ -13,7 +13,7 @@ Predict the survival of new observations based on a flexible parametric model (f
 }
 
 \arguments{
-  \item{object}{An object returned by the function \code{aft.ggamma}, \code{aft.gamma}, \code{aft.weibull}, \code{ph.exp}, or \code{ph.gompertz}.}
+  \item{object}{An object returned by the function \code{AFTllogis}, \code{AFTggamma}, \code{AFTgamma}, \code{AFTweibull}, \code{PHexponential}, \code{PHspline} or \code{PHgompertz}.}
     \item{...}{Further arguments passed.}
   \item{newdata}{An optional data frame containing covariate values at which to produce predicted values. There must be a column for every covariate included in \code{cov.quanti} and \code{cov.quali} included in the training sample. The default value is \code{NULL}, the predicted values are computed for the subjects of the training sample.}
   \item{newtimes}{The times at which to produce predicted values. The default value is \code{NULL}, the predicted values are computed for the observed times in the training data frame.}
@@ -34,7 +34,7 @@ The model \code{object} is obtained from the \code{flexsurvreg} package.
 data(dataDIVAT2)
 
 # The estimation of the model from the first 200 lignes
-model<-ph.gompertz(times="times", failures="failures", data=dataDIVAT2[1:200,],
+model<-PHgompertz(times="times", failures="failures", data=dataDIVAT2[1:200,],
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"))
 
 # Predicted survival for 2 new subjects
