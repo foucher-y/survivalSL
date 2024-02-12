@@ -10,8 +10,8 @@ This function finds the optimal number of knots of the spline function.
 }
 
 \usage{
-tunePHspline(times, failures, group, cov.quanti,
-cov.quali, data, cv, k)
+tunePHspline(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL,
+data, cv=10, k)
 }
 
 \arguments{
@@ -54,7 +54,7 @@ tune.model <- tunePHspline(times="times", failures="failures", data=dataDIVAT2[1
 
 # The estimation of the training model with the corresponding lambda value
 
- model <- PHspline(times="times", failures="failures", data=dataDIVAT2[1:200,],
+ model <- LIB_PHspline(times="times", failures="failures", data=dataDIVAT2[1:200,],
    cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
    k=tune.model$optimal$k)
 

@@ -10,8 +10,8 @@ This function finds the model which minimize the AIC of a Cox PH model.
 }
 
 \usage{
-tuneCOXaic(times, failures, group, cov.quanti,
-cov.quali, data, model.min, model.max)
+tuneCOXaic(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL,
+data, model.min=NULL, model.max=NULL)
 }
 
 \arguments{
@@ -41,19 +41,19 @@ Venables, W. N. and Ripley, B. D. (2002) Modern Applied Statistics with S. Fourt
 \examples{
 data(dataDIVAT2)
 
-tune.model<-tuneCOXaic(times="times", failures="failures", data=dataDIVAT2,
+tune.model <- tuneCOXaic(times="times", failures="failures", data=dataDIVAT2,
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"))
 
-tune.model$optimal$final.model # the covariate to include in the model with the best AIC
+tune.model$optimal$final.model # the covariate in the model with the best AIC
 
 # The estimation of the training model with the corresponding lambda value
-model<-COXaic(times="times", failures="failures", data=dataDIVAT2,
+model <- LIB_COXaic(times="times", failures="failures", data=dataDIVAT2,
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
   final.model=tune.model$optimal$final.model)
 
 # The resulted predicted survival of the first subject of the training sample
-plot(y=model$predictions[1,], x=model$times, xlab="Time (years)", ylab="Predicted survival",
-     col=1, type="l", lty=1, lwd=2, ylim=c(0,1))
+plot(y=model$predictions[1,], x=model$times, xlab="Time (years)",
+ylab="Predicted survival", col=1, type="l", lty=1, lwd=2, ylim=c(0,1))
 }
 
 \keyword{Tunning}

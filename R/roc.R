@@ -1,5 +1,5 @@
 
-roc <- function(times, failures, variable, confounders, data, pro.time, precision=seq(0.05, 0.95, by=0.025))
+roc <- function(times, failures, variable, confounders, data, pro.time, precision=seq(.01, .99, by=.01))
 {
 
 cut.off <- quantile(data[,variable], probs=precision, na.rm=TRUE)
@@ -53,8 +53,24 @@ colnames(.tab.res.temp) <- colnames(.tab)
 .tab$sp <- 1 - .tab$sp1
 .tab <- rbind(c(min(data[,variable]),1,1,0) ,.tab, c(max(data[,variable]),0,0,1))
 
+
+
+auc.fun <- function(sens, spec)
+{
+  .tab.res <- data.frame(se=sens, sp=spec)
+  .tab.res <- .tab.res[!is.na(.tab.res$sp + .tab.res$se),]
+  .tab.res$sp1 <- 1-.tab.res$sp
+  .tab.res <- .tab.res[order(.tab.res$sp1, .tab.res$se),]
+  .tab.res <- rbind(c(0,1,0), .tab.res, c(1,0,1))
+
+  return( sum((.tab.res$sp1[2:length(.tab.res$sp1)] -
+                 .tab.res$sp1[1:(length(.tab.res$sp1)-1)]) * 0.5 *
+                (.tab.res$se[2:length(.tab.res$se)]+.tab.res$se[1:length(.tab.res$se)-1])) )
+}
+
+
 if(dim(.tab.res.temp)[1]>2){
-.auc <- auc(.tab.res.temp$se, 1-.tab.res.temp$sp1)
+.auc <- auc.fun(.tab.res.temp$se, 1-.tab.res.temp$sp1)
 }else{.auc<-NA}
 
 .tab$J <- .tab$sp + .tab$se - 1

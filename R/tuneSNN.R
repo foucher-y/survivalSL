@@ -78,7 +78,7 @@ tuneSNN <- function(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL
   }
 
   nn.best.measure <- function(prediction.matrix, times, failures, data, prediction.times){
-    return(metric(times=times, failures=failures, data=data, prediction.matrix=prediction.matrix,
+    return(metrics(times=times, failures=failures, data=data, prediction.matrix=prediction.matrix,
                   prediction.times=prediction.times, metric="ci"))
   }
 

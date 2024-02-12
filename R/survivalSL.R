@@ -98,368 +98,368 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
   }
 
   .meth_rm=c()
-  if(sum(methods %in% "AFTgamma")>=2){
-    .meth_rm=c(.meth_rm,which(methods=="AFTgamma")[-1])
-    warning("SuperLearner can use only one AFTgamma method. We remove the others.")
+  if(sum(methods %in% "LIB_AFTgamma")>=2){
+    .meth_rm=c(.meth_rm,which(methods=="LIB_AFTgamma")[-1])
+    warning("SuperLearner can use only one LIB_AFTgamma method. We remove the others.")
   }
-  if(sum(methods %in% "AFTllogis")>=2){
-    .meth_rm=c(.meth_rm,which(methods=="AFTllogis")[-1])
-    warning("SuperLearner can use only one AFTllogis method. We remove the others.")
+  if(sum(methods %in% "LIB_AFTllogis")>=2){
+    .meth_rm=c(.meth_rm,which(methods=="LIB_AFTllogis")[-1])
+    warning("SuperLearner can use only one LIB_AFTllogis method. We remove the others.")
   }
-  if(sum(methods %in% "AFTggamma")>=2){
-    .meth_rm=c(.meth_rm,which(methods=="AFTggamma")[-1])
-    warning("SuperLearner can use only one AFTggamma method. We remove the others.")
+  if(sum(methods %in% "LIB_AFTggamma")>=2){
+    .meth_rm=c(.meth_rm,which(methods=="LIB_AFTggamma")[-1])
+    warning("SuperLearner can use only one LIB_AFTggamma method. We remove the others.")
   }
-  if(sum(methods %in% "AFTweibull")>=2){
-    .meth_rm=c(.meth_rm,which(methods=="AFTweibull")[-1])
-    warning("SuperLearner can use only one AFTweibull method. We remove the others.")
+  if(sum(methods %in% "LIB_AFTweibull")>=2){
+    .meth_rm=c(.meth_rm,which(methods=="LIB_AFTweibull")[-1])
+    warning("SuperLearner can use only one LIB_AFTweibull method. We remove the others.")
   }
-  if(sum(methods %in% "PHexponential")>=2){
-    .meth_rm=c(.meth_rm,which(methods=="PHexponential")[-1])
-    warning("SuperLearner can use only one PHexponential method. We remove the others.")
+  if(sum(methods %in% "LIB_PHexponential")>=2){
+    .meth_rm=c(.meth_rm,which(methods=="LIB_PHexponential")[-1])
+    warning("SuperLearner can use only one LIB_PHexponential method. We remove the others.")
   }
-  if(sum(methods %in% "PHgompertz")>=2){
-    .meth_rm=c(.meth_rm,which(methods=="PHgompertz")[-1])
-    warning("SuperLearner can use only one PHgompertz method. We remove the others.")
+  if(sum(methods %in% "LIB_PHgompertz")>=2){
+    .meth_rm=c(.meth_rm,which(methods=="LIB_PHgompertz")[-1])
+    warning("SuperLearner can use only one LIB_PHgompertz method. We remove the others.")
   }
-  if(sum(methods %in% "PHspline")>=2){
-    .meth_rm=c(.meth_rm,which(methods=="PHspline")[-1])
-    warning("SuperLearner can use only one PHspline method. We remove the others.")
+  if(sum(methods %in% "LIB_PHspline")>=2){
+    .meth_rm=c(.meth_rm,which(methods=="LIB_PHspline")[-1])
+    warning("SuperLearner can use only one LIB_PHspline method. We remove the others.")
   }
 
-  if(sum(methods %in% "COXlasso")==1){
-    if(!(is.null(param.tune[[which(methods=="COXlasso")]]))){
-      if(!is.list(param.tune[[which(methods=="COXlasso")]])){
-        stop("Argument param.tune for COXlasso need to be a list")
+  if(sum(methods %in% "LIB_COXlasso")==1){
+    if(!(is.null(param.tune[[which(methods=="LIB_COXlasso")]]))){
+      if(!is.list(param.tune[[which(methods=="LIB_COXlasso")]])){
+        stop("Argument param.tune for LIB_COXlasso need to be a list")
       }
-      if(sum((names(param.tune[[which(methods=="COXlasso")]])%in%"lambda"))==0){
-        stop("Tune parameters for COXlasso need to have lambda")
+      if(sum((names(param.tune[[which(methods=="LIB_COXlasso")]])%in%"lambda"))==0){
+        stop("Tune parameters for LIB_COXlasso need to have lambda")
       }
-      if(!(is.numeric(param.tune[[which(methods=="COXlasso")]]$lambda)|
-           is.null(param.tune[[which(methods=="COXlasso")]]$lambda))){
-        stop("Lambda tune parameters for COXlasso need to be a scalar or a vector or NULL")
+      if(!(is.numeric(param.tune[[which(methods=="LIB_COXlasso")]]$lambda)|
+           is.null(param.tune[[which(methods=="LIB_COXlasso")]]$lambda))){
+        stop("Lambda tune parameters for LIB_COXlasso need to be a scalar or a vector or NULL")
       }
     }
   }
 
-  if(sum(methods %in% "COXlasso")>=2){
-    if(length(param.tune[which(methods=="COXlasso")])!=length(unique(param.tune[which(methods=="COXlasso")]))){
-      stop("Tune parameters for COXlasso methods need to be unique")
+  if(sum(methods %in% "LIB_COXlasso")>=2){
+    if(length(param.tune[which(methods=="LIB_COXlasso")])!=length(unique(param.tune[which(methods=="LIB_COXlasso")]))){
+      stop("Tune parameters for LIB_COXlasso methods need to be unique")
     }
-    for (i in 1:sum(methods %in% "COXlasso")){
-      if(!(is.null(param.tune[[which(methods=="COXlasso")[i]]]))){
-        if(!is.list(param.tune[[which(methods=="COXlasso")[i]]])){
-          stop(paste("Argument param.tune for the ",i,"th COXlasso need to be a list"))
+    for (i in 1:sum(methods %in% "LIB_COXlasso")){
+      if(!(is.null(param.tune[[which(methods=="LIB_COXlasso")[i]]]))){
+        if(!is.list(param.tune[[which(methods=="LIB_COXlasso")[i]]])){
+          stop(paste("Argument param.tune for the ",i,"th LIB_COXlasso need to be a list"))
         }
-        if(sum((names(param.tune[[which(methods=="COXlasso")[i]]])%in%"lambda"))==0){
-          stop(paste("Tune parameters for the ",i,"th COXlasso need to have lambda"))
+        if(sum((names(param.tune[[which(methods=="LIB_COXlasso")[i]]])%in%"lambda"))==0){
+          stop(paste("Tune parameters for the ",i,"th LIB_COXlasso need to have lambda"))
         }
-        if(!(is.numeric(param.tune[[which(methods=="COXlasso")[i]]]$lambda)|
-             is.null(param.tune[[which(methods=="COXlasso")[i]]]$lambda))){
-          stop(paste("Lambda tune parameters for the ",i,"th COXlasso need to be a scalar or a vector or NULL"))
-        }
-      }
-    }
-  }
-
-
-
-  if(sum(methods %in% "PHspline")==1){
-    if(!(is.null(param.tune[[which(methods=="PHspline")]]))){
-      if(!is.list(param.tune[[which(methods=="PHspline")]])){
-        stop("Argument param.tune for PHspline need to be a list")
-      }
-      if(sum((names(param.tune[[which(methods=="PHspline")]])%in%"k"))==0){
-        stop("Tune parameters for PHspline need to have k")
-      }
-      if(!(is.numeric(param.tune[[which(methods=="PHspline")]]$k)|
-           is.null(param.tune[[which(methods=="PHspline")]]$k))){
-        stop("Lambda tune parameters for PHspline need to be a scalar or a vector or NULL")
-      }
-    }
-  }
-
-  if(sum(methods %in% "PHspline")>=2){
-    if(length(param.tune[which(methods=="PHspline")])!=length(unique(param.tune[which(methods=="PHspline")]))){
-      stop("Tune parameters for PHspline methods need to be unique")
-    }
-    for (i in 1:sum(methods %in% "PHspline")){
-      if(!(is.null(param.tune[[which(methods=="PHspline")[i]]]))){
-        if(!is.list(param.tune[[which(methods=="PHspline")[i]]])){
-          stop(paste("Argument param.tune for the ",i,"th PHspline need to be a list"))
-        }
-        if(sum((names(param.tune[[which(methods=="PHspline")[i]]])%in%"k"))==0){
-          stop(paste("Tune parameters for the ",i,"th PHspline need to have k"))
-        }
-        if(!(is.numeric(param.tune[[which(methods=="PHspline")[i]]]$k)|
-             is.null(param.tune[[which(methods=="PHspline")[i]]]$k))){
-          stop(paste("Lambda tune parameters for the ",i,"th PHspline need to be a scalar or a vector or NULL"))
+        if(!(is.numeric(param.tune[[which(methods=="LIB_COXlasso")[i]]]$lambda)|
+             is.null(param.tune[[which(methods=="LIB_COXlasso")[i]]]$lambda))){
+          stop(paste("Lambda tune parameters for the ",i,"th LIB_COXlasso need to be a scalar or a vector or NULL"))
         }
       }
     }
   }
 
 
-  if(sum(methods %in% "COXridge")==1){
-    if(!(is.null(param.tune[[which(methods=="COXridge")]]))){
-      if(!is.list(param.tune[[which(methods=="COXridge")]])){
-        stop("Argument param.tune for COXridge need to be a list")
+
+  if(sum(methods %in% "LIB_PHspline")==1){
+    if(!(is.null(param.tune[[which(methods=="LIB_PHspline")]]))){
+      if(!is.list(param.tune[[which(methods=="LIB_PHspline")]])){
+        stop("Argument param.tune for LIB_PHspline need to be a list")
       }
-      if(sum((names(param.tune[[which(methods=="COXridge")]])%in%"lambda"))==0){
-        stop("Tune parameters for COXridge need to have lambda")
+      if(sum((names(param.tune[[which(methods=="LIB_PHspline")]])%in%"k"))==0){
+        stop("Tune parameters for LIB_PHspline need to have k")
       }
-      if(!(is.numeric(param.tune[[which(methods=="COXridge")]]$lambda)|
-           is.null(param.tune[[which(methods=="COXridge")]]$lambda))){
-        stop("Lambda tune parameters for COXridge need to be a scalar or a vector or NULL")
-      }
-    }
-  }
-  if(sum(methods %in% "COXridge")>=2){
-    if(length(param.tune[which(methods=="COXridge")])!=length(unique(param.tune[which(methods=="COXridge")]))){
-      stop("Tune parameters for COXridge methods need to be unique")
-    }
-    for (i in 1:sum(methods %in% "COXridge")){
-      if(!(is.null(param.tune[[which(methods=="COXridge")[i]]]))){
-        if(!is.list(param.tune[[which(methods=="COXridge")[i]]])){
-          stop(paste("Argument param.tune for the ",i,"th COXridge need to be a list"))
-        }
-        if(sum((names(param.tune[[which(methods=="COXridge")[i]]])%in%"lambda"))==0){
-          stop(paste("Tune parameters for the ",i,"th COXridge need to have lambda"))
-        }
-        if(!(is.numeric(param.tune[[which(methods=="COXridge")[i]]]$lambda)|
-             is.null(param.tune[[which(methods=="COXridge")[i]]]$lambda))){
-          stop(paste("Lambda tune parameters for the ",i,"th COXridge need to be a scalar or a vector or NULL"))
-        }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_PHspline")]]$k)|
+           is.null(param.tune[[which(methods=="LIB_PHspline")]]$k))){
+        stop("Lambda tune parameters for LIB_PHspline need to be a scalar or a vector or NULL")
       }
     }
   }
 
-  if(sum(methods %in% "COXen")==1){
-    if(!(is.null(param.tune[[which(methods=="COXen")]]))){
-      if(!is.list(param.tune[[which(methods=="COXen")]])){
-        stop("Argument param.tune for COXen need to be a list")
-      }
-      if(sum((names(param.tune[[which(methods=="COXen")]])%in%"lambda"))==0){
-        stop("Tune parameters for COXen need to have lambda")
-      }
-      if(sum((names(param.tune[[which(methods=="COXen")]])%in%"alpha"))==0){
-        stop("Tune parameters for COXen need to have alpha")
-      }
-      if(!(is.numeric(param.tune[[which(methods=="COXen")]]$lambda)|
-           is.null(param.tune[[which(methods=="COXen")]]$lambda))){
-        stop("Lambda tune parameters for COXen need to be a scalar or a vector or NULL")
-      }
-      if(!(is.numeric(param.tune[[which(methods=="COXen")]]$alpha)|
-           is.null(param.tune[[which(methods=="COXen")]]$alpha))){
-        stop("alpha tune parameters for COXen need to be a scalar or a vector or NULL")
-      }
-      if(min(param.tune[[which(methods=="COXen")]]$alpha)<0 | max(param.tune[[which(methods=="COXen")]]$alpha)>1){
-        stop("tune parameters for COXen alpha need to be in ]0;1[")
-      }
+  if(sum(methods %in% "LIB_PHspline")>=2){
+    if(length(param.tune[which(methods=="LIB_PHspline")])!=length(unique(param.tune[which(methods=="LIB_PHspline")]))){
+      stop("Tune parameters for LIB_PHspline methods need to be unique")
     }
-  }
-  if(sum(methods %in% "COXen")>=2){
-    if(length(param.tune[which(methods=="COXen")])!=length(unique(param.tune[which(methods=="COXen")]))){
-      stop("Tune parameters for COXen methods need to be unique")
-    }
-    for (i in 1:sum(methods %in% "COXen")){
-      if(!(is.null(param.tune[[which(methods=="COXen")[i]]]))){
-        if(!is.list(param.tune[[which(methods=="COXen")[i]]])){
-          stop(paste("Argument param.tune for the ",i,"th COXen need to be a list"))
+    for (i in 1:sum(methods %in% "LIB_PHspline")){
+      if(!(is.null(param.tune[[which(methods=="LIB_PHspline")[i]]]))){
+        if(!is.list(param.tune[[which(methods=="LIB_PHspline")[i]]])){
+          stop(paste("Argument param.tune for the ",i,"th LIB_PHspline need to be a list"))
         }
-        if(sum((names(param.tune[[which(methods=="COXen")[i]]])%in%"lambda"))==0){
-          stop(paste("Tune parameters for the ",i,"th COXen need to have lambda"))
+        if(sum((names(param.tune[[which(methods=="LIB_PHspline")[i]]])%in%"k"))==0){
+          stop(paste("Tune parameters for the ",i,"th LIB_PHspline need to have k"))
         }
-        if(sum((names(param.tune[[which(methods=="COXen")[i]]])%in%"alpha"))==0){
-          stop(paste("Tune parameters for the ",i,"th COXen need to have alpha"))
-        }
-        if(!(is.numeric(param.tune[[which(methods=="COXen")[i]]]$lambda)|
-             is.null(param.tune[[which(methods=="COXen")[i]]]$lambda))){
-          stop(paste("Lambda tune parameters for the ",i,"th COXen need to be a scalar or a vector or NULL"))
-        }
-        if(!(is.numeric(param.tune[[which(methods=="COXen")[i]]]$alpha)|
-             is.null(param.tune[[which(methods=="COXen")[i]]]$alpha))){
-          stop(paste("Alpha tune parameters for the ",i,"th COXen need to be a scalar or a vector or NULL"))
-        }
-        if(min(param.tune[[which(methods=="COXen")[i]]]$alpha)<0 | max(param.tune[[which(methods=="COXen")[i]]]$alpha)>1){
-          stop("tune parameters for COXen alpha need to be in ]0;1[")
-        }
-      }
-    }
-  }
-
-  if(sum(methods %in% "COXaic")==1){
-    if(!(is.null(param.tune[[which(methods=="COXaic")]]))){
-      if(!is.list(param.tune[[which(methods=="COXaic")]])){
-        stop("Argument param.tune for COXaic need to be a list")
-      }
-      if(sum((names(param.tune[[which(methods=="COXaic")]])%in%"final.model"))==0){
-        stop("Tune parameters for COXaic need to have final.model")
-      }
-      if(sum((names(param.tune[[which(methods=="COXaic")]])%in%"model.min"))==0){
-        stop("Tune parameters for COXaic need to have model.min")
-      }
-      if(sum((names(param.tune[[which(methods=="COXaic")]])%in%"model.max"))==0){
-        stop("Tune parameters for COXaic need to have model.max")
-      }
-    }
-  }
-  if(sum(methods %in% "COXaic")>=2){
-    if(length(param.tune[which(methods=="COXaic")])!=length(unique(param.tune[which(methods=="COXaic")]))){
-      stop("Tune parameters for COXaic methods need to be unique")
-    }
-    for (i in 1:sum(methods %in% "COXaic")){
-      if(!(is.null(param.tune[[which(methods=="COXaic")[i]]]))){
-        if(!is.list(param.tune[[which(methods=="COXaic")[i]]])){
-          stop(paste("Argument param.tune for the ",i,"th COXaic need to be a list"))
-        }
-        if(sum((names(param.tune[[which(methods=="COXaic")[i]]])%in%"finl.model.cov"))==0){
-          stop(paste("Tune parameters for the ",i,"th COXaic need to have finl.model.cov"))
-        }
-        if(sum((names(param.tune[[which(methods=="COXaic")[i]]])%in%"model.min"))==0){
-          stop(paste("Tune parameters for the ",i,"th COXaic need to have model.min"))
-        }
-        if(sum((names(param.tune[[which(methods=="COXaic")[i]]])%in%"model.max"))==0){
-          stop("Tune parameters for COXaic need to have model.max")
+        if(!(is.numeric(param.tune[[which(methods=="LIB_PHspline")[i]]]$k)|
+             is.null(param.tune[[which(methods=="LIB_PHspline")[i]]]$k))){
+          stop(paste("Lambda tune parameters for the ",i,"th LIB_PHspline need to be a scalar or a vector or NULL"))
         }
       }
     }
   }
 
 
-  if(sum(methods %in% "RSF")==1){
-    if(!(is.null(param.tune[[which(methods=="RSF")]]))){
-      if(!is.list(param.tune[[which(methods=="RSF")]])){
-        stop("Argument param.tune for RSF need to be a list")
+  if(sum(methods %in% "LIB_COXridge")==1){
+    if(!(is.null(param.tune[[which(methods=="LIB_COXridge")]]))){
+      if(!is.list(param.tune[[which(methods=="LIB_COXridge")]])){
+        stop("Argument param.tune for LIB_COXridge need to be a list")
       }
-      if(sum((names(param.tune[[which(methods=="RSF")]])%in%"nodesize"))==0){
-        stop("Tune parameters for RSF need to have nodesize")
+      if(sum((names(param.tune[[which(methods=="LIB_COXridge")]])%in%"lambda"))==0){
+        stop("Tune parameters for LIB_COXridge need to have lambda")
       }
-      if(sum((names(param.tune[[which(methods=="RSF")]])%in%"mtry"))==0){
-        stop("Tune parameters for RSF need to have mtry")
-      }
-      if(sum((names(param.tune[[which(methods=="RSF")]])%in%"ntree"))==0){
-        stop("Tune parameters for RSF need to have ntree")
-      }
-      if(!(is.numeric(param.tune[[which(methods=="RSF")]]$nodesize)|
-           is.null(param.tune[[which(methods=="RSF")]]$nodesize))){
-        stop("nodesize tune parameters for RSF need to be a scalar or a vector or NULL")
-      }
-      if(!(is.numeric(param.tune[[which(methods=="RSF")]]$mtry)|
-           is.null(param.tune[[which(methods=="RSF")]]$mtry))){
-        stop("mtry tune parameters for RSF need to be a scalar or NULL")
-      }
-      if(!(is.numeric(param.tune[[which(methods=="RSF")]]$ntree)|
-           is.null(param.tune[[which(methods=="RSF")]]$ntree))){
-        stop("ntree tune parameters for RSF need to be a scalar or NULL")
+      if(!(is.numeric(param.tune[[which(methods=="LIB_COXridge")]]$lambda)|
+           is.null(param.tune[[which(methods=="LIB_COXridge")]]$lambda))){
+        stop("Lambda tune parameters for LIB_COXridge need to be a scalar or a vector or NULL")
       }
     }
   }
-  if(sum(methods %in% "RSF")>=2){
-    if(length(param.tune[which(methods=="RSF")])!=length(unique(param.tune[which(methods=="RSF")]))){
-      stop("Tune parameters for RSF methods need to be unique")
+  if(sum(methods %in% "LIB_COXridge")>=2){
+    if(length(param.tune[which(methods=="LIB_COXridge")])!=length(unique(param.tune[which(methods=="LIB_COXridge")]))){
+      stop("Tune parameters for LIB_COXridge methods need to be unique")
     }
-    for (i in 1:sum(methods %in% "RSF")){
-      if(!is.list(param.tune[[which(methods=="RSF")[i]]])){
-        stop(paste("Argument param.tune for the ",i,"th RSF need to be a list"))
-      }
-      if(!(is.null(param.tune[[which(methods=="RSF")[i]]]))){
-        if(sum((names(param.tune[[which(methods=="RSF")[i]]])%in%"nodesize"))==0){
-          stop("Tune parameters for RSF need to have nodesize")
+    for (i in 1:sum(methods %in% "LIB_COXridge")){
+      if(!(is.null(param.tune[[which(methods=="LIB_COXridge")[i]]]))){
+        if(!is.list(param.tune[[which(methods=="LIB_COXridge")[i]]])){
+          stop(paste("Argument param.tune for the ",i,"th LIB_COXridge need to be a list"))
         }
-        if(sum((names(param.tune[[which(methods=="RSF")[i]]])%in%"mtry"))==0){
-          stop("Tune parameters for RSF need to have mtry")
+        if(sum((names(param.tune[[which(methods=="LIB_COXridge")[i]]])%in%"lambda"))==0){
+          stop(paste("Tune parameters for the ",i,"th LIB_COXridge need to have lambda"))
         }
-        if(sum((names(param.tune[[which(methods=="RSF")[i]]])%in%"ntree"))==0){
-          stop("Tune parameters for RSF need to have ntree")
-        }
-        if(!(is.numeric(param.tune[[which(methods=="RSF")[i]]]$nodesize)|
-             is.null(param.tune[[which(methods=="RSF")[i]]]$nodesize))){
-          stop("nodesize tune parameters for RSF need to be a scalar or a vector or NULL")
-        }
-        if(!(is.numeric(param.tune[[which(methods=="RSF")[i]]]$mtry)|
-             is.null(param.tune[[which(methods=="RSF")[i]]]$mtry))){
-          stop("mtry tune parameters for RSF need to be a scalar or NULL")
-        }
-        if(!(is.numeric(param.tune[[which(methods=="RSF")[i]]]$ntree)|
-             is.null(param.tune[[which(methods=="RSF")[i]]]$ntree))){
-          stop("ntree tune parameters for RSF need to be a scalar or NULL")
+        if(!(is.numeric(param.tune[[which(methods=="LIB_COXridge")[i]]]$lambda)|
+             is.null(param.tune[[which(methods=="LIB_COXridge")[i]]]$lambda))){
+          stop(paste("Lambda tune parameters for the ",i,"th LIB_COXridge need to be a scalar or a vector or NULL"))
         }
       }
     }
   }
 
-  if(sum(methods %in% "SNN")==1){
-    if(!(is.null(param.tune[[which(methods=="SNN")]]))){
-      if(!is.list(param.tune[[which(methods=="SNN")]])){
-        stop("Argument param.tune for SNN need to be a list")
+  if(sum(methods %in% "LIB_COXen")==1){
+    if(!(is.null(param.tune[[which(methods=="LIB_COXen")]]))){
+      if(!is.list(param.tune[[which(methods=="LIB_COXen")]])){
+        stop("Argument param.tune for LIB_COXen need to be a list")
       }
-      if(sum((names(param.tune[[which(methods=="SNN")]])%in%"n.nodes"))==0){
-        stop("Tune parameters for SNN need to have n.nodes")
+      if(sum((names(param.tune[[which(methods=="LIB_COXen")]])%in%"lambda"))==0){
+        stop("Tune parameters for LIB_COXen need to have lambda")
       }
-      if(sum((names(param.tune[[which(methods=="SNN")]])%in%"decay"))==0){
-        stop("Tune parameters for SNN need to have decay")
+      if(sum((names(param.tune[[which(methods=="LIB_COXen")]])%in%"alpha"))==0){
+        stop("Tune parameters for LIB_COXen need to have alpha")
       }
-      if(sum((names(param.tune[[which(methods=="SNN")]])%in%"batch.size"))==0){
-        stop("Tune parameters for SNN need to have batch.size")
+      if(!(is.numeric(param.tune[[which(methods=="LIB_COXen")]]$lambda)|
+           is.null(param.tune[[which(methods=="LIB_COXen")]]$lambda))){
+        stop("Lambda tune parameters for LIB_COXen need to be a scalar or a vector or NULL")
       }
-      if(sum((names(param.tune[[which(methods=="SNN")]])%in%"epochs"))==0){
-        stop("Tune parameters for SNN need to have epochs")
+      if(!(is.numeric(param.tune[[which(methods=="LIB_COXen")]]$alpha)|
+           is.null(param.tune[[which(methods=="LIB_COXen")]]$alpha))){
+        stop("alpha tune parameters for LIB_COXen need to be a scalar or a vector or NULL")
       }
-      if(!(is.numeric(param.tune[[which(methods=="SNN")]]$n.nodes)|
-           is.null(param.tune[[which(methods=="SNN")]]$n.nodes))){
-        stop("n.nodes tune parameters for SNN need to be a scalar, a vector or NULL")
-      }
-      if(!(is.numeric(param.tune[[which(methods=="SNN")]]$decay)|
-           is.null(param.tune[[which(methods=="SNN")]]$decay))){
-        stop("decay tune parameters for SNN need to be a scalar, a vector or NULL")
-      }
-      if(!(is.numeric(param.tune[[which(methods=="SNN")]]$batch.size)|
-           is.null(param.tune[[which(methods=="SNN")]]$batch.size))){
-        stop("batch.size tune parameters for SNN need to be a scalar, a vector or NULL")
-      }
-      if(!(is.numeric(param.tune[[which(methods=="SNN")]]$epochs)|
-           is.null(param.tune[[which(methods=="SNN")]]$epochs))){
-        stop("epochs tune parameters for SNN need to be a scalar, a vector or NULL")
+      if(min(param.tune[[which(methods=="LIB_COXen")]]$alpha)<0 | max(param.tune[[which(methods=="LIB_COXen")]]$alpha)>1){
+        stop("tune parameters for LIB_COXen alpha need to be in ]0;1[")
       }
     }
   }
-  if(sum(methods %in% "SNN")>=2){
-    if(length(param.tune[which(methods=="SNN")])!=length(unique(param.tune[which(methods=="SNN")]))){
-      stop("Tune parameters for SNN methods need to be unique")
+  if(sum(methods %in% "LIB_COXen")>=2){
+    if(length(param.tune[which(methods=="LIB_COXen")])!=length(unique(param.tune[which(methods=="LIB_COXen")]))){
+      stop("Tune parameters for LIB_COXen methods need to be unique")
     }
-    for (i in 1:sum(methods %in% "SNN")){
-      if(!(is.null(param.tune[[which(methods=="SNN")[i]]]))){
-        if(!is.list(param.tune[[which(methods=="SNN")[i]]])){
-          stop(paste("Argument param.tune for the ",i,"th SNN need to be a list"))
+    for (i in 1:sum(methods %in% "LIB_COXen")){
+      if(!(is.null(param.tune[[which(methods=="LIB_COXen")[i]]]))){
+        if(!is.list(param.tune[[which(methods=="LIB_COXen")[i]]])){
+          stop(paste("Argument param.tune for the ",i,"th LIB_COXen need to be a list"))
         }
-        if(sum((names(param.tune[[which(methods=="SNN")[i]]])%in%"n.nodes"))==0){
-          stop("Tune parameters for SNN need to have n.nodes")
+        if(sum((names(param.tune[[which(methods=="LIB_COXen")[i]]])%in%"lambda"))==0){
+          stop(paste("Tune parameters for the ",i,"th LIB_COXen need to have lambda"))
         }
-        if(sum((names(param.tune[[which(methods=="SNN")[i]]])%in%"decay"))==0){
-          stop("Tune parameters for SNN need to have decay")
+        if(sum((names(param.tune[[which(methods=="LIB_COXen")[i]]])%in%"alpha"))==0){
+          stop(paste("Tune parameters for the ",i,"th LIB_COXen need to have alpha"))
         }
-        if(sum((names(param.tune[[which(methods=="SNN")[i]]])%in%"batch.size"))==0){
-          stop("Tune parameters for SNN need to have batch.size")
+        if(!(is.numeric(param.tune[[which(methods=="LIB_COXen")[i]]]$lambda)|
+             is.null(param.tune[[which(methods=="LIB_COXen")[i]]]$lambda))){
+          stop(paste("Lambda tune parameters for the ",i,"th LIB_COXen need to be a scalar or a vector or NULL"))
         }
-        if(sum((names(param.tune[[which(methods=="SNN")[i]]])%in%"epochs"))==0){
-          stop("Tune parameters for SNN need to have epochs")
+        if(!(is.numeric(param.tune[[which(methods=="LIB_COXen")[i]]]$alpha)|
+             is.null(param.tune[[which(methods=="LIB_COXen")[i]]]$alpha))){
+          stop(paste("Alpha tune parameters for the ",i,"th LIB_COXen need to be a scalar or a vector or NULL"))
         }
-        if(!(is.numeric(param.tune[[which(methods=="SNN")[i]]]$n.nodes)|
-             is.null(param.tune[[which(methods=="SNN")[i]]]$n.nodes))){
-          stop("nodesize tune parameters for SNN need to be a scalar or a vector or NULL")
+        if(min(param.tune[[which(methods=="LIB_COXen")[i]]]$alpha)<0 | max(param.tune[[which(methods=="LIB_COXen")[i]]]$alpha)>1){
+          stop("tune parameters for LIB_COXen alpha need to be in ]0;1[")
         }
-        if(!(is.numeric(param.tune[[which(methods=="SNN")[i]]]$decay)|
-             is.null(param.tune[[which(methods=="SNN")[i]]]$decay))){
-          stop("decay tune parameters for SNN need to be a scalar, a vector or NULL")
+      }
+    }
+  }
+
+  if(sum(methods %in% "LIB_COXaic")==1){
+    if(!(is.null(param.tune[[which(methods=="LIB_COXaic")]]))){
+      if(!is.list(param.tune[[which(methods=="LIB_COXaic")]])){
+        stop("Argument param.tune for LIB_COXaic need to be a list")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_COXaic")]])%in%"final.model"))==0){
+        stop("Tune parameters for LIB_COXaic need to have final.model")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_COXaic")]])%in%"model.min"))==0){
+        stop("Tune parameters for LIB_COXaic need to have model.min")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_COXaic")]])%in%"model.max"))==0){
+        stop("Tune parameters for LIB_COXaic need to have model.max")
+      }
+    }
+  }
+  if(sum(methods %in% "LIB_COXaic")>=2){
+    if(length(param.tune[which(methods=="LIB_COXaic")])!=length(unique(param.tune[which(methods=="LIB_COXaic")]))){
+      stop("Tune parameters for LIB_COXaic methods need to be unique")
+    }
+    for (i in 1:sum(methods %in% "LIB_COXaic")){
+      if(!(is.null(param.tune[[which(methods=="LIB_COXaic")[i]]]))){
+        if(!is.list(param.tune[[which(methods=="LIB_COXaic")[i]]])){
+          stop(paste("Argument param.tune for the ",i,"th LIB_COXaic need to be a list"))
         }
-        if(!(is.numeric(param.tune[[which(methods=="SNN")[i]]]$batch.size)|
-             is.null(param.tune[[which(methods=="SNN")[i]]]$batch.size))){
-          stop("batch.size tune parameters for SNN need to be a scalar, a vector or NULL")
+        if(sum((names(param.tune[[which(methods=="LIB_COXaic")[i]]])%in%"finl.model.cov"))==0){
+          stop(paste("Tune parameters for the ",i,"th LIB_COXaic need to have finl.model.cov"))
         }
-        if(!(is.numeric(param.tune[[which(methods=="SNN")[i]]]$epochs)|
-             is.null(param.tune[[which(methods=="SNN")[i]]]$epochs))){
-          stop("epochs tune parameters for SNN need to be a scalar, a vector or NULL")
+        if(sum((names(param.tune[[which(methods=="LIB_COXaic")[i]]])%in%"model.min"))==0){
+          stop(paste("Tune parameters for the ",i,"th LIB_COXaic need to have model.min"))
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_COXaic")[i]]])%in%"model.max"))==0){
+          stop("Tune parameters for LIB_COXaic need to have model.max")
+        }
+      }
+    }
+  }
+
+
+  if(sum(methods %in% "LIB_RSF")==1){
+    if(!(is.null(param.tune[[which(methods=="LIB_RSF")]]))){
+      if(!is.list(param.tune[[which(methods=="LIB_RSF")]])){
+        stop("Argument param.tune for LIB_RSF need to be a list")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_RSF")]])%in%"nodesize"))==0){
+        stop("Tune parameters for LIB_RSF need to have nodesize")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_RSF")]])%in%"mtry"))==0){
+        stop("Tune parameters for LIB_RSF need to have mtry")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_RSF")]])%in%"ntree"))==0){
+        stop("Tune parameters for LIB_RSF need to have ntree")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")]]$nodesize)|
+           is.null(param.tune[[which(methods=="LIB_RSF")]]$nodesize))){
+        stop("nodesize tune parameters for LIB_RSF need to be a scalar or a vector or NULL")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")]]$mtry)|
+           is.null(param.tune[[which(methods=="LIB_RSF")]]$mtry))){
+        stop("mtry tune parameters for LIB_RSF need to be a scalar or NULL")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")]]$ntree)|
+           is.null(param.tune[[which(methods=="LIB_RSF")]]$ntree))){
+        stop("ntree tune parameters for LIB_RSF need to be a scalar or NULL")
+      }
+    }
+  }
+  if(sum(methods %in% "LIB_RSF")>=2){
+    if(length(param.tune[which(methods=="LIB_RSF")])!=length(unique(param.tune[which(methods=="LIB_RSF")]))){
+      stop("Tune parameters for LIB_RSF methods need to be unique")
+    }
+    for (i in 1:sum(methods %in% "LIB_RSF")){
+      if(!is.list(param.tune[[which(methods=="LIB_RSF")[i]]])){
+        stop(paste("Argument param.tune for the ",i,"th LIB_RSF need to be a list"))
+      }
+      if(!(is.null(param.tune[[which(methods=="LIB_RSF")[i]]]))){
+        if(sum((names(param.tune[[which(methods=="LIB_RSF")[i]]])%in%"nodesize"))==0){
+          stop("Tune parameters for LIB_RSF need to have nodesize")
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_RSF")[i]]])%in%"mtry"))==0){
+          stop("Tune parameters for LIB_RSF need to have mtry")
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_RSF")[i]]])%in%"ntree"))==0){
+          stop("Tune parameters for LIB_RSF need to have ntree")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")[i]]]$nodesize)|
+             is.null(param.tune[[which(methods=="LIB_RSF")[i]]]$nodesize))){
+          stop("nodesize tune parameters for LIB_RSF need to be a scalar or a vector or NULL")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")[i]]]$mtry)|
+             is.null(param.tune[[which(methods=="LIB_RSF")[i]]]$mtry))){
+          stop("mtry tune parameters for LIB_RSF need to be a scalar or NULL")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")[i]]]$ntree)|
+             is.null(param.tune[[which(methods=="LIB_RSF")[i]]]$ntree))){
+          stop("ntree tune parameters for LIB_RSF need to be a scalar or NULL")
+        }
+      }
+    }
+  }
+
+  if(sum(methods %in% "LIB_SNN")==1){
+    if(!(is.null(param.tune[[which(methods=="LIB_SNN")]]))){
+      if(!is.list(param.tune[[which(methods=="LIB_SNN")]])){
+        stop("Argument param.tune for LIB_SNN need to be a list")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_SNN")]])%in%"n.nodes"))==0){
+        stop("Tune parameters for LIB_SNN need to have n.nodes")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_SNN")]])%in%"decay"))==0){
+        stop("Tune parameters for LIB_SNN need to have decay")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_SNN")]])%in%"batch.size"))==0){
+        stop("Tune parameters for LIB_SNN need to have batch.size")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_SNN")]])%in%"epochs"))==0){
+        stop("Tune parameters for LIB_SNN need to have epochs")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")]]$n.nodes)|
+           is.null(param.tune[[which(methods=="LIB_SNN")]]$n.nodes))){
+        stop("n.nodes tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")]]$decay)|
+           is.null(param.tune[[which(methods=="LIB_SNN")]]$decay))){
+        stop("decay tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")]]$batch.size)|
+           is.null(param.tune[[which(methods=="LIB_SNN")]]$batch.size))){
+        stop("batch.size tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")]]$epochs)|
+           is.null(param.tune[[which(methods=="LIB_SNN")]]$epochs))){
+        stop("epochs tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+      }
+    }
+  }
+  if(sum(methods %in% "LIB_SNN")>=2){
+    if(length(param.tune[which(methods=="LIB_SNN")])!=length(unique(param.tune[which(methods=="LIB_SNN")]))){
+      stop("Tune parameters for LIB_SNN methods need to be unique")
+    }
+    for (i in 1:sum(methods %in% "LIB_SNN")){
+      if(!(is.null(param.tune[[which(methods=="LIB_SNN")[i]]]))){
+        if(!is.list(param.tune[[which(methods=="LIB_SNN")[i]]])){
+          stop(paste("Argument param.tune for the ",i,"th LIB_SNN need to be a list"))
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_SNN")[i]]])%in%"n.nodes"))==0){
+          stop("Tune parameters for LIB_SNN need to have n.nodes")
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_SNN")[i]]])%in%"decay"))==0){
+          stop("Tune parameters for LIB_SNN need to have decay")
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_SNN")[i]]])%in%"batch.size"))==0){
+          stop("Tune parameters for LIB_SNN need to have batch.size")
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_SNN")[i]]])%in%"epochs"))==0){
+          stop("Tune parameters for LIB_SNN need to have epochs")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")[i]]]$n.nodes)|
+             is.null(param.tune[[which(methods=="LIB_SNN")[i]]]$n.nodes))){
+          stop("nodesize tune parameters for LIB_SNN need to be a scalar or a vector or NULL")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")[i]]]$decay)|
+             is.null(param.tune[[which(methods=="LIB_SNN")[i]]]$decay))){
+          stop("decay tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")[i]]]$batch.size)|
+             is.null(param.tune[[which(methods=="LIB_SNN")[i]]]$batch.size))){
+          stop("batch.size tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")[i]]]$epochs)|
+             is.null(param.tune[[which(methods=="LIB_SNN")[i]]]$epochs))){
+          stop("epochs tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
         }
       }
     }
@@ -798,19 +798,21 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
   ### Initialisation et recuperation param.tune ###
   ###################################################
 
-  if(sum(!(methods %in% c("COXlasso", "COXridge", "RSF", "SNN", "COXen",
-                          "AFTweibull","AFTweibull","AFTggamma","AFTgamma",
-                          "PHgompertz","PHexponential",
-                          "AFTllogis","COXaic","COXall", "PHspline")))>=1){
+  if(sum(!(methods %in% c("LIB_COXlasso", "LIB_COXridge", "LIB_RSF", "LIB_SNN", "LIB_COXen",
+                          "LIB_AFTweibull","LIB_AFTweibull","LIB_AFTggamma","LIB_AFTgamma",
+                          "LIB_PHgompertz","LIB_PHexponential",
+                          "LIB_AFTllogis","LIB_COXaic","LIB_COXall", "LIB_PHspline")))>=1){
     stop("New method is not yet implemented") }
 
-  M<-length((methods))
+  M <-length((methods))
   N <- length(data[,times])
 
+  if(progress==TRUE){
   max.progess <- M + cv * M + 4
   pb <- txtProgressBar(min = 0, max = max.progess, style = 3, width = 50, char = "=")
   ip <- 0
   setTxtProgressBar(pb, ip)
+  }
 
   names.meth=c(rep(NA,M))
   for(i in unique(methods)){
@@ -829,30 +831,30 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       stop("Param.tune need to have one element per method. Please modifiy param.tune or set it = NULL")
     }
     for (me in 1:M){
-      if(is.null(param.tune[[me]])==T & !(methods[me] %in% c("AFTgamma",
-                            "AFTggamma","AFTweibull","AFTllogis","PHexponential","PHgompertz"))){
-        if(methods[me] %in%"PHspline"){
+      if(is.null(param.tune[[me]])==T & !(methods[me] %in% c("LIB_AFTgamma",
+                            "LIB_AFTggamma","LIB_AFTweibull","LIB_AFTllogis","LIB_PHexponential","LIB_PHgompertz"))){
+        if(methods[me] %in%"LIB_PHspline"){
           param.tune[[me]]=list(k=1:4)
         }
-        if(methods[me] %in%"COXen"){
+        if(methods[me] %in%"LIB_COXen"){
           param.tune[[me]]=list(alpha=seq(.1,.9,.1), lambda=NULL)
         }
-        if(methods[me] %in%"COXaic"){
+        if(methods[me] %in%"LIB_COXaic"){
           param.tune[[me]]=list(final.model=NA, model.min=NULL, model.max=NULL)
         }
-        if(methods[me] %in%"SNN"){
+        if(methods[me] %in%"LIB_SNN"){
           param.tune[[me]]=list(n.nodes=c(2, 3, 4, 6, 10, 20),
                                 decay=c(0, 0.01, 0.1),
                                 batch.size=256L,
                                 epochs=1L)
         }
-        if(methods[me] %in% "COXlasso"){
+        if(methods[me] %in% "LIB_COXlasso"){
           param.tune[[me]]=list(lambda=NULL)
         }
-        if(methods[me] %in%"COXridge"){
+        if(methods[me] %in%"LIB_COXridge"){
           param.tune[[me]]=list(lambda=NULL)
         }
-        if(methods[me] %in%"RSF"){
+        if(methods[me] %in%"LIB_RSF"){
           param.tune[[me]]=list(mtry=(length(group)+length(cov.quanti)+length(cov.quali))/2+2,
                                 nodesize=c(2, 4, 6, 10, 20, 30, 50, 100),
                                 ntree=500)
@@ -865,28 +867,28 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
   if(is.null(param.tune)){
     param.tune=vector("list",M)
     for (me in 1:M){
-      if(methods[me] %in%"COXen"){
+      if(methods[me] %in%"LIB_COXen"){
         param.tune[[me]]=list(alpha=seq(.1,.9,.1), lambda=NULL)
       }
-      if(methods[me] %in%"COXaic"){
+      if(methods[me] %in%"LIB_COXaic"){
         param.tune[[me]]=list(final.model=NA, model.min=NULL,model.max=NULL)
       }
-      if(methods[me] %in%"SNN"){
+      if(methods[me] %in%"LIB_SNN"){
         param.tune[[me]]=list(n.nodes=c(2, 3, 4, 6, 10, 20),
                               decay=c(0, 0.01, 0.1),
                               batch.size=256L,
                               epochs=1L)
       }
-      if(methods[me] %in% "COXlasso"){
+      if(methods[me] %in% "LIB_COXlasso"){
         param.tune[[me]]=list(lambda=NULL)
       }
-      if(methods[me] %in% "COXridge"){
+      if(methods[me] %in% "LIB_COXridge"){
         param.tune[[me]]=list(lambda=NULL)
       }
-      if(methods[me] %in% "PHspline"){
+      if(methods[me] %in% "LIB_PHspline"){
         param.tune[[me]]=list(k=1:4)
       }
-      if(methods[me] %in% "RSF"){
+      if(methods[me] %in% "LIB_RSF"){
         param.tune[[me]]=list(mtry=seq(1,(length(group)+length(cov.quanti)+length(cov.quali))/2+2),
                               nodesize=c(2, 4, 6, 10, 20, 30, 50, 100), ntree=500)
       }
@@ -909,88 +911,107 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
 
   for (me in 1:M){
 
-    if(methods[me] == "AFTweibull" ){
+    if(methods[me] == "LIB_AFTweibull" ){
       .tune.optimal[[me]]=NA
 
-      .AFTweibull <- AFTweibull(times=times, failures=failures, group=group,
+      .LIB_AFTweibull <- LIB_AFTweibull(times=times, failures=failures, group=group,
                                   cov.quanti=cov.quanti, cov.quali=cov.quali, data=data)
 
-      .model[[me]]<-.AFTweibull
-      ip <- ip+1
-      setTxtProgressBar(pb, ip)
-      rm(.AFTweibull) }
+      .model[[me]]<-.LIB_AFTweibull
 
-    if(methods[me] == "AFTggamma"){
+      if(progress==TRUE){
+        ip <- ip+1
+        setTxtProgressBar(pb, ip)
+        }
+
+      rm(.LIB_AFTweibull) }
+
+    if(methods[me] == "LIB_AFTggamma"){
       .tune.optimal[[me]]=NA
 
-      .AFTggamma <- AFTggamma(times=times, failures=failures, group=group,
+      .LIB_AFTggamma <- LIB_AFTggamma(times=times, failures=failures, group=group,
                                 cov.quanti=cov.quanti, cov.quali=cov.quali, data=data)
 
-      .model[[me]]<-.AFTggamma
+      .model[[me]]<-.LIB_AFTggamma
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.AFTggamma) }
+      }
 
-    if(methods[me] == "AFTgamma" ){
+      rm(.LIB_AFTggamma) }
+
+    if(methods[me] == "LIB_AFTgamma" ){
       .tune.optimal[[me]]=NA
 
-      .AFTgamma <- AFTgamma(times=times, failures=failures, group=group,
+      .LIB_AFTgamma <- LIB_AFTgamma(times=times, failures=failures, group=group,
                               cov.quanti=cov.quanti, cov.quali=cov.quali, data=data)
 
-      .model[[me]]<-.AFTgamma
+      .model[[me]]<-.LIB_AFTgamma
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.AFTgamma)  }
+      }
+
+      rm(.LIB_AFTgamma)  }
 
 
-    if(methods[me] == "AFTllogis" ){
+    if(methods[me] == "LIB_AFTllogis" ){
       .tune.optimal[[me]]=NA
 
-      .AFTllogis <- AFTllogis(times=times, failures=failures, group=group,
+      .LIB_AFTllogis <- LIB_AFTllogis(times=times, failures=failures, group=group,
                               cov.quanti=cov.quanti, cov.quali=cov.quali, data=data)
 
-      .model[[me]]<-.AFTllogis
-      rm(.AFTllogis)    }
+      .model[[me]]<-.LIB_AFTllogis
+      rm(.LIB_AFTllogis)    }
 
-    if(methods[me] == "PHgompertz" ){
+    if(methods[me] == "LIB_PHgompertz" ){
       .tune.optimal[[me]]=NA
 
-      .PHgompertz <- PHgompertz(times=times, failures=failures, group=group,
+      .LIB_PHgompertz <- LIB_PHgompertz(times=times, failures=failures, group=group,
                                   cov.quanti=cov.quanti, cov.quali=cov.quali, data=data)
 
-      .model[[me]]<-.PHgompertz
+      .model[[me]]<-.LIB_PHgompertz
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.PHgompertz) }
+      }
 
-    if(methods[me] == "PHexponential"){
+      rm(.LIB_PHgompertz) }
+
+    if(methods[me] == "LIB_PHexponential"){
       .tune.optimal[[me]]=NA
 
-      .PHexponential <- PHexponential(times=times, failures=failures, group=group,
+      .LIB_PHexponential <- LIB_PHexponential(times=times, failures=failures, group=group,
                                         cov.quanti=cov.quanti, cov.quali=cov.quali, data=data)
 
-      .model[[me]]<-.PHexponential
+      .model[[me]]<-.LIB_PHexponential
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.PHexponential) }
+      }
 
-    if(methods[me] == "COXall"){
+      rm(.LIB_PHexponential) }
+
+    if(methods[me] == "LIB_COXall"){
       .tune.optimal[[me]]=NA
 
-      .coxall <- COXall(times=times, failures=failures, group=group,
+      .LIB_COXall <- LIB_COXall(times=times, failures=failures, group=group,
                                         cov.quanti=cov.quanti, cov.quali=cov.quali, data=data)
 
-      .model[[me]]<-.coxall
+      .model[[me]]<-.LIB_COXall
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.coxall) }
+      }
 
-    if(methods[me] == "PHspline"){
+      rm(.LIB_COXall) }
+
+    if(methods[me] == "LIB_PHspline"){
 
       if(is.null(param.tune[[me]]$k)==T | length(param.tune[[me]]$k)>1){
 
@@ -1004,16 +1025,20 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       else{ .tune.optimal[[me]]=list(lambda=param.tune[[me]]$k) }
 
 
-      .PHspline <- PHspline(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+      .LIB_PHspline <- LIB_PHspline(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                               cov.quali=cov.quali, data=data, k=.tune.optimal[[me]]$k)
 
-      .model[[me]]<-.PHspline
+      .model[[me]]<-.LIB_PHspline
 
+
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.PHspline)    }
+      }
 
-    if(methods[me] == "COXlasso"){
+      rm(.LIB_PHspline)    }
+
+    if(methods[me] == "LIB_COXlasso"){
 
       if(is.null(param.tune[[me]]$lambda)==T | length(param.tune[[me]]$lambda)>1){
 
@@ -1028,16 +1053,19 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       else{ .tune.optimal[[me]]=list(lambda=param.tune[[me]]$lambda) }
 
 
-      .COXlasso <- COXlasso(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+      .LIB_COXlasso <- LIB_COXlasso(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                               cov.quali=cov.quali, data=data, lambda=.tune.optimal[[me]]$lambda)
 
-      .model[[me]]<-.COXlasso
+      .model[[me]]<-.LIB_COXlasso
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.COXlasso)  }
+      }
 
-    if(methods[me] == "COXridge"){
+      rm(.LIB_COXlasso)  }
+
+    if(methods[me] == "LIB_COXridge"){
 
       if(is.null(param.tune[[me]]$lambda)==T | length(param.tune[[me]]$lambda)>1){
         .tune<- tuneCOXridge(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
@@ -1051,16 +1079,19 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
         .tune.optimal[[me]]=list(lambda=param.tune[[me]]$lambda)
       }
 
-      .COXridge <- COXridge(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+      .LIB_COXridge <- LIB_COXridge(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                               cov.quali=cov.quali, data=data,
                               lambda=.tune.optimal[[me]]$lambda)
-      .model[[me]]<-.COXridge
+      .model[[me]]<-.LIB_COXridge
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.COXridge)    }
+      }
 
-    if(methods[me] == "COXen"){
+      rm(.LIB_COXridge)    }
+
+    if(methods[me] == "LIB_COXen"){
 
       if(length(param.tune[[me]]$alpha)==1 & length(param.tune[[me]]$lambda)==1){
         .tune.optimal[[me]]=list(alpha=param.tune[[me]]$alpha, lambda=param.tune[[me]]$lambda)
@@ -1076,17 +1107,20 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
 
         rm(.tune) }
 
-      .COXen <- COXen(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+      .LIB_COXen <- LIB_COXen(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                         cov.quali=cov.quali, data=data, alpha=.tune.optimal[[me]]$alpha,
                         lambda=.tune.optimal[[me]]$lambda)
 
-      .model[[me]]<-.COXen
+      .model[[me]]<-.LIB_COXen
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.COXen) }
+      }
 
-    if(methods[me] == "COXaic"){
+      rm(.LIB_COXen) }
+
+    if(methods[me] == "LIB_COXaic"){
 
       if(is.na(param.tune[[me]]$final.model)==FALSE){
         .tune.optimal[[me]]=list(final.model=param.tune[[me]]$final.model)
@@ -1102,17 +1136,20 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
 
         rm(.tune) }
 
-      .COXaic<- COXaic(times=times, failures=failures, group=group, data=data,
+      .LIB_COXaic<- LIB_COXaic(times=times, failures=failures, group=group, data=data,
                        cov.quanti=cov.quanti, cov.quali=cov.quali,
                        final.model = .tune.optimal[[me]]$final.model)
 
-      .model[[me]]<-.COXaic
+      .model[[me]]<-.LIB_COXaic
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.COXaic)  }
+      }
 
-    if (methods[me] == "RSF"){
+      rm(.LIB_COXaic)  }
+
+    if (methods[me] == "LIB_RSF"){
 
       if(length(param.tune[[me]]$nodesize)!=1 | length(param.tune[[me]]$mtry)!=1 |
          length(param.tune[[me]]$ntree)!=1){
@@ -1131,19 +1168,22 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
                                   mtry=param.tune[[me]]$mtry,
                                   ntree=param.tune[[me]]$ntree)
       }
-      .RSF <-RSF(times=times, failures=failures,
+      .LIB_RSF <-LIB_RSF(times=times, failures=failures,
                          group=group, cov.quanti=cov.quanti, cov.quali=cov.quali, data=data,
                          nodesize=.tune.optimal[[me]]$nodesize,
                          mtry=.tune.optimal[[me]]$mtry, ntree=.tune.optimal[[me]]$ntree)
 
-      .model[[me]]<-.RSF
+      .model[[me]]<-.LIB_RSF
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.RSF) }
+      }
+
+      rm(.LIB_RSF) }
 
 
-    if (methods[me] == "SNN"){
+    if (methods[me] == "LIB_SNN"){
       torch<-reticulate::import("torch")
       torch$set_num_threads(1L)
 
@@ -1168,7 +1208,7 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
                                   epochs=param.tune[[me]]$epochs)
       }
 
-      .SNN <-SNN(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+      .LIB_SNN <-LIB_SNN(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                          cov.quali=cov.quali, data=data,
                          n.nodes=as.numeric(.tune.optimal[[me]]$n.nodes),
                          decay=as.numeric(.tune.optimal[[me]]$decay),
@@ -1176,11 +1216,14 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
                          epochs=as.integer(.tune.optimal[[me]]$epochs))
 
 
-      .model[[me]]<-.SNN
+      .model[[me]]<-.LIB_SNN
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
-      rm(.SNN)    }
+      }
+
+      rm(.LIB_SNN)    }
   }
 
   ########################
@@ -1205,83 +1248,83 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
                           times, failures, group, cov.quanti, cov.quali,time.pred){
     num_method<-CV$num_method
     meth<-method[num_method]
-    if(meth == "AFTweibull"){
-      fit<-AFTweibull(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth == "LIB_AFTweibull"){
+      fit<-LIB_AFTweibull(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                        cov.quali=cov.quali, data=CV$train)
       pred=predict(fit,  newtimes=time.pred, newdata=CV$valid)$predictions
     }
-    if(meth == "AFTggamma"){
-      fit<-AFTggamma(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth == "LIB_AFTggamma"){
+      fit<-LIB_AFTggamma(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                       cov.quali=cov.quali, data=CV$train)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
     }
-    if(meth == "AFTgamma"){
-      fit<-AFTgamma(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth == "LIB_AFTgamma"){
+      fit<-LIB_AFTgamma(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                      cov.quali=cov.quali, data=CV$train)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
     }
-    if(meth == "AFTllogis"){
-      fit<-AFTllogis(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth == "LIB_AFTllogis"){
+      fit<-LIB_AFTllogis(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                      cov.quali=cov.quali, data=CV$train)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
     }
-    if(meth == "PHgompertz"){
-      fit<-PHgompertz(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth == "LIB_PHgompertz"){
+      fit<-LIB_PHgompertz(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                        cov.quali=cov.quali, data=CV$train)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
     }
-    if(meth == "PHexponential"){
-      fit<-PHexponential(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth == "LIB_PHexponential"){
+      fit<-LIB_PHexponential(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                           cov.quali=cov.quali, data=CV$train)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
     }
-    if(meth == "PHspline"){
-      fit<-PHspline(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth == "LIB_PHspline"){
+      fit<-LIB_PHspline(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                      cov.quali=cov.quali, data=CV$train,
                      k=Tune[[num_method]]$k)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
     }
-    if(meth == "COXlasso"){
-      fit<-COXlasso(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth == "LIB_COXlasso"){
+      fit<-LIB_COXlasso(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                      cov.quali=cov.quali, data=CV$train,
                      lambda=Tune[[num_method]]$lambda)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
     }
-    if(meth == "COXen"){
-      fit<-COXen(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth == "LIB_COXen"){
+      fit<-LIB_COXen(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                  cov.quali=cov.quali, data=CV$train,
                   alpha=Tune[[num_method]]$alpha, lambda=Tune[[num_method]]$lambda)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
     }
-    if(meth =="COXridge"){
-      fit<-COXridge(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth =="LIB_COXridge"){
+      fit<-LIB_COXridge(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                     cov.quali=cov.quali, data=CV$train, lambda=Tune[[num_method]]$lambda)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
 
     }
-    if(meth =="COXaic"){
-      fit<-COXaic(times=times, failures=failures, group=group, data=data,
+    if(meth =="LIB_COXaic"){
+      fit<-LIB_COXaic(times=times, failures=failures, group=group, data=data,
                    final.model = Tune[[num_method]]$final.model, cov.quanti=cov.quanti,
                    cov.quali=cov.quali)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
 
     }
-    if(meth =="COXall"){
-      fit<-COXall(times=times, failures=failures, group=group,
+    if(meth =="LIB_COXall"){
+      fit<-LIB_COXall(times=times, failures=failures, group=group,
                    cov.quanti=cov.quanti, cov.quali=cov.quali, data=data)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
 
     }
-    if(meth =="RSF"){
-      fit<-RSF(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+    if(meth =="LIB_RSF"){
+      fit<-LIB_RSF(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                    cov.quali=cov.quali,  data=CV$train,
                    nodesize=Tune[[num_method]]$nodesize, mtry=Tune[[num_method]]$mtry,
                    ntree=Tune[[num_method]]$ntree)
       pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
 
     }
-    if(meth =="SNN"){
-      fit<-SNN(times=times, failures=failures, group=group,  cov.quanti=cov.quanti, cov.quali=cov.quali, data=CV$train,
+    if(meth =="LIB_SNN"){
+      fit<-LIB_SNN(times=times, failures=failures, group=group,  cov.quanti=cov.quanti, cov.quali=cov.quali, data=CV$train,
                      n.nodes=as.numeric(Tune[[num_method]]$n.nodes),
                      decay=as.numeric(Tune[[num_method]]$decay),
                      batch.size=as.integer(Tune[[num_method]]$batch.size),
@@ -1301,8 +1344,11 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
     for (j in 1:cv){
       FitCV[[m]][data$folds==j,]<-preFitCV[[(m-1)*cv+j]]
 
+      if(progress==TRUE){
       ip <- ip+1
       setTxtProgressBar(pb, ip)
+      }
+
     }
   }
   names(FitCV)<-names.meth
@@ -1470,8 +1516,10 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       )
   }
 
+  if(progress==TRUE){
   ip <- ip+3
   setTxtProgressBar(pb, ip)
+  }
 
   ############################
   # Compute Survival from SL #
@@ -1515,8 +1563,10 @@ surv.SL <-rowSums(.SL, dims=2)
     temp.predictions<-as.data.frame(temp.predictions)
   }
 
+if(progress==TRUE){
 ip <- ip+1
 setTxtProgressBar(pb, ip)
+}
 
   res<-list(times=time.pred,
             predictions=temp.predictions,
@@ -1535,7 +1585,7 @@ setTxtProgressBar(pb, ip)
 
   class(res) <- "sltime"
 
-  close(pb)
+  if(progress==TRUE){ close(pb) }
 
   return(res)
 }

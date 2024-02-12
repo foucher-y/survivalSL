@@ -33,7 +33,7 @@ Predict the survival of new observations based on an SL by using the \code{survi
 data(dataDIVAT2)
 
 # The training of the super learner from the first 150 individuals of the data base
-sl1<-survivalSL(method=c("COXridge", "AFTggamma"),  metric="ci",
+sl1 <- survivalSL(method=c("LIB_COXridge", "LIB_AFTggamma"),  metric="ci",
   data=dataDIVAT2[1:150,],  times="times", failures="failures", pro.time = 12,
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"), cv=3)
 

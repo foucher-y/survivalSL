@@ -10,8 +10,8 @@ This function finds the optimal n.nodes, decay, batch.size, and epochs parameter
 }
 
 \usage{
-tuneSNN(times, failures, group, cov.quanti,
-cov.quali, data, cv, n.nodes, decay, batch.size, epochs)
+tuneSNN(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL,
+data, cv=10, n.nodes, decay, batch.size, epochs)
 }
 
 \arguments{
@@ -39,6 +39,7 @@ The function runs the \code{deepsurv} function of the \code{survivalmodels} pack
 
 \references{
 Katzman et al.  DeepSurv: personalized treatment recommender system using a Cox proportional hazards deep neural network. BMC Medical Research Methodology, 18(1), 24. 1018.
+
 https://doi.org/10.1186/s12874-018-0482-1
 }
 

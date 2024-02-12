@@ -10,8 +10,8 @@ This function finds the optimal nodesize, mtry, and ntree parameters for a survi
 }
 
 \usage{
-tuneRSF(times, failures, group, cov.quanti,
-cov.quali, data, nodesize, mtry, ntree)
+tuneRSF(times, failures, group=NULL, cov.quanti=NULL,
+cov.quali=NULL, data, nodesize, mtry, ntree)
 }
 
 \arguments{
@@ -49,7 +49,7 @@ tune.model <- tuneRSF(times="times", failures="failures", data=dataDIVAT2,
 tune.model$optimal # the estimated nodesize value
 
 # The estimation of the training modelwith the corresponding lambda value
-model <- RSF(times="times", failures="failures", data=dataDIVAT2,
+model <- LIB_RSF(times="times", failures="failures", data=dataDIVAT2,
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
   nodesize=tune.model$optimal$nodesize, mtry=1, ntree=100)
 

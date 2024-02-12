@@ -10,8 +10,8 @@ This function finds the optimal lambda parameter for a ridge Cox regression.
 }
 
 \usage{
-tuneCOXridge(times, failures, group, cov.quanti,
-cov.quali, data, cv, parallel, lambda)
+tuneCOXridge(times, failures, group=NULL, cov.quanti=NULL,
+cov.quali=NULL, data, cv=10, parallel=FALSE, lambda)
 }
 
 \arguments{
@@ -49,7 +49,7 @@ tune.model <- tuneCOXridge(times="times", failures="failures", data=dataDIVAT2,
 tune.model$optimal$lambda # the estimated lambda value
 
 # The estimation of the training modelwith the corresponding lambda value
-model <- COXridge(times="times", failures="failures", data=dataDIVAT2,
+model <- LIB_COXridge(times="times", failures="failures", data=dataDIVAT2,
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
   lambda=tune.model$optimal$lambda)
 

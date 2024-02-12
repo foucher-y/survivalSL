@@ -9,7 +9,7 @@ This function allows for the estimation of time-dependent ROC curve by consideri
 }
 \usage{
 roc(times, failures, variable, confounders, data,
- pro.time, precision)
+ pro.time, precision=seq(.01, .99, by=.01))
 }
 \arguments{
   \item{times}{A character string with the name of the variable in \code{data} which represents the follow up times.}

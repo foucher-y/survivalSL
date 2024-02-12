@@ -9,8 +9,8 @@ Return goodness-of-fit indicators of a Super Learner obtained by the function \c
 }
 
 \usage{
-\method{summary}{sltime}(object, ..., digits, method, pro.time, newdata,
-times, failures, ROC.precision)
+\method{summary}{sltime}(object, ..., digits=7, method="sl", pro.time=NULL,
+newdata=NULL, times=NULL, failures=NULL, ROC.precision=seq(.01,.99,.01))
 }
 
 \arguments{
@@ -37,17 +37,18 @@ The following metrics are returned: "ci" for the concordance index at the progno
 
 \examples{
 data(dataDIVAT2)
+
 dataDIVAT2$train <- 1*rbinom(n=dim(dataDIVAT2)[1], size = 1, prob=1/2)
 
 # The training of the super learner with 2 algorithms from the
    # first 100 patients of the training sample
-sl<-survivalSL(method=c("AFTgamma", "PHgompertz"),  metric="auc",
+sl1 <- survivalSL(method=c("LIB_AFTgamma", "LIB_PHgompertz"),  metric="auc",
   data=dataDIVAT2[dataDIVAT2$train==1,][1:100,],  times="times", failures="failures",
   pro.time = 12,  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
   cv=3)
 
 # The prognostic capacities from the same training sample
-summary(sl)
+summary(sl1)
 }
 
 \keyword{Summarizing}

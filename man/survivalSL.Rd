@@ -8,9 +8,11 @@ Super Learner for Censored Outcomes
 This function allows to compute a Super Learner (SL) to predict survival outcomes.
 }
 \usage{
-survivalSL(methods, metric, data, times, failures, group, cov.quanti, cov.quali, cv,
-param.tune, pro.time, optim.local.min, ROC.precision, param.weights.fix,
- param.weights.init, keep.predictions, progress)
+survivalSL(methods, metric="ci",  data, times, failures, group=NULL,
+cov.quanti=NULL, cov.quali=NULL, cv=10, param.tune=NULL, pro.time=NULL,
+optim.local.min=FALSE, ROC.precision=seq(.01,.99,.01),
+param.weights.fix=NULL, param.weights.init=NULL,
+keep.predictions=TRUE, progress=TRUE)
 }
 
 \arguments{
@@ -36,26 +38,26 @@ param.tune, pro.time, optim.local.min, ROC.precision, param.weights.fix,
 \details{
 Each object of the list declared in \code{param.tune} must have the same name than the names of the \code{methods} included in the SL. If \code{param.tune} = \code{NULL}, the tunning parameters of each algorithm are estimated by \code{cv}-fold cross-validation. Otherwise, the user can propose a tunning grid for each method, as explained in the following table. The following metrics can be used: "ci" for the concordance index at the prognostic time \code{pro.time}, "bs" for the Brier score at the prognostic time \code{pro.time}, "loglik" for the log-likelihood, "ibs" for the integrated Brier score up to the last observed time of event, "ibll" for the Integrated binomial log-likelihood up to the last observed time of event, "bll" for the binomial log-likelihood, "ribs" for the restricted integrated Brier score up to the prognostic time \code{pro.time}, "ribll" for the restricted integrated binomial log-likelihood up to the last observed time of event, "bll" for the binomial log-likelihood, and "auc" for the area under the time-dependent ROC curve up to the prognostic time \code{pro.time}.
 
-Methods:
-  \tabular{llll}{
-  Names \tab Description \tab Package \tab assumption \cr
-  \code{"AFTgamma"} \tab Gamma \tab flexsurv \tab AFT \cr
-  \code{"AFTggamma"} \tab  Generalized Gamma \tab flexsurv \tab AFT \cr
-  \code{"AFTweibull"} \tab  Weibull \tab flexsurv \tab AFT \cr
-  \code{"PHexponential"} \tab  Exponential \tab flexsurv \tab PH \cr
-  \code{"PHgompertz"} \tab  Gompertz \tab flexsurv \tab PH \cr
-  \code{"PHspline"} \tab  Spline \tab flexsurv \tab PH \cr
-  \code{"COXall"} \tab  Usual Cox model \tab survival \tab PH \cr
-  \code{"COXaic"} \tab  Cox model with selected covariates\tab MASS \tab PH \cr
-  \code{"COXen"} \tab  Elastic Net Cox \tab glmnet \tab PH \cr
-  \code{"COXlasso"} \tab  Lasso Cox \tab glmnet \tab PH \cr
-  \code{"COXridge"} \tab   Ridge Cox \tab glmnet \tab PH \cr
-  \code{"RSF"} \tab Survival Random Forest \tab
-  randomForestSRC \tab RF \cr
-  \code{"SNN"} \tab Neural Network  \tab survivalmodels \tab
-  PH \cr }
 
-Loss Function \code{metric}:
+The following learners are available:
+  \tabular{llll}{
+  Names \tab Description \tab Package  \cr
+  \code{"LIB_AFTgamma"} \tab Gamma-distributed AFT model \tab flexsurv  \cr
+  \code{"LIB_AFTggamma"} \tab  Generalized Gamma-distributed AFT model \tab flexsurv  \cr
+  \code{"LIB_AFTweibull"} \tab  Weibull-distributed AFT model \tab flexsurv  \cr
+  \code{"LIB_PHexponential"} \tab  Exponential-distributed PH model \tab flexsurv  \cr
+  \code{"LIB_PHgompertz"} \tab  Gompertz-distributed PH model \tab flexsurv  \cr
+  \code{"LIB_PHspline"} \tab  Spline-based PH model \tab flexsurv  \cr
+  \code{"LIB_COXall"} \tab  Usual Cox model \tab survival  \cr
+  \code{"LIB_COXaic"} \tab  Cox model with AIC-based forward selection\tab MASS  \cr
+  \code{"LIB_COXen"} \tab  Elastic Net Cox model \tab glmnet  \cr
+  \code{"LIB_COXlasso"} \tab  Lasso Cox model \tab glmnet  \cr
+  \code{"LIB_COXridge"} \tab   Ridge Cox model \tab glmnet  \cr
+  \code{"LIB_RSF"} \tab Survival Random Forest \tab
+  randomForestSRC  \cr
+  \code{"LIB_SNN"} \tab Survical Neural Network  \tab survivalmodels \cr }
+
+The following loss functions for the estimation of the super learner weigths are available (\code{metric}):
 \itemize{
   \item Area under the ROC curve (\code{"auc"})
   \item Concordance index (\code{"ci"})
@@ -83,14 +85,14 @@ Loss Function \code{metric}:
 }
 
 \references{
-Polley E and van der Laanet M. Super Learner In Prediction. http://biostats.bepress.com/ucbbiostat/paper266. 2010.
+Polley E and van der Laanet M. Super Learner In Prediction. http://biostats.bepress.com. 2010.
 }
 
 \examples{
 data(dataDIVAT2)
 
 #The outcome model base on a Super Learner and the first 150 individuals of the data base
-sl1 <- survivalSL(methods=c("AFTgamma", "PHgompertz"),  metric="ci",
+sl1 <- survivalSL(methods=c("LIB_AFTgamma", "LIB_PHgompertz"),  metric="ci",
   data=dataDIVAT2[1:150,],  times="times", failures="failures", group="ecd",
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant"), cv=3)
 

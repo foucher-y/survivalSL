@@ -23,7 +23,7 @@ Print the contribution of learners included in the super learner.
 \examples{
 data(dataDIVAT2)
 
-sl1<-survivalSL(method=c("COXridge", "AFTggamma"),  metric="ci",
+sl1 <- survivalSL(method=c("LIB_COXridge", "LIB_AFTggamma"),  metric="ci",
   data=dataDIVAT2[1:150,],  times="times", failures="failures", pro.time = 12,
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"), cv=3)
 

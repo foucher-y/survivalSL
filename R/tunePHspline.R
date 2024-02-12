@@ -94,7 +94,7 @@ for (i in 1:cv){
 }
 
 ph.best.measure <- function(prediction.matrix, times, failures, data, prediction.times){
-return(metric(times=times, failures=failures, data=data, prediction.matrix=prediction.matrix,
+return(metrics(times=times, failures=failures, data=data, prediction.matrix=prediction.matrix,
               prediction.times=prediction.times, metric="ci")) }
 
 .measure<-sapply(.FitCV, ph.best.measure, times=times, failures=failures,
