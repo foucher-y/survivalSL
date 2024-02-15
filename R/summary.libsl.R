@@ -1,8 +1,21 @@
 
-summary.libsl <- function(object, ..., digits=7,
-                      pro.time=NULL, newdata=NULL, times=NULL, failures=NULL, ROC.precision=seq(.01,.99,.01))
+#pro.time
+#times=NULL
+#failures=NULL
+
+summary.libsl <- function(object, newdata=NULL, ROC.precision=seq(.01,.99,.01), digits=7, ...)
 {
-  if(is.null(pro.time)) {pro.time <- median(object$data$times)}
+  if(hasArg(pro.time)==FALSE) {
+    pro.time <- median(object$data$times)
+    } else {pro.time <- list(...)$pro.time}
+
+  if(hasArg(times)==FALSE) {
+    times <- "times"
+  } else {times <- list(...)$times}
+
+  if(hasArg(failures)==FALSE) {
+    failures <- "failures"
+  } else {failures <- list(...)$failures}
 
   if(is.null(newdata))
   {

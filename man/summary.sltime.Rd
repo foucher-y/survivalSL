@@ -9,20 +9,17 @@ Return goodness-of-fit indicators of a Super Learner obtained by the function \c
 }
 
 \usage{
-\method{summary}{sltime}(object, ..., digits=7, method="sl", pro.time=NULL,
-newdata=NULL, times=NULL, failures=NULL, ROC.precision=seq(.01,.99,.01))
+\method{summary}{sltime}(object,  method="sl", newdata=NULL,
+ROC.precision=seq(.01,.99,.01), digits=7, ...)
 }
 
 \arguments{
   \item{object}{An object returned by the function \code{survivalSL}.}
-  \item{...}{Additional arguments affecting the plot.}
-  \item{digits}{An optional integer for the number of digits to print when printing numeric values.}
-  \item{method}{A character string with the name of the algorithm included in the SL for wich the calibration plot is performed. The defaut is "sl" for the Super Learner.}
-  \item{pro.time}{The prognostic time up to which the time-dependent indicators are estimated.}
-    \item{newdata}{An optional data frame containing the new sample for validation with covariate values, follow-up times, and event status. The default value is \code{NULL}, the calibration plot is performed from the same subjects of the training sample.}
-  \item{times}{The name of the variable related the numeric vector with the follow-up times in \code{newdata}. If \code{NULL}, the default is the name used in the learning sample.}
-  \item{failures}{The name of the variable related the numeric vector with the event indicators (0=right censored, 1=event) in \code{newdata}. If \code{NULL}, the default is the name used in the learning sample.}
-     \item{ROC.precision}{An optional argument with the percentiles (between 0 and 1) of the prognostic variable used for computing each point of the time dependent ROC curve. 0 (min) and 1 (max) are not allowed. By default, the precision is \code{seq(.01,.99,.01)}.}
+  \item{method}{A character string with the name of the algorithm included in the SL for which the calibration plot is performed. The default is "sl" for the Super Learner.}
+  \item{newdata}{An optional data frame containing the new sample for validation with covariate values, follow-up times, and event status. The default value is \code{NULL}, the calibration plot is performed from the same subjects of the training sample.}
+   \item{ROC.precision}{An optional argument with the percentiles (between 0 and 1) of the prognostic variable used for computing each point of the time dependent ROC curve. 0 (min) and 1 (max) are not allowed. By default, the precision is \code{seq(.01,.99,.01)}.}
+   \item{digits}{An optional integer for the number of digits to print when printing numeric values.}
+     \item{...}{Additional arguments affecting the summary which are passed from \code{libsl} by default. It concerns the argument \code{times}, \code{failures}, and \code{pro.time}.}
 }
 
 \value{No return value for this S3 method.}

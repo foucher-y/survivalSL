@@ -42,7 +42,7 @@ data(dataDIVAT2)
 model <- LIB_COXridge(times="times", failures="failures", data=dataDIVAT2,
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"), lambda=1)
 
-# The apparent AUC at 10-year post-transplanation
+# The apparent AUC at 10-year post-transplantation
 metrics(times="times", failures="failures", data=dataDIVAT2,
   prediction.matrix=model$predictions, prediction.times=model$times,
   metric="auc", pro.time=10)

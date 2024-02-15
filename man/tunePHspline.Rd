@@ -35,7 +35,7 @@ The function runs the \code{flexsurvspline} function of the \code{flexsurv} pack
 }
 
 \references{
-Royston, P. and Parmar, M. (2002). Flexible parametric proportional-hazards and proportional- odds models for censored survival data, with application to prognostic modelling and estimation of treatment effects. Statistics in Medicine 21(1):2175-2197. doi: 10.1002/sim.1203
+Royston, P. and Parmar, M. (2002). Flexible parametric proportional-hazards and proportional odds models for censored survival data, with application to prognostic modelling and estimation of treatment effects. Statistics in Medicine 21(1):2175-2197. doi: 10.1002/sim.1203
 }
 
 \examples{

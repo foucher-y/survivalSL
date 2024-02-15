@@ -9,14 +9,14 @@ Predict the survival of new observations based on an SL by using the \code{survi
 }
 
 \usage{
-\method{predict}{sltime}(object, ..., newdata, newtimes)
+\method{predict}{sltime}(object, newdata, newtimes, ...)
 }
 
 \arguments{
   \item{object}{An object returned by the function \code{survivalSL}.}
-  \item{...}{Further arguments passed.}
   \item{newdata}{An optional data frame containing covariate values at which to produce predicted values. There must be a column for every covariate included in \code{cov.quanti} and \code{cov.quali} included in the training sample. The default value is \code{NULL}, the predicted values are computed for the subjects of the training sample.}
   \item{newtimes}{The times at which to produce predicted values. The default value is \code{NULL}, the predicted values are computed for the observed times in the training data frame.}
+  \item{...}{For future methods.}
 }
 
 \value{

@@ -9,12 +9,12 @@ Print the model or algorithm.
 }
 
 \usage{
-\method{print}{libsl}(x,  ...)
+\method{print}{libsl}(x, ...)
 }
 
 \arguments{
   \item{x}{An object returned by the function \code{flexsurv}.}
-  \item{...}{Further arguments passed.}
+  \item{...}{For future methods.}
 }
 
 \value{No return value for this S3 method.}

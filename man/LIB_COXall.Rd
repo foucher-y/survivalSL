@@ -36,7 +36,7 @@ The Cox regression is obtained by using the \code{survival} package.
 \item{data}{The data frame used for learning. The first column is entitled \code{times} and corresponds to the observed follow-up times. The second column is entitled \code{failures} and corresponds to the event indicators. The other columns correspond to the predictors.}
 \item{times}{A vector of numeric values with the times of the \code{predictions}.}
 \item{hazard}{A vector of numeric values with the values of the cumulative baseline hazard function at the prediction \code{times}.}
-\item{predictions}{A matrix with the predictions of survivals of each subject (lines) for each observed times (columns).}
+\item{predictions}{A matrix with the predictions of survivals of each subject (lines) for each observed time (columns).}
 }
 
 \references{

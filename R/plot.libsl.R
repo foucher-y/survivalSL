@@ -1,8 +1,6 @@
 
 
-plot.libsl <- function(x, ..., col=1, lty=1, lwd=1, type="b", pch = 16, ylab=NULL, xlab=NULL,
-                         ylim=NULL, xlim=NULL, cex=1, cex.lab=1, cex.axis=1, cex.main=1,
-                         n.groups=5, pro.time=NULL, newdata=NULL, times=NULL, failures=NULL)
+plot.libsl <- function(x, n.groups=5, pro.time=NULL, newdata=NULL, times=NULL, failures=NULL, ...)
 {
   pred.times <- x$times
 
@@ -28,11 +26,21 @@ plot.libsl <- function(x, ..., col=1, lty=1, lwd=1, type="b", pch = 16, ylab=NUL
   .lower <- sapply(1:n.groups, FUN = function(x) { last(.survfit$lower[ as.numeric(.survfit$strata)==x & .survfit$time<=pro.time ]) } )
   .upper <- sapply(1:n.groups, FUN = function(x) { last(.survfit$upper[ as.numeric(.survfit$strata)==x & .survfit$time<=pro.time ]) } )
 
-  if(is.null(ylab)) {ylab <- "Observed survival"}
-  if(is.null(xlab)) {xlab <- "Predicted survival"}
+  if(hasArg(cex)==FALSE) {cex <-1} else {cex <- list(...)$cex}
+  if(hasArg(cex.lab)==FALSE) {cex.lab <- 1} else {cex.lab <- list(...)$cex.lab}
+  if(hasArg(cex.axis)==FALSE) {cex.axis <- 1} else {cex.axis <- list(...)$cex.axis}
+  if(hasArg(cex.main)==FALSE) {cex.main <- 1} else {cex.main <- list(...)$cex.main}
+  if(hasArg(type)==FALSE) {type <- "b"} else {type <- list(...)$type}
+  if(hasArg(col)==FALSE) {col <- 1} else {col <- list(...)$col}
+  if(hasArg(lty)==FALSE) {lty <- 1} else {lty <- list(...)$lty}
+  if(hasArg(lwd)==FALSE) {lwd <- 1} else {lwd <- list(...)$lwd}
+  if(hasArg(pch)==FALSE) {pch <- 16} else {pch <- list(...)$pch}
 
-  if(is.null(ylim)) {ylim <- c(0,1)}
-  if(is.null(xlim)) {xlim  <- c(0,1)}
+  if(hasArg(ylim)==FALSE) {ylim <- c(0,1)} else {ylim <- list(...)$ylim}
+  if(hasArg(xlim)==FALSE) {xlim  <- c(0,1)} else {xlim <- list(...)$xlim}
+
+  if(hasArg(ylab)==FALSE) {ylab <- "Observed survival"} else {ylab <- list(...)$ylab}
+  if(hasArg(xlab)==FALSE) {xlab <- "Predicted survival"} else {xlab <- list(...)$xlab}
 
   plot(.est, .obs, cex = cex, cex.lab = cex.lab, cex.axis = cex.axis, cex.main = cex.main,
        type = type, col = col, lty = lty, lwd = lwd,
@@ -66,11 +74,21 @@ plot.libsl <- function(x, ..., col=1, lty=1, lwd=1, type="b", pch = 16, ylab=NUL
     .lower <- sapply(1:n.groups, FUN = function(x) { last(.survfit$lower[ as.numeric(.survfit$strata)==x & .survfit$time<=pro.time ]) } )
     .upper <- sapply(1:n.groups, FUN = function(x) { last(.survfit$upper[ as.numeric(.survfit$strata)==x & .survfit$time<=pro.time ]) } )
 
-    if(is.null(ylab)) {ylab <- "Observed survival"}
-    if(is.null(xlab)) {xlab <- "Predicted survival"}
+    if(hasArg(cex)==FALSE) {cex <-1} else {cex <- list(...)$cex}
+    if(hasArg(cex.lab)==FALSE) {cex.lab <- 1} else {cex.lab <- list(...)$cex.lab}
+    if(hasArg(cex.axis)==FALSE) {cex.axis <- 1} else {cex.axis <- list(...)$cex.axis}
+    if(hasArg(cex.main)==FALSE) {cex.main <- 1} else {cex.main <- list(...)$cex.main}
+    if(hasArg(type)==FALSE) {type <- "b"} else {type <- list(...)$type}
+    if(hasArg(col)==FALSE) {col <- 1} else {col <- list(...)$col}
+    if(hasArg(lty)==FALSE) {lty <- 1} else {lty <- list(...)$lty}
+    if(hasArg(lwd)==FALSE) {lwd <- 1} else {lwd <- list(...)$lwd}
+    if(hasArg(pch)==FALSE) {pch <- 16} else {pch <- list(...)$pch}
 
-    if(is.null(ylim)) {ylim <- c(0,1)}
-    if(is.null(xlim)) {xlim  <- c(0,1)}
+    if(hasArg(ylim)==FALSE) {ylim <- c(0,1)} else {ylim <- list(...)$ylim}
+    if(hasArg(xlim)==FALSE) {xlim  <- c(0,1)} else {xlim <- list(...)$xlim}
+
+    if(hasArg(ylab)==FALSE) {ylab <- "Observed survival"} else {ylab <- list(...)$ylab}
+    if(hasArg(xlab)==FALSE) {xlab <- "Predicted survival"} else {xlab <- list(...)$xlab}
 
     plot(.est, .obs, cex = cex, cex.lab = cex.lab, cex.axis = cex.axis, cex.main = cex.main,
          type = type, col = col, lty = lty, lwd = lwd, pch = pch,

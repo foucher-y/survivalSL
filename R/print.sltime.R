@@ -1,5 +1,5 @@
 
-print.sltime <- function (x, ..., digits=7)
+print.sltime <- function (x, digits=7, ...)
 {
   cat("The contribution of the leaners: ", "\n\n", sep = "")
 

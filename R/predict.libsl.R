@@ -1,5 +1,5 @@
 
-predict.libsl <- function(object, ..., newdata=NULL, newtimes=NULL){
+predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
 
   if(object$library=="LIB_COXen" | object$library=="LIB_COXlasso" | object$library=="LIB_COXridge" |
      object$library=="LIB_COXaic" | object$library=="LIB_COXall"){
@@ -7,6 +7,7 @@ predict.libsl <- function(object, ..., newdata=NULL, newtimes=NULL){
   group=object$group
   cov.quanti=object$cov.quanti
   cov.quali=object$cov.quali
+
   if(is.null(newdata))  {
     .pred.temp <- object$predictions
     .time.temp <- object$times

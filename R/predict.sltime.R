@@ -1,5 +1,5 @@
 
-predict.sltime <-function(object, ..., newdata=NULL, newtimes=NULL){
+predict.sltime <-function(object, newdata=NULL, newtimes=NULL, ...){
 
   if(is.null(newtimes)==FALSE){ newtimes<-sort(unique(newtimes)) }
 
