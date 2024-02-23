@@ -39,7 +39,11 @@ summary.sltime <- function(object, method="sl", newdata=NULL,
   else
   {
     .pred <- predict(object, newdata=newdata)
-    if(is.null(times)) {times <- object$outcomes$times; failures <- object$outcomes$failures}
+
+    #if(is.null(times)) {times <- object$outcomes$times; failures <- object$outcomes$failures}
+    if(hasArg(times)==FALSE) {times <-object$outcomes$times} else {times <- list(...)$times}
+    if(hasArg(failures)==FALSE) {failures <- object$outcomes$failures} else {failures <- list(...)$failures}
+
 
     return(
       round(  data.frame(
@@ -61,3 +65,12 @@ summary.sltime <- function(object, method="sl", newdata=NULL,
                      prediction.times=object$times, metric="ribll", pro.time=pro.time) ), digits = digits ) )
   }
 }
+
+#kaka.sltime <- function(object, ...)
+#{
+#  if(hasArg(times)==FALSE) {times <-object$outcomes$times} else {times <- list(...)$times}
+#  return(times)
+#}
+
+#kaka.sltime(slres)
+#kaka.sltime(slres, times = "obs.time")

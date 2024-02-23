@@ -9,7 +9,7 @@ LIB_SNN <- function(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL
 
   .f  <- as.formula(paste("Surv(", times, ",", failures, ")", "~."))
 
-  .deepsurv <- deepsurv(.f, data = .data,  verbose = FALSE, num_nodes=n.nodes,
+  .deepsurv <- survivalmodels::deepsurv(.f, data = .data,  verbose = FALSE, num_nodes=n.nodes,
                         weight_decay=decay, num_workers =0L,
                         batch_size=batch.size,
                         epochs=epochs)

@@ -1,12 +1,13 @@
 Package: survivalSL
 Type: Package
 Title: Super Learner for Survival Prediction from Censored Data
-Version: 0.92
-Depends: R (>= 4.0.0), splines, survival, reticulate
+Version: 0.93
+Depends: R (>= 4.0.0), splines, survival
 Imports: date, graphics, MASS, glmnet, caret,
         flexsurv, randomForestSRC,
-        survivalmodels, hdnom, glmnetUtils,
+        hdnom, glmnetUtils,
         dplyr, rpart, methods
+Suggests: reticulate, survivalmodels
 Description: Several functions and S3 methods to construct a super learner in the presence of censored times-to-event and to evaluate its prognostic capacities.
 License: GPL (>=2)
 LazyLoad: yes

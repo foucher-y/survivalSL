@@ -28,9 +28,11 @@ data, cv=10, n.nodes, decay, batch.size, epochs)
   \item{epochs}{The value of epochs}
  }
 
+
 \details{
-The function runs the \code{deepsurv} function of the \code{survivalmodels} package. The metric used in the cross-validation is the C-index. Its use requires \code{Python}, but the \code{survivalSL} package can work without if this learner is not included in the library.
+This function is based is based on the \code{deepsurv} from the \code{survivalmodels} package. You need to call Python using \code{reticulate}. In order to use it, the required Python packages must be installed with \code{reticulate::py_install}. Therefore, before running the present \code{LIB_SNN} function, you must install  and call for the \code{reticulate} and \code{survivalmodels} packages, and install \code{pycox} by using the following command: \code{install_pycox(pip = TRUE, install_torch = FALSE)}.  The \code{survivalSL} package functions without these supplementary installations if this learner is not included in the library.
 }
+
 
 \value{
 \item{optimal}{The value of \code{n.nodes}, \code{decay}, \code{batch.size}, and \code{epochs} that gives the maximum mean cross-validated C-index.}

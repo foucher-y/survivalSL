@@ -1,6 +1,6 @@
 import(splines)
 import(survival)
-import(reticulate)
+#import(reticulate)
 #import(tune)
 
 importFrom(stats, pnorm, dnorm, qnorm, update,  binomial, lm, glm, na.omit, predict, quantile,
@@ -19,7 +19,7 @@ importFrom(caret, train, trainControl, twoClassSummary)
 #importFrom(SuperLearner, SuperLearner, All)
 importFrom(methods, is, hasArg)
 importFrom(flexsurv, flexsurvreg, flexsurvspline)
-importFrom(survivalmodels, deepsurv)
+#importFrom(survivalmodels, deepsurv)
 importFrom(randomForestSRC, rfsrc, tune.rfsrc, rfsrc.fast)
 #importFrom(prodlim, prodlim)
 importFrom(hdnom, glmnet_basesurv)

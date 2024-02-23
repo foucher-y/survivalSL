@@ -27,8 +27,9 @@ data, n.nodes, decay, batch.size, epochs)
   \item{epochs}{The value of epochs.}
  }
 
+
 \details{
-The survival neural network is obtained by using the \code{deepsurv} function from the \code{survivalmodels} package. Its use requires \code{Python}, but the \code{survivalSL} package can work without if this learner is not included in the library.
+This function is based is based on the \code{deepsurv} from the \code{survivalmodels} package. You need to call Python using \code{reticulate}. In order to use it, the required Python packages must be installed with \code{reticulate::py_install}. Therefore, before running the present \code{LIB_SNN} function, you must install  and call for the \code{reticulate} and \code{survivalmodels} packages, and install \code{pycox} by using the following command: \code{install_pycox(pip = TRUE, install_torch = FALSE)}.  The \code{survivalSL} package functions without these supplementary installations if this learner is not included in the library.
 }
 
 \value{
@@ -44,5 +45,8 @@ The survival neural network is obtained by using the \code{deepsurv} function fr
 \references{
 Katzman, J. L., Shaham, U., Cloninger, A., Bates, J., Jiang, T., & Kluger, Y. (2018). DeepSurv: personalized treatment recommender system using a Cox proportional hazards deep neural network. BMC Medical Research Methodology, 18(1), 24. https://doi.org/10.1186/s12874-018-0482-1
 }
+
+
+%\examples{ }
 
 \keyword{Super Learner Library}
