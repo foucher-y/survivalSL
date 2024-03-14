@@ -50,3 +50,23 @@ Katzman, J. L., Shaham, U., Cloninger, A., Bates, J., Jiang, T., & Kluger, Y. (2
 %\examples{ }
 
 \keyword{Super Learner Library}
+
+%data(dataDIVAT2)
+
+%# The estimation of the model
+%model <- LIB_SNN(times="times", failures="failures", data=dataDIVAT2,
+%  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"), n.nodes=3,
+%  decay=0.01, batch.size=20, epochs=10)
+
+%# The predicted survival of the first subject of the training sample
+%plot(y=model$predictions[1,], x=model$times, xlab="Time (years)",
+%ylab="Predicted survival", col=1, type="l", lty=1, lwd=2, ylim=c(0,1))
+
+%# The estimation of the model
+%model <- LIB_RSF(times="times", failures="failures", data=dataDIVAT2,
+%  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"), nodesize=10,
+%  mtry=2, ntree=100)
+
+%lines(y=model$predictions[1,], x=model$times, col=2, type="l", lty=1, lwd=2)
+
+%model$predictions
