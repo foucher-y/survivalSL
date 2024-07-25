@@ -24,7 +24,7 @@ tuneSNN <- function(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL
     }
   }
 
-  nn.time.par<-function(xx, times, failures, group, cov.quanti, cov.quali,newtimes){
+  nn.time.par<-function(xx, times, failures, group, cov.quanti, cov.quali, newtimes){
 
     n.nodes=xx$grid$n.nodes
     decay=xx$grid$decay
@@ -41,7 +41,7 @@ tuneSNN <- function(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL
     .f  <- as.formula(paste("Surv(", times, ",", failures, ")", "~."))
 
     .deepsurv <- survivalmodels::deepsurv(.f, data = .data,  verbose = FALSE, num_nodes=n.nodes,
-                          weight_decay=decay, num_workers = 0L,batch_size=as.integer(batch_size),
+                          weight_decay=decay, num_workers = 0L, batch_size=as.integer(batch_size),
                           epochs=as.integer(epochs))
 
     .time<-sort(unique(.data[,times]))

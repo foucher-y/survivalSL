@@ -1,7 +1,7 @@
 import(splines)
 import(survival)
-#import(reticulate)
-#import(tune)
+
+importFrom(survivalPLANN, survivalPLANN)
 
 importFrom(stats, pnorm, dnorm, qnorm, update,  binomial, lm, glm, na.omit, predict, quantile,
            sd, optim, pchisq, update.formula, coef, setNames, as.formula, model.matrix,
@@ -12,24 +12,19 @@ importFrom(utils, methods, tail, combn, txtProgressBar, setTxtProgressBar)
 importFrom(graphics, abline, lines, plot.default, grid, segments)
 importFrom(MASS, mvrnorm, stepAIC)
 
-#importFrom(kernlab, ksvm)
-#importFrom(nnet, nnet)
 importFrom(glmnet, glmnet, cv.glmnet)
 importFrom(caret, train, trainControl, twoClassSummary)
-#importFrom(SuperLearner, SuperLearner, All)
+
 importFrom(methods, is, hasArg)
 importFrom(flexsurv, flexsurvreg, flexsurvspline)
-#importFrom(survivalmodels, deepsurv)
+
 importFrom(randomForestSRC, rfsrc, tune.rfsrc, rfsrc.fast)
-#importFrom(prodlim, prodlim)
+
 importFrom(hdnom, glmnet_basesurv)
 importFrom(glmnetUtils, cva.glmnet)
-#importFrom(zoo, na.approx)
+
 importFrom(dplyr, last)
-#importFrom(mosaic, spliner)
-#importFrom(cubature, cubintegrate)
-#importFrom(mosaicCalc, D)
-#importFrom(timeROC, timeROC)
+
 importFrom(rpart, rpart)
 
 export(LIB_AFTgamma)
@@ -46,6 +41,7 @@ export(LIB_COXaic)
 export(LIB_COXall)
 export(LIB_SNN)
 export(LIB_RSF)
+export(LIB_PLANN)
 
 export(survivalSL)
 
@@ -56,9 +52,7 @@ export(tuneCOXridge)
 export(tuneCOXen)
 export(tuneSNN)
 export(tuneRSF)
-
-#export(auc)
-#export(differentiation)
+export(tunePLANN)
 
 export(roc)
 
