@@ -145,7 +145,7 @@ predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
     }
     else {
       .pred.plann <- predict(object$model, newdata = newdata)
-      .survival <- cbind(rep(1, dim(.pred.plann$survival)[1]), .pred.plann$survival)
+      .survival <- cbind(rep(1, dim(.pred.plann$predictions)[1]), .pred.plann$predictions)
       .time.interest <- c(0, .pred.plann$time.interest)
 
       idx=findInterval(object$times,.time.interest)
@@ -163,7 +163,7 @@ predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
       idx=findInterval(newtimes,.time.interest)
       .pred=.survival[,pmax(1,idx)]
 
-      .survival <- .pred
+      .survival <- as.matrix(.pred)
       .time.interest <- newtimes
     }
 

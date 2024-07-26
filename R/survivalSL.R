@@ -137,7 +137,7 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_COXlasso")]]$lambda)|
            is.null(param.tune[[which(methods=="LIB_COXlasso")]]$lambda))){
-        stop("Lambda tune parameters for LIB_COXlasso need to be a scalar or a vector or NULL")
+        stop("lambda for LIB_COXlasso need to be a scalar or a vector or NULL")
       }
     }
   }
@@ -156,7 +156,7 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_COXlasso")[i]]]$lambda)|
              is.null(param.tune[[which(methods=="LIB_COXlasso")[i]]]$lambda))){
-          stop(paste("Lambda tune parameters for the ",i,"th LIB_COXlasso need to be a scalar or a vector or NULL"))
+          stop(paste("lambda for the ",i,"th LIB_COXlasso need to be a scalar or a vector or NULL"))
         }
       }
     }
@@ -174,7 +174,7 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_PHspline")]]$k)|
            is.null(param.tune[[which(methods=="LIB_PHspline")]]$k))){
-        stop("Lambda tune parameters for LIB_PHspline need to be a scalar or a vector or NULL")
+        stop("lambda for LIB_PHspline need to be a scalar or a vector or NULL")
       }
     }
   }
@@ -193,7 +193,7 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_PHspline")[i]]]$k)|
              is.null(param.tune[[which(methods=="LIB_PHspline")[i]]]$k))){
-          stop(paste("Lambda tune parameters for the ",i,"th LIB_PHspline need to be a scalar or a vector or NULL"))
+          stop(paste("lambda for the ",i,"th LIB_PHspline need to be a scalar or a vector or NULL"))
         }
       }
     }
@@ -210,7 +210,7 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_COXridge")]]$lambda)|
            is.null(param.tune[[which(methods=="LIB_COXridge")]]$lambda))){
-        stop("Lambda tune parameters for LIB_COXridge need to be a scalar or a vector or NULL")
+        stop("lambda for LIB_COXridge need to be a scalar or a vector or NULL")
       }
     }
   }
@@ -228,7 +228,7 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_COXridge")[i]]]$lambda)|
              is.null(param.tune[[which(methods=="LIB_COXridge")[i]]]$lambda))){
-          stop(paste("Lambda tune parameters for the ",i,"th LIB_COXridge need to be a scalar or a vector or NULL"))
+          stop(paste("lambda for the ",i,"th LIB_COXridge need to be a scalar or a vector or NULL"))
         }
       }
     }
@@ -247,11 +247,11 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_COXen")]]$lambda)|
            is.null(param.tune[[which(methods=="LIB_COXen")]]$lambda))){
-        stop("Lambda tune parameters for LIB_COXen need to be a scalar or a vector or NULL")
+        stop("lambda for LIB_COXen need to be a scalar or a vector or NULL")
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_COXen")]]$alpha)|
            is.null(param.tune[[which(methods=="LIB_COXen")]]$alpha))){
-        stop("alpha tune parameters for LIB_COXen need to be a scalar or a vector or NULL")
+        stop("alpha for LIB_COXen need to be a scalar or a vector or NULL")
       }
       if(min(param.tune[[which(methods=="LIB_COXen")]]$alpha)<0 | max(param.tune[[which(methods=="LIB_COXen")]]$alpha)>1){
         stop("tune parameters for LIB_COXen alpha need to be in ]0;1[")
@@ -275,11 +275,11 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_COXen")[i]]]$lambda)|
              is.null(param.tune[[which(methods=="LIB_COXen")[i]]]$lambda))){
-          stop(paste("Lambda tune parameters for the ",i,"th LIB_COXen need to be a scalar or a vector or NULL"))
+          stop(paste("lambda for the ",i,"th LIB_COXen need to be a scalar or a vector or NULL"))
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_COXen")[i]]]$alpha)|
              is.null(param.tune[[which(methods=="LIB_COXen")[i]]]$alpha))){
-          stop(paste("Alpha tune parameters for the ",i,"th LIB_COXen need to be a scalar or a vector or NULL"))
+          stop(paste("alpha for the ",i,"th LIB_COXen need to be a scalar or a vector or NULL"))
         }
         if(min(param.tune[[which(methods=="LIB_COXen")[i]]]$alpha)<0 | max(param.tune[[which(methods=="LIB_COXen")[i]]]$alpha)>1){
           stop("tune parameters for LIB_COXen alpha need to be in ]0;1[")
@@ -343,15 +343,15 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")]]$nodesize)|
            is.null(param.tune[[which(methods=="LIB_RSF")]]$nodesize))){
-        stop("nodesize tune parameters for LIB_RSF need to be a scalar or a vector or NULL")
+        stop("nodesize for LIB_RSF need to be a scalar or a vector or NULL")
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")]]$mtry)|
            is.null(param.tune[[which(methods=="LIB_RSF")]]$mtry))){
-        stop("mtry tune parameters for LIB_RSF need to be a scalar or NULL")
+        stop("mtry for LIB_RSF need to be a scalar or NULL")
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")]]$ntree)|
            is.null(param.tune[[which(methods=="LIB_RSF")]]$ntree))){
-        stop("ntree tune parameters for LIB_RSF need to be a scalar or NULL")
+        stop("ntree for LIB_RSF need to be a scalar or NULL")
       }
     }
   }
@@ -375,15 +375,15 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")[i]]]$nodesize)|
              is.null(param.tune[[which(methods=="LIB_RSF")[i]]]$nodesize))){
-          stop("nodesize tune parameters for LIB_RSF need to be a scalar or a vector or NULL")
+          stop("nodesize for LIB_RSF need to be a scalar or a vector or NULL")
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")[i]]]$mtry)|
              is.null(param.tune[[which(methods=="LIB_RSF")[i]]]$mtry))){
-          stop("mtry tune parameters for LIB_RSF need to be a scalar or NULL")
+          stop("mtry for LIB_RSF need to be a scalar or NULL")
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_RSF")[i]]]$ntree)|
              is.null(param.tune[[which(methods=="LIB_RSF")[i]]]$ntree))){
-          stop("ntree tune parameters for LIB_RSF need to be a scalar or NULL")
+          stop("ntree for LIB_RSF need to be a scalar or NULL")
         }
       }
     }
@@ -408,19 +408,19 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")]]$n.nodes)|
            is.null(param.tune[[which(methods=="LIB_SNN")]]$n.nodes))){
-        stop("n.nodes tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+        stop("n.nodes for LIB_SNN need to be a scalar, a vector or NULL")
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")]]$decay)|
            is.null(param.tune[[which(methods=="LIB_SNN")]]$decay))){
-        stop("decay tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+        stop("decay for LIB_SNN need to be a scalar, a vector or NULL")
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")]]$batch.size)|
            is.null(param.tune[[which(methods=="LIB_SNN")]]$batch.size))){
-        stop("batch.size tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+        stop("batch.size for LIB_SNN need to be a scalar, a vector or NULL")
       }
       if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")]]$epochs)|
            is.null(param.tune[[which(methods=="LIB_SNN")]]$epochs))){
-        stop("epochs tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+        stop("epochs for LIB_SNN need to be a scalar, a vector or NULL")
       }
     }
   }
@@ -447,23 +447,118 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")[i]]]$n.nodes)|
              is.null(param.tune[[which(methods=="LIB_SNN")[i]]]$n.nodes))){
-          stop("nodesize tune parameters for LIB_SNN need to be a scalar or a vector or NULL")
+          stop("n.nodes for LIB_SNN need to be a scalar or a vector or NULL")
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")[i]]]$decay)|
              is.null(param.tune[[which(methods=="LIB_SNN")[i]]]$decay))){
-          stop("decay tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+          stop("decay for LIB_SNN need to be a scalar, a vector or NULL")
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")[i]]]$batch.size)|
              is.null(param.tune[[which(methods=="LIB_SNN")[i]]]$batch.size))){
-          stop("batch.size tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+          stop("batch.size for LIB_SNN need to be a scalar, a vector or NULL")
         }
         if(!(is.numeric(param.tune[[which(methods=="LIB_SNN")[i]]]$epochs)|
              is.null(param.tune[[which(methods=="LIB_SNN")[i]]]$epochs))){
-          stop("epochs tune parameters for LIB_SNN need to be a scalar, a vector or NULL")
+          stop("epochs for LIB_SNN need to be a scalar, a vector or NULL")
         }
       }
     }
   }
+
+
+
+
+  if(sum(methods %in% "LIB_PLANN")==1){
+    if(!(is.null(param.tune[[which(methods=="LIB_PLANN")]]))){
+      if(!is.list(param.tune[[which(methods=="LIB_PLANN")]])){
+        stop("Argument param.tune for LIB_PLANN need to be a list")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_PLANN")]])%in%"inter"))==0){
+        stop("Tune parameters for LIB_PLANN need to have inter")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_PLANN")]])%in%"size"))==0){
+        stop("Tune parameters for LIB_PLANN need to have size")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_PLANN")]])%in%"decay"))==0){
+        stop("Tune parameters for LIB_PLANN need to have decay")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_PLANN")]])%in%"maxit"))==0){
+        stop("Tune parameters for LIB_PLANN need to have maxit")
+      }
+      if(sum((names(param.tune[[which(methods=="LIB_PLANN")]])%in%"MaxNWts"))==0){
+        stop("Tune parameters for LIB_PLANN need to have MaxNWts")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_PLANN")]]$inter)|
+           is.null(param.tune[[which(methods=="LIB_PLANN")]]$inter))){
+        stop("inter for LIB_PLANN need to be a scalar, a vector or NULL")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_PLANN")]]$size)|
+           is.null(param.tune[[which(methods=="LIB_PLANN")]]$size))){
+        stop("size for LIB_PLANN need to be a scalar, a vector or NULL")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_PLANN")]]$decay)|
+           is.null(param.tune[[which(methods=="LIB_PLANN")]]$decay))){
+        stop("decay for LIB_PLANN need to be a scalar, a vector or NULL")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_PLANN")]]$maxit)|
+           is.null(param.tune[[which(methods=="LIB_PLANN")]]$maxit))){
+        stop("maxit for LIB_PLANN need to be a scalar, a vector or NULL")
+      }
+      if(!(is.numeric(param.tune[[which(methods=="LIB_PLANN")]]$MaxNWts)|
+           is.null(param.tune[[which(methods=="LIB_PLANN")]]$MaxNWts))){
+        stop("MaxNWts for LIB_PLANN need to be a scalar, a vector or NULL")
+      }
+    }
+  }
+  if(sum(methods %in% "LIB_PLANN")>=2){
+    if(length(param.tune[which(methods=="LIB_PLANN")])!=length(unique(param.tune[which(methods=="LIB_PLANN")]))){
+      stop("Tune parameters for LIB_PLANN methods need to be unique")
+    }
+    for (i in 1:sum(methods %in% "LIB_PLANN")){
+      if(!(is.null(param.tune[[which(methods=="LIB_PLANN")[i]]]))){
+        if(!is.list(param.tune[[which(methods=="LIB_PLANN")[i]]])){
+          stop(paste("Argument param.tune for the ",i,"th LIB_PLANN need to be a list"))
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_PLANN")[i]]])%in%"inter"))==0){
+          stop("Tune parameters for LIB_PLANN need to have inter")
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_PLANN")[i]]])%in%"size"))==0){
+          stop("Tune parameters for LIB_PLANN need to have size")
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_PLANN")[i]]])%in%"decay"))==0){
+          stop("Tune parameters for LIB_PLANN need to have decay")
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_PLANN")[i]]])%in%"maxit"))==0){
+          stop("Tune parameters for LIB_PLANN need to have maxit")
+        }
+        if(sum((names(param.tune[[which(methods=="LIB_PLANN")[i]]])%in%"MaxNWts"))==0){
+          stop("Tune parameters for LIB_PLANN need to have MaxNWts")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_PLANN")[i]]]$inter)|
+             is.null(param.tune[[which(methods=="LIB_PLANN")[i]]]$inter))){
+          stop("inter for LIB_PLANN need to be a scalar or a vector or NULL")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_PLANN")[i]]]$size)|
+             is.null(param.tune[[which(methods=="LIB_PLANN")[i]]]$size))){
+          stop("size for LIB_PLANN need to be a scalar, a vector or NULL")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIPLA_PLANN")[i]]]$decay)|
+             is.null(param.tune[[which(methods=="LIPLA_PLANN")[i]]]$decay))){
+          stop("decay for LIB_PLANN need to be a scalar, a vector or NULL")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_PLANN")[i]]]$maxit)|
+             is.null(param.tune[[which(methods=="LIB_PLANN")[i]]]$maxit))){
+          stop("maxit for LIB_PLANN need to be a scalar, a vector or NULL")
+        }
+        if(!(is.numeric(param.tune[[which(methods=="LIB_PLANN")[i]]]$MaxNWts)|
+             is.null(param.tune[[which(methods=="LIB_PLANN")[i]]]$MaxNWts))){
+          stop("MaxNWts for LIB_PLANN need to be a scalar, a vector or NULL")
+        }
+      }
+    }
+  }
+
+
 
   if(length(.meth_rm)>=1){
     methods=methods[-.meth_rm]
@@ -800,7 +895,7 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
 
   if(sum(!(methods %in% c("LIB_COXlasso", "LIB_COXridge", "LIB_RSF", "LIB_SNN", "LIB_COXen",
                           "LIB_AFTweibull","LIB_AFTweibull","LIB_AFTggamma","LIB_AFTgamma",
-                          "LIB_PHgompertz","LIB_PHexponential",
+                          "LIB_PHgompertz","LIB_PHexponential", "LIB_PLANN",
                           "LIB_AFTllogis","LIB_COXaic","LIB_COXall", "LIB_PHspline")))>=1){
     stop("New method is not yet implemented") }
 
@@ -848,6 +943,13 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
                                 batch.size=256L,
                                 epochs=1L)
         }
+        if(methods[me] %in%"LIB_PLANN"){
+          param.tune[[me]]=list(inter=1,
+                                size=c(2, 4, 6, 8, 10),
+                                decay=c(0.001, 0.01, 0.02, 0.05),
+                                maxit=100,
+                                MaxNWts=10000)
+        }
         if(methods[me] %in% "LIB_COXlasso"){
           param.tune[[me]]=list(lambda=NULL)
         }
@@ -878,6 +980,13 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
                               decay=c(0, 0.01, 0.1),
                               batch.size=256L,
                               epochs=1L)
+      }
+      if(methods[me] %in%"LIB_PLANN"){
+        param.tune[[me]]=list(inter=1,
+                              size=c(2, 4, 6, 8, 10),
+                              decay=c(0.001, 0.01, 0.02, 0.05),
+                              maxit=100,
+                              MaxNWts=10000)
       }
       if(methods[me] %in% "LIB_COXlasso"){
         param.tune[[me]]=list(lambda=NULL)
@@ -1224,6 +1333,52 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
       }
 
       rm(.LIB_SNN)    }
+
+    if (methods[me] == "LIB_PLANN"){
+
+      if(length(param.tune[[me]]$inter)!=1 | length(param.tune[[me]]$size)!=1 |
+         length(param.tune[[me]]$decay)!=1 | length(param.tune[[me]]$maxit)!=1 |
+         length(param.tune[[me]]$MaxNWts)!=1){
+
+        .tune <- tunePLANN(times=times, failures=failures, group=group,
+                         cov.quanti=cov.quanti, cov.quali=cov.quali,
+                         data=data, cv=cv,
+                         inter=param.tune[[me]]$inter,
+                         size=param.tune[[me]]$size,
+                         decay=param.tune[[me]]$decay,
+                         maxit=param.tune[[me]]$maxit,
+                         MaxNWts=param.tune[[me]]$MaxNWts)
+        .tune.optimal[[me]]<-.tune$optimal
+        .tune.results[[me]]<-.tune$results
+        rm(.tune)
+      }
+      else{
+        .tune.optimal[[me]]<-list(inter=param.tune[[me]]$inter,
+                                  size=param.tune[[me]]$size,
+                                  decay=param.tune[[me]]$decay,
+                                  maxit=param.tune[[me]]$maxit,
+                                  MaxNWts=param.tune[[me]]$MaxNWts)
+      }
+
+      .LIB_PLANN <-LIB_PLANN(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
+                         cov.quali=cov.quali, data=data,
+                         inter=as.numeric(.tune.optimal[[me]]$inter),
+                         size=as.integer(.tune.optimal[[me]]$size),
+                         decay=as.numeric(.tune.optimal[[me]]$decay),
+                         maxit=as.integer(.tune.optimal[[me]]$maxit),
+                         MaxNWts=as.integer(.tune.optimal[[me]]$MaxNWts))
+
+
+      .model[[me]]<-.LIB_PLANN
+
+      if(progress==TRUE){
+        ip <- ip+1
+        setTxtProgressBar(pb, ip)
+      }
+
+      rm(.LIB_PLANN)    }
+
+
   }
 
   ########################
@@ -1244,75 +1399,74 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
     }
   }
 
-  CV_all_method<-function(CV, method, Tune,
-                          times, failures, group, cov.quanti, cov.quali,time.pred){
+  CV_all_method<-function(CV, method, Tune, times, failures, group, cov.quanti, cov.quali,time.pred){
     num_method<-CV$num_method
     meth<-method[num_method]
     if(meth == "LIB_AFTweibull"){
       fit<-LIB_AFTweibull(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                        cov.quali=cov.quali, data=CV$train)
-      pred=predict(fit,  newtimes=time.pred, newdata=CV$valid)$predictions
+      pred=predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
     if(meth == "LIB_AFTggamma"){
       fit<-LIB_AFTggamma(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                       cov.quali=cov.quali, data=CV$train)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
     if(meth == "LIB_AFTgamma"){
       fit<-LIB_AFTgamma(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                      cov.quali=cov.quali, data=CV$train)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
     if(meth == "LIB_AFTllogis"){
       fit<-LIB_AFTllogis(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                      cov.quali=cov.quali, data=CV$train)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
     if(meth == "LIB_PHgompertz"){
       fit<-LIB_PHgompertz(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                        cov.quali=cov.quali, data=CV$train)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
     if(meth == "LIB_PHexponential"){
       fit<-LIB_PHexponential(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                           cov.quali=cov.quali, data=CV$train)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
     if(meth == "LIB_PHspline"){
       fit<-LIB_PHspline(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                      cov.quali=cov.quali, data=CV$train,
                      k=Tune[[num_method]]$k)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
     if(meth == "LIB_COXlasso"){
       fit<-LIB_COXlasso(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                      cov.quali=cov.quali, data=CV$train,
                      lambda=Tune[[num_method]]$lambda)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
     if(meth == "LIB_COXen"){
       fit<-LIB_COXen(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                  cov.quali=cov.quali, data=CV$train,
                   alpha=Tune[[num_method]]$alpha, lambda=Tune[[num_method]]$lambda)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
     if(meth =="LIB_COXridge"){
       fit<-LIB_COXridge(times=times, failures=failures, group=group, cov.quanti=cov.quanti,
                     cov.quali=cov.quali, data=CV$train, lambda=Tune[[num_method]]$lambda)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
 
     }
     if(meth =="LIB_COXaic"){
       fit<-LIB_COXaic(times=times, failures=failures, group=group, data=data,
                    final.model = Tune[[num_method]]$final.model, cov.quanti=cov.quanti,
                    cov.quali=cov.quali)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
 
     }
     if(meth =="LIB_COXall"){
       fit<-LIB_COXall(times=times, failures=failures, group=group,
                    cov.quanti=cov.quanti, cov.quali=cov.quali, data=data)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
 
     }
     if(meth =="LIB_RSF"){
@@ -1320,7 +1474,7 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
                    cov.quali=cov.quali,  data=CV$train,
                    nodesize=Tune[[num_method]]$nodesize, mtry=Tune[[num_method]]$mtry,
                    ntree=Tune[[num_method]]$ntree)
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
 
     }
     if(meth =="LIB_SNN"){
@@ -1329,7 +1483,16 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
                      decay=as.numeric(Tune[[num_method]]$decay),
                      batch.size=as.integer(Tune[[num_method]]$batch.size),
                      epochs=as.integer(Tune[[num_method]]$epochs))
-      pred<-predict(fit,newtimes=time.pred, newdata=CV$valid)$predictions
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
+    }
+    if(meth =="LIB_PLANN"){
+      fit<-LIB_PLANN(times=times, failures=failures, group=group,  cov.quanti=cov.quanti, cov.quali=cov.quali, data=CV$train,
+                   inter=as.numeric(Tune[[num_method]]$inter),
+                   size=as.numeric(Tune[[num_method]]$size),
+                   decay=as.numeric(Tune[[num_method]]$decay),
+                   maxit=as.integer(Tune[[num_method]]$maxit),
+                   MaxNWts=as.integer(Tune[[num_method]]$MaxNWts))
+      pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
     return(pred)
   }
@@ -1358,6 +1521,8 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
   ################
   # OPTIMISATION #
   ################
+
+  # Amina / Thomas -> new weigths
 
   data.times <- data[,times]
   data.failures <- data[,failures]

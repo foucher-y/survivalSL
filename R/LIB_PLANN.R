@@ -40,6 +40,8 @@ LIB_PLANN <- function(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NU
 
   .pred.plann <- predict(.plann)
 
+  .pred.plann$predictions <- as.matrix(.pred.plann$predictions)
+
   .survival <- cbind(rep(1, dim(.pred.plann$predictions)[1]), .pred.plann$predictions)
   .time.interest <- c(0, .pred.plann$times)
 
