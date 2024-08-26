@@ -51,10 +51,11 @@ Biganzoli E, Boracchi P, Mariani L, and et al. Feed forward neural networks for 
 \examples{
 data(dataDIVAT2)
 
-# The estimation of the neural network
-model <- LIB_PLANN(times="times", failures="failures", data=dataDIVAT2,
+# The neural network based from the first 300 individuals of the data base
+
+model <- LIB_PLANN(times="times", failures="failures", data=dataDIVAT2[1:300,],
   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
-  inter=0.5, size=32, decay=0.01, maxit=200, MaxNWts=10000)
+  inter=0.5, size=32, decay=0.01, maxit=100, MaxNWts=10000)
 
 # The predicted survival of the first subject of the training sample
 plot(y=model$predictions[1,], x=model$times, xlab="Time (years)",

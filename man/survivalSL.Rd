@@ -92,18 +92,10 @@ Polley E and van der Laanet M. Super Learner In Prediction. http://biostats.bepr
 \examples{
 data(dataDIVAT2)
 
-#The outcome model base on a Super Learner and the first 150 individuals of the data base
-sl1 <- survivalSL(methods=c("LIB_AFTgamma", "LIB_COXlasso", "LIB_PLANN"),  metric="ci",
-  data=dataDIVAT2[1:500,],  times="times", failures="failures", group="ecd",
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant"), cv=10)
-
-.tune<-vector("list",3)
-.tune[[3]]<-list(inter=c(0.5, 1), size=1:10, decay=c(0.01, 0.02), maxit=500, MaxNWts = 10000)
-
-sl2 <- survivalSL(methods=c("LIB_AFTgamma", "LIB_COXlasso", "LIB_PLANN"),  metric="ci",
-  data=dataDIVAT2[1:500,],  times="times", failures="failures", group="ecd",
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant"), cv=10, param.tune=.tune)
-
+# The Super Learner based from the first 300 individuals of the data base
+sl1 <- survivalSL(methods=c("LIB_AFTgamma", "LIB_PHgompertz"),  metric="ci",
+  data=dataDIVAT2[1:300,],  times="times", failures="failures", group="ecd",
+  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant"), cv=5)
 
 # Individual prediction
 pred <- predict(sl1, newdata=data.frame(age=c(52,52), hla=c(0,1),

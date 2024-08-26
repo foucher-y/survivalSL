@@ -47,26 +47,17 @@ Biganzoli E, Boracchi P, Mariani L, and et al. Feed forward neural networks for 
 \examples{
 data(dataDIVAT2)
 
-tune.model <- tunePLANN(times="times", failures="failures", data=dataDIVAT2,
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"), cv=5,
-  inter=1, size=c(16, 32), decay=c(0.01,0.05), maxit=100, MaxNWts=10000)
+# The hyper-parameter grid needs to be more precise and the maximum number
+# of iterations > 1000. We have reduced the arguments to respect examples requiring
+# less than 5 seconds for packages on the CRAN.
+
+tune.model <- tunePLANN(times="times", failures="failures", data=dataDIVAT2[1:300,],
+  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"), cv=3,
+  inter=1, size=c(16, 32), decay=0.01, maxit=50, MaxNWts=10000)
 
 tune.model$optimal # the optimal hyperparameters
 
 tune.model$results # the C-index for the tested grid
-
-# The estimation of the training modelwith the corresponding lambda value
-model <- LIB_PLANN(times="times", failures="failures", data=dataDIVAT2,
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
-  inter=tune.model$optimal$inter,
-  size=tune.model$optimal$size,
-  decay=tune.model$optimal$decay,
-  maxit=tune.model$optimal$maxit,
-  MaxNWts=tune.model$optimal$MaxNWts)
-
-# The resulted predicted survival of the first subject of the data base
-plot(y=model$predictions[1,], x=model$times, xlab="Time (years)",
-ylab="Predicted survival", col=1, type="l", lty=1, lwd=2, ylim=c(0,1))
 }
 
 \keyword{Tunning}
