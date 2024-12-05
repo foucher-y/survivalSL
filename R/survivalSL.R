@@ -40,7 +40,7 @@ survivalSL <- function(methods, metric="ci",  data, times, failures, group=NULL,
   }
 
   if( is.null(cov.quanti)==F){
-    if(min(group %in%colnames(data))==0 & is.character(cov.quanti)==T){
+    if(min(cov.quanti %in%colnames(data))==0 & is.character(cov.quanti)==T){
       stop("At least one name of quantitative covariate is not present in data")
     }
   }
