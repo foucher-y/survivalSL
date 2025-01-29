@@ -41,9 +41,9 @@ Royston, P. and Parmar, M. (2002). Flexible parametric proportional-hazards and 
 \examples{
 data(dataDIVAT2)
 
-# The estimation of the hyperparameters
+# The estimation of the hyperparameters on the first 150 patients
 
-tune.model <- tunePHspline(times="times", failures="failures", data=dataDIVAT2[1:200,],
+tune.model <- tunePHspline(times="times", failures="failures", data=dataDIVAT2[1:150,],
     cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
     cv=3, k=1:2)
 
@@ -51,17 +51,6 @@ tune.model <- tunePHspline(times="times", failures="failures", data=dataDIVAT2[1
 
  tune.model$optimal
  tune.model$results
-
-# The estimation of the training model with the corresponding lambda value
-
- model <- LIB_PHspline(times="times", failures="failures", data=dataDIVAT2[1:200,],
-   cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
-   k=tune.model$optimal$k)
-
-# The resulted predicted survival of the first subject of the training sample
-
-plot(y=model$predictions[1,], x=model$times, xlab="Time (years)",
- ylab="Predicted survival", col=1, type="l", lty=1, lwd=2, ylim=c(0,1))
 }
 
 \keyword{Tunning}
