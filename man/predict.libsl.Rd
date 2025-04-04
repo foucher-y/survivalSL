@@ -13,8 +13,8 @@ Predict the survival based on a model or algorithm from an object of the class \
 }
 
 \arguments{
-  \item{object}{An object returned by the function \code{LIB_AFTllogis}, \code{LIB_AFTggamma}, \code{LIB_AFTgamma}, \code{LIB_AFTweibull}, \code{LIB_PHexponential}, \code{LIB_PHspline} or \code{LIB_PHgompertz}.}
-  \item{newdata}{An optional data frame containing covariate values at which to produce predicted values. There must be a column for every covariate included in \code{cov.quanti} and \code{cov.quali} included in the training sample. The default value is \code{NULL}, the predicted values are computed for the subjects of the training sample.}
+  \item{object}{An object of the class \code{libsl}.}
+  \item{newdata}{An optional data frame containing covariate values at which to produce predicted values. The default value is \code{NULL}, the predicted values are computed for the subjects of the training sample.}
   \item{newtimes}{The times at which to produce predicted values. The default value is \code{NULL}, the predicted values are computed for the observed times in the training data frame.}
   \item{...}{For future methods.}
 }
@@ -25,16 +25,16 @@ Predict the survival based on a model or algorithm from an object of the class \
 }
 
 
-\details{
-The model \code{object} is obtained from the \code{flexsurvreg} package.
-}
 
 \examples{
-data(dataDIVAT2)
+data("dataDIVAT2")
+
 
 # The estimation of the model from the first 200 lines
-model <- LIB_PHgompertz(times="times", failures="failures", data=dataDIVAT2[1:200,],
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"))
+
+
+formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
+model <- LIB_PHgompertz(formula, data=dataDIVAT2[1:200,])
 
 # Predicted survival for 2 new subjects
 pred <- predict(model,
