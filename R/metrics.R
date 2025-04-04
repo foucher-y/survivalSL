@@ -21,9 +21,9 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
 
   if(!(failures %in% colnames(data)))stop(paste("The variable",failures, "does not exist."))
 
-  if(min(metric %in% c("uno_ci","h_ci","bs","ibs","ibll","bll", "ribs","ribll","auc","ll"))==0){
+  if(min(metric %in% c("uno_ci","p_ci","bs","ibs","ibll","bll", "ribs","ribll","auc","ll"))==0){
     stop("The argument \"metric\" must be Brier score (bs),
-         Harrell concordance index (h_ci),
+         Pencina concordance index (p_ci),
          Uno concordance index (uno_ci),
          integrated Brier score (ibs), the binomial log-likelihood (bll),
          the integrated binomial log-likelihood (ibll), the restricted ibs (ribs),
@@ -65,9 +65,9 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
 
 
   switch(metric,
-         h_ci={
-           status <- data[[failures]]
-           time <- data[[times]]
+         p_ci={
+           status <- ifelse((data[[failures]]==1) & (data[[times]]>pro.time),0,data[[failures]])
+           time <- ifelse(data[[times]]>pro.time,pro.time,data[[times]])
            predicted<-survivals.matrix[,prediction.times>=pro.time][,1]
            permissible <- 0 # comparable pairs
            concord <- 0
@@ -207,8 +207,8 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
          },
 
          uno_ci={
-           status <- data[[failures]]
-           time <- data[[times]]
+           status <- ifelse((data[[failures]]==1) & (data[[times]]>pro.time),0,data[[failures]])
+           time <- ifelse(data[[times]]>pro.time,pro.time,data[[times]])
            predicted<-survivals.matrix[,prediction.times>=pro.time][,1]
            permissible <- 0 # comparable pairs
            concord <- 0
@@ -282,6 +282,9 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
   data<-.data_bis
   return(as.numeric(RET))
 }
+
+
+
 
 
 
