@@ -8,7 +8,7 @@ Super Learner for Censored Outcomes
 This function allows to compute a Super Learner (SL) to predict survival outcomes.
 }
 \usage{
-survivalSL(methods, metric="p_ci", data, formula, penalty=NULL,
+survivalSL(methods, metric="auc", data, formula, penalty=NULL,
 cv=10, param.tune=NULL, pro.time=NULL,
 optim.local.min=FALSE,
 ROC.precision=seq(.01,.99,.01),
