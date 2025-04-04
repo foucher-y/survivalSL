@@ -2,7 +2,7 @@
 \alias{plot.libsl}
 
 \title{
-Calibration Plot for a Cox-like Model
+Calibration Plot
 }
 \description{
 A calibration plot of an object of the class \code{libsl} (library of survival super learner).
@@ -10,7 +10,7 @@ A calibration plot of an object of the class \code{libsl} (library of survival s
 
 \usage{
 \method{plot}{libsl}(x, n.groups=5, pro.time=NULL,
-newdata=NULL, times=NULL, failures=NULL, ...)
+newdata=NULL, ...)
 }
 
 \arguments{
@@ -18,8 +18,6 @@ newdata=NULL, times=NULL, failures=NULL, ...)
    \item{n.groups}{A numeric value with the number of groups by their class probabilities. The default is 5.}
   \item{pro.time}{The prognostic time at which the calibration plot of the survival probabilities.}
     \item{newdata}{An optional data frame containing the new sample for validation with covariate values, follow-up times, and event status. The default value is \code{NULL}, the calibration plot is performed from the same subjects of the training sample.}
-  \item{times}{The name of the variable related the numeric vector with the follow-up times in \code{newdata} (optional argument only necessary when newdata is not \code{NULL}).}
-  \item{failures}{The name of the variable related the numeric vector with the event indicators (0=right censored, 1=event) in \code{newdata} (optional argument only necessary when newdata is not \code{NULL}).}
   \item{...}{Additional arguments affecting the plot.}
 }
 
@@ -30,16 +28,19 @@ The plot represents the observed survival and the related 95\% confidence interv
 \value{No return value for this S3 method.}
 
 \examples{
-data(dataDIVAT2)
+data("dataDIVAT2")
 
-# The estimation of the model from the first 200 lignes
-model <- LIB_COXall(times="times", failures="failures", data=dataDIVAT2,
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"))
+
+# The estimation of the model
+
+formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
+data=dataDIVAT2[1:150,]
+model <- LIB_COXall(formula, data=data)
 
 # The calibration plot from the validation sample of 150 patients
 plot(model, n.groups=5, pro.time=12, col=3,
      xlab="Predicted 12-year survival", ylab="Observed 12-year survival",
-     newdata=dataDIVAT2[151:300,], times="times", failures="failures")
+     newdata=dataDIVAT2[151:300,])
 }
 
 \seealso{
