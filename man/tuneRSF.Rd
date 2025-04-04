@@ -1,61 +1,98 @@
-\name{tuneRSF}
-\alias{tuneRSF}
+tuneRSF <- function(formula, data, nodesize, mtry, ntree, seed=NULL){
 
-\title{
-Tune a Survival Random Forest
+
+  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+
+
+  if(is.null(seed)){
+    seed<-sample(1:1000,1)
+  }
+
+  if (missing(formula)) stop("The 'formula' argument is required.")
+  if (missing(data)) stop("The 'data' argument is required.")
+  if (missing(nodesize)) stop("The 'nodesize' argument is required.")
+  if (missing(mtry)) stop("The 'mtry' argument is required.")
+  if (missing(ntree)) stop("The 'ntree' argument is required.")
+
+
+  variables_formula <- all.vars(formula)
+
+  times <- variables_formula[1]
+  failures <- variables_formula[2]
+
+
+  if("." %in% variables_formula){
+    vars<-setdiff(names(data),c(times,failures))
+    .outcome <- paste("Surv(", times, ",", failures, ")")
+    formula <- as.formula(paste(.outcome, "~", paste(vars, collapse = " + ")))
+    variables_formula <- all.vars(formula)
+  }
+
+
+  variables_existent <- all(variables_formula %in% names(data))
+  if (!variables_existent) stop("One or more variables from the formula do not exist in the data.")
+
+  rm(variables_existent)
+
+
+  is_binary <- all(data[[failures]] %in% c(0, 1))
+
+  if (! is_binary) stop("The 'failures' variable is not coded as 0/1.")
+
+  rm(is_binary)
+
+  all_terms <- attr(terms(formula), "term.labels")
+  strata_terms <- grep("strata\\(", all_terms, value = TRUE)
+  ns_terms <- grep("ns\\(", all_terms, value = TRUE)
+  bs_terms <- grep("bs\\(", all_terms, value = TRUE)
+  if(length(strata_terms) >= 1) stop("The 'randomForestSRC' package does not support the use of 'strata()' in the formula.")
+
+
+  if((length(ns_terms) >= 1)|(length(bs_terms) >= 1)|(length(all_terms)>(length(variables_formula)-2))){
+    vars<-setdiff(variables_formula,c(times,failures))
+    .outcome <- paste("Surv(", times, ",", failures, ")")
+    formula <- as.formula(paste(.outcome, "~", paste(vars, collapse = " + ")))
+  }
+  rm(all_terms,strata_terms,ns_terms,bs_terms)
+
+  if (any(is.na(data[,variables_formula]))){
+    subset_data<-na.omit(data[,variables_formula])
+    data<-cbind(subset_data, data[!colnames(data) %in% colnames(subset_data), drop = FALSE])
+    warning("Data need to be without NA. NA is removed")
+  }
+
+
+  old <- options()
+  on.exit(options(old))
+
+  options(rf.cores=1, mc.cores=1)
+
+  find.tune.rf.fast<-function(param.test, f, data ){
+
+    res.rsf <- rfsrc(f, data = data, nodesize = param.test[1], mtry = param.test[2] ,
+                     ntree = param.test[3] , seed=-seed, splitrule="logrank")
+
+    res<-c(param.test[1], param.test[2], param.test[3],  tail(res.rsf$err.rate, 1))
+
+    return(res)
+  }
+
+  .grid <-  expand.grid(nodesize=nodesize, mtry=mtry, ntree=ntree)
+  .grid=cbind(.grid[,1],.grid[,2], .grid[,3])
+
+
+  .tune.rf<-apply(.grid,MARGIN=1, FUN=find.tune.rf.fast, f=formula, data=data)
+
+  .res=t(.tune.rf)
+  colnames(.res)=c("nodesize","mtry","ntree","error")
+  .res=data.frame(.res)
+
+  .mini<-.res[which(.res$error==min(.res$error, na.rm=TRUE) & is.na(.res$error)==FALSE),]
+  .mini<-.mini[1,]
+
+  .optimal=list(nodesize=as.numeric(.mini$nodesize),
+                mtry=as.numeric(.mini$mtry),
+                ntree=as.numeric(.mini$ntree))
+
+  return(list(optimal=.optimal, results = t(.tune.rf)))
 }
-
-\description{
-This function finds the optimal nodesize, mtry, and ntree parameters for a survival random forest tree.
-}
-
-\usage{
-tuneRSF(times, failures, group=NULL, cov.quanti=NULL,
-cov.quali=NULL, data, nodesize, mtry, ntree)
-}
-
-\arguments{
-  \item{times}{The name of the variable related the numeric vector with the follow-up times.}
-  \item{failures}{The name of the variable related the numeric vector with the event indicators (0=right censored, 1=event).}
-  \item{group}{The name of the variable related to the exposure/treatment. This variable shall have only two modalities encoded 0 for the untreated/unexposed patients and 1 for the treated/exposed ones. The default value is \code{NULL}: no specific exposure/treatment is considered. When a specific exposure/treatment is considered, it will be forced in the algorithm or related interactions will be tested when possible.}
-  \item{cov.quanti}{The name(s) of the variable(s) related to the possible quantitative covariates. These variables must be numeric.}
-  \item{cov.quali}{The name(s) of the variable(s) related to the possible qualitative covariates. These variables must be numeric with two levels: 0 and 1. A complete disjunctive form must be used for covariates with more levels.}
-  \item{data}{A data frame for training the model in which to look for the variables related to the status of the follow-up time (\code{times}), the event (\code{failures}), the optional treatment/exposure (\code{group}) and the covariables included in the previous model (\code{cov.quanti} and \code{cov.quali}).}
-    \item{nodesize}{The values of the node size optimized over.}
-  \item{mtry}{The numbers of variables randomly sampled as candidates at each split optimized over.}
-  \item{ntree}{The numbers of trees optimized over.}
- }
-
-\details{
-The function runs the \code{tune.rfsrc} function of the \code{randomForestSRC} package.
-}
-
-\value{
-\item{optimal}{The value of lambda that gives the minimum mean cross-validated error.}
-\item{results}{The data frame with the mean cross-validated errors for each lambda values.}
-}
-
-\references{
-Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 7(2):25-31.
-}
-
-\examples{
-data(dataDIVAT2)
-
-tune.model <- tuneRSF(times="times", failures="failures", data=dataDIVAT2,
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
-  nodesize=c(100, 250, 500), mtry=1, ntree=100)
-
-tune.model$optimal # the estimated nodesize value
-
-# The estimation of the training modelwith the corresponding lambda value
-model <- LIB_RSF(times="times", failures="failures", data=dataDIVAT2,
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
-  nodesize=tune.model$optimal$nodesize, mtry=1, ntree=100)
-
-# The resulted predicted survival of the first subject of the training sample
-plot(y=model$predictions[1,], x=model$times, xlab="Time (years)",
-ylab="Predicted survival", col=1, type="l", lty=1, lwd=2, ylim=c(0,1))
-}
-
-\keyword{Tunning}
