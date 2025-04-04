@@ -13,22 +13,20 @@ Print the model or algorithm.
 }
 
 \arguments{
-  \item{x}{An object returned by the function \code{flexsurv}.}
+  \item{x}{A 'libsl' object.}
   \item{...}{For future methods.}
 }
 
 \value{No return value for this S3 method.}
 
-\seealso{
-  \code{\link{LIB_AFTgamma}}, \code{\link{LIB_AFTggamma}}, \code{\link{LIB_AFTllogis}}, \code{\link{LIB_AFTweibull}},
-  \code{\link{LIB_PHexponential}}, \code{\link{LIB_PHgompertz}}.
-}
+
 
 \examples{
-data(dataDIVAT2)
+data("dataDIVAT2")
 
-model <- LIB_AFTgamma(times="times", failures="failures",  data=dataDIVAT2[1:100,],
-        cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"))
+
+formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
+model <- LIB_AFTgamma(formula,  data=dataDIVAT2[1:100,])
 
 print(model)
 }
