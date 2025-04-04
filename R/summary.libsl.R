@@ -1,66 +1,145 @@
+summary.libsl <- function(object, newdata=NULL, ROC.precision=seq(.01,.99,.01), digits=7,pro.time=NULL, ...) {
 
-#pro.time
-#times=NULL
-#failures=NULL
+  formula<-object$formula
+  variables_formula <- all.vars(formula)
+  times <- variables_formula[1]
+  failures <- variables_formula[2]
 
-summary.libsl <- function(object, newdata=NULL, ROC.precision=seq(.01,.99,.01), digits=7, ...)
-{
-  if(hasArg(pro.time)==FALSE) {
-    pro.time <- median(object$data$times)
-    } else {pro.time <- list(...)$pro.time}
+  haz_function<-function(surv,times){
+    x<-1
+    result<-sapply(2:length(surv),function(i){
+      value<-surv[i]
+      if(value!=surv[i-1]){
+        x<<- x+1
+      }
+      return(x)
+    })
 
-  if(hasArg(times)==FALSE) {
-    times <- "times"
-  } else {times <- list(...)$times}
 
-  if(hasArg(failures)==FALSE) {
-    failures <- "failures"
-  } else {failures <- list(...)$failures}
+    df<-data.frame(temps=times,value=-log(surv),result=c(1,result))
+    df_unique <- df[!duplicated(df$result), ]
+    if(nrow(df_unique)>1){
+      diff_1<-diff(df_unique$temps)
+      diff_2 <- diff(df_unique$value)
+      resultat <- diff_2/diff_1
+      resultat<-c(Inf,resultat,NA)
+      idx=findInterval(times,c(0,df_unique$temps))
+      bj<-c(Inf,resultat[idx])
+    }
+    else{
+      bj<-c(rep(Inf,(length(surv)-1)),NA)
+    }
 
-  if(is.null(newdata))
-  {
-  return(
-    round(  data.frame(
-    ci = metrics(times="times", failures="failures", data=object$data, prediction.matrix=object$predictions,
-                prediction.times=object$times, metric="ci", pro.time=pro.time),
-    auc = metrics(times="times", failures="failures", data=object$data, prediction.matrix=object$predictions,
-                 prediction.times=object$times, metric="auc", pro.time=pro.time, ROC.precision=ROC.precision),
-    bs = metrics(times="times", failures="failures", data=object$data, prediction.matrix=object$predictions,
-                prediction.times=object$times,  metric="bs", pro.time=pro.time),
-    ibs = metrics(times="times", failures="failures", data=object$data, prediction.matrix=object$predictions,
-                 prediction.times=object$times,  metric="ibs", pro.time=pro.time),
-    ribs = metrics(times="times", failures="failures", data=object$data, prediction.matrix=object$predictions,
-                  prediction.times=object$times, metric="ribs", pro.time=pro.time),
-    bll = metrics(times="times", failures="failures", data=object$data, prediction.matrix=object$predictions,
-                 prediction.times=object$times, metric="bll", pro.time=pro.time),
-    ibll = metrics(times="times", failures="failures", data=object$data, prediction.matrix=object$predictions,
-                  prediction.times=object$times, metric="ibll", pro.time=pro.time),
-    ribll = metrics(times="times", failures="failures", data=object$data, prediction.matrix=object$predictions,
-                   prediction.times=object$times, metric="ribll", pro.time=pro.time) ), digits = digits ) )
+
+    return(bj)
+
   }
 
-  else {
-    .pred <- predict(object, newdata=newdata)
-    if(is.null(times)) {times <- object$outcomes$times; failures <- object$outcomes$failures}
+
+
+  if(is.null(pro.time)) {
+    pro.time <- median((object$data)[[times]][-1])
+  }
+
+
+  time.pred <- unique(sort(c(0,pro.time,object$times)))
+
+  if(is.null(newdata)){
+
+    survivals.matrix <- predict(object, newdata=object$data, newtimes=time.pred)$predictions
+
+    if(as.character(object$model$call[1]) %in% c("flexsurvreg","flexsurvspline")){
+      .flex<-object$model
+      .data<-object$data
+      .time<-time.pred
+      .hazlist<-predict(
+        .flex,
+        newdata=.data,
+        type = "haz",
+        times = .time
+      )
+      hazards.matrix <- t(sapply(.hazlist$.pred, function(x) x[[2]]))
+    }else{
+      hazards.matrix<-(t(apply(survivals.matrix[,-1],1,haz_function,times=time.pred[-1])))
+
+    }
 
     return(
-      round(  data.frame(
-      ci = metrics(times=times, failures=failures, data=newdata, prediction.matrix=.pred$predictions,
-                  prediction.times=object$times, metric="ci", pro.time=pro.time),
-      auc = metrics(times=times, failures=failures, data=newdata, prediction.matrix=.pred$predictions,
-                   prediction.times=object$times, metric="auc", pro.time=pro.time, ROC.precision=ROC.precision),
-      bs = metrics(times=times, failures=failures, data=newdata, prediction.matrix=.pred$predictions,
-                  prediction.times=object$times, metric="bs", pro.time=pro.time),
-      ibs = metrics(times=times, failures=failures, data=newdata, prediction.matrix=.pred$predictions,
-                   prediction.times=object$times, metric="ibs", pro.time=pro.time),
-      ribs = metrics(times=times, failures=failures, data=newdata, prediction.matrix=.pred$predictions,
-                    prediction.times=object$times, metric="ribs", pro.time=pro.time),
-      bll = metrics(times=times, failures=failures, data=newdata, prediction.matrix=.pred$predictions,
-                   prediction.times=object$times, metric="bll", pro.time=pro.time),
-      ibll = metrics(times=times, failures=failures, data=newdata, prediction.matrix=.pred$predictions,
-                    prediction.times=object$times, metric="ibll", pro.time=pro.time),
-      ribll = metrics(times=times, failures=failures, data=newdata, prediction.matrix=.pred$predictions,
-                     prediction.times=object$times, metric="ribll", pro.time=pro.time) ), digits = digits ) )
+      list(metrics=round(  data.frame(
+        p_ci = metrics(metric="p_ci", times=times, failures=failures, data=object$data, survivals.matrix=object$predictions,
+                       hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        uno_ci = metrics(metric="uno_ci", times=times, failures=failures, data=object$data, survivals.matrix=object$predictions,
+                         hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        auc = metrics(metric="auc", times=times, failures=failures, data=object$data, survivals.matrix=object$predictions,
+                      hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        bs = metrics(metric="bs", times=times, failures=failures, data=object$data, survivals.matrix=object$predictions,
+                     hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        ibs = metrics(metric="ibs", times=times, failures=failures, data=object$data, survivals.matrix=object$predictions,
+                      hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        ribs = metrics(metric="ribs", times=times, failures=failures, data=object$data, survivals.matrix=object$predictions,
+                       hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        bll = metrics(metric="bll", times=times, failures=failures, data=object$data, survivals.matrix=object$predictions,
+                      hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        ibll = metrics(metric="ibll", times=times, failures=failures, data=object$data, survivals.matrix=object$predictions,
+                       hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        ribll = metrics(metric="ribll", times=times, failures=failures, data=object$data, survivals.matrix=object$predictions,
+                        hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        ll= metrics(metric="ll", times=times, failures=failures, data=object$data, survivals.matrix=object$predictions,
+                    hazards.matrix=hazards.matrix,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision)), digits = digits ),
+        library=object$library,
+        pro.time=pro.time,
+        ROC.precision=ROC.precision) )
+  }else {
+    survivals.matrix <- predict(object, newdata=newdata, newtimes=time.pred)$predictions
+
+    if(as.character(object$model$call[1]) %in% c("flexsurvreg","flexsurvspline")){
+      .flex<-object$model
+      .time<-time.pred
+      .hazlist<-predict(
+        .flex,
+        newdata=newdata,
+        type = "haz",
+        times = .time
+      )
+      hazards.matrix <- t(sapply(.hazlist$.pred, function(x) x[[2]]))
+      }else{
+      hazards.matrix<-t(apply(survivals.matrix[,-1],1,haz_function,times=time.pred[-1]))
+
+    }
+
+    return(
+      list(metrics=round(  data.frame(
+        p_ci = metrics(metric="p_ci", times=times, failures=failures, data=newdata, survivals.matrix=survivals.matrix,
+                       hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        uno_ci = metrics(metric="uno_ci", times=times, failures=failures, data=newdata, survivals.matrix=survivals.matrix,
+                         hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        auc = metrics(metric="auc", times=times, failures=failures, data=newdata, survivals.matrix=survivals.matrix,
+                      hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        bs = metrics(metric="bs", times=times, failures=failures, data=newdata, survivals.matrix=survivals.matrix,
+                     hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        ibs = metrics(metric="ibs", times=times, failures=failures, data=newdata, survivals.matrix=survivals.matrix,
+                      hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        ribs = metrics(metric="ribs", times=times, failures=failures, data=newdata, survivals.matrix=survivals.matrix,
+                       hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        bll = metrics(metric="bll", times=times, failures=failures, data=newdata, survivals.matrix=survivals.matrix,
+                      hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        ibll = metrics(metric="ibll", times=times, failures=failures, data=newdata, survivals.matrix=survivals.matrix,
+                       hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        ribll = metrics(metric="ribll", times=times, failures=failures, data=newdata, survivals.matrix=survivals.matrix,
+                        hazards.matrix=NULL,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision),
+        ll= metrics(metric="ll", times=times, failures=failures, data=newdata, survivals.matrix=survivals.matrix,
+                    hazards.matrix=hazards.matrix,prediction.times=object$times,pro.time=pro.time, ROC.precision=ROC.precision)), digits = digits ) ,
+        library=object$library,
+        pro.time=pro.time,
+        ROC.precision=ROC.precision))
+
+
+
+
   }
 }
+
+
+
+
 
