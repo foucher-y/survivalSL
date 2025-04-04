@@ -1,211 +1,317 @@
-
 predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
 
-  if(object$library=="LIB_COXen" | object$library=="LIB_COXlasso" | object$library=="LIB_COXridge" |
-     object$library=="LIB_COXaic" | object$library=="LIB_COXall"){
 
-  group=object$group
-  cov.quanti=object$cov.quanti
-  cov.quali=object$cov.quali
+ if(!(is.null(newtimes))){
+  newtimes<-sort(newtimes)
+ }
 
-  if(is.null(newdata))  {
-    .pred.temp <- object$predictions
-    .time.temp <- object$times
+
+  if(!(is.null(newdata))){
+    if(any(sapply(newdata,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+
   }
-  else {
-    if(is.null(cov.quanti)==T & is.null(cov.quali)==T){
+
+
+
+
+  # If the user does not provide newtimes or newdata, by default, they will get the values from the original model.
+  if(is.null(newdata) & is.null(newtimes))  {
+    .survivals<-object$predictions[,-1]
+    .time<-object$times[-1]
+    nrow<-nrow(object$data)
+    ncol<-length(.time)
+  }
+
+
+
+  # Case where we don't have `newdata` but have `newtimes`.
+  if(is.null(newdata) & !(is.null(newtimes))){
+    nrow<-nrow(object$data)
+    ncol<-length(newtimes)
+
+    # Using `predict` for functions in the `flexsurv` package"
+    if(object$library=="LIB_AFTgamma" | object$library=="LIB_AFTggamma"  | object$library=="LIB_AFTweibull"  |
+       object$library=="LIB_AFTllogis" | object$library=="LIB_PHexponential"| object$library=="LIB_PHgompertz" |
+       object$library=="LIB_PHspline" ){
+
+      .flex<-object$model
+      .data<-object$data
+      .time<-newtimes
+      .survivalist<-predict(
+        .flex,
+        newdata=.data,
+        type = "survival",
+        times = .time
+      )
+
+      if(length(newtimes)>1){
+        .survivals <- t(sapply(.survivalist$.pred, function(x) x[[2]]))
+      }
+      else{
+        .survivals<-.survivalist$.pred_survival
+      }
+
+
+
+
+    }
+
+    # For the following functions, we have step survival functions, so we will use findInterval to determine where the new times fall.
+
+    if(object$library=="LIB_COXen" | object$library=="LIB_COXlasso" | object$library=="LIB_COXridge"
+       | object$library=="LIB_RSF" | object$library=="LIB_COXall" | object$library=="LIB_COXaic"){
+
+      .surv<-object$predictions
+      .times<-object$times
+      .time<-newtimes
+      .idx<-findInterval(.time,.times)
+      .survivals<-.surv[,.idx]
+
+
+    }
+
+    if(object$library=="LIB_PLANN"){
+      data <- model.matrix(object$formula, object$data)[,-1]
+      .time<-newtimes
+      if(0 %in% .time){
+        .survivals <- as.matrix(predict(object$model, newdata = as.data.frame(data), newtimes = .time)$prediction)
+      }
+      else{
+        .survivals <- as.matrix(predict(object$model, newdata = as.data.frame(data), newtimes = .time)$prediction)[,-1]
+      }
+
+    }
+
+  }
+
+  # Case where we have newdata but no new times.
+  if(!(is.null(newdata)) & is.null(newtimes)){
+    nrow<-nrow(newdata)
+    ncol<-length(object$times[-1])
+
+
+    if(object$library=="LIB_AFTgamma" | object$library=="LIB_AFTggamma"  | object$library=="LIB_AFTweibull"  |
+       object$library=="LIB_AFTllogis" | object$library=="LIB_PHexponential"| object$library=="LIB_PHgompertz" |
+       object$library=="LIB_PHspline" ){
+
+      .flex<-object$model
+      .formula<-object$formula
+      .variables_formula <- all.vars(.formula)
+      .times <- .variables_formula[1]
+      .time<-object$times[-1]
+
+      .survivalist<-predict(
+        .flex,
+        newdata=newdata,
+        type = "survival",
+        times = .time
+      )
+
+      .survivals <- t(sapply(.survivalist$.pred, function(x) x[[2]]))
+
+    }
+
+    if(object$library=="LIB_COXall" | object$library=="LIB_COXaic"){
+      # The Cox model is a semi-parametric model, so we can calculate the new linear predictors,
+      # but for the non-parametric part, we will use the estimation given by the original model.
       .coxphsurv<-survfit(object$model, newdata = newdata,se.fit = F)
-
-      .sumcoxphsurv<-summary(.coxphsurv, times=sort(unique(object$times)))
-      .pred.temp <- t(.sumcoxphsurv$surv)
-      .time.temp <- .sumcoxphsurv$time
+      .sumcoxphsurv<-summary(.coxphsurv, times=object$times[-1])
+      .survivals <- t(.sumcoxphsurv$surv)
+      .time<-object$times[-1]
     }
-    else{
-      .bs=NULL
-      .bin=NULL
-      if(is.null(cov.quanti)==F){
-        .bs <- eval(parse(text=paste("cbind(",
-                                     paste("bs(newdata$",cov.quanti,",df=3)", collapse = ", ")
-                                     ,")") ) )
-      }
-      if(is.null(cov.quali)==F){
-        .bin <- eval(parse(text=paste("cbind(",  paste("newdata$", cov.quali, collapse = ", "), ")") ) )
-      }
-      .cov <- cbind(.bs,.bin)
-      if(!(is.null(object$group))){
-        .x <- cbind(newdata[,object$group], .cov, .cov * newdata[,object$group])
-      }
-      else{
-        .x <- .cov
-      }
-      if(class(object$model)[1]=="coxph"){
-        .lp.coxph <- predict(object$model, newdata = newdata, type="lp")
-        .pred.temp <- exp(matrix(exp(.lp.coxph)) %*% t(as.matrix(-1*object$hazard)))
-        .time.temp <- object$times
-      }
-      else{
-        .lp.lasso <- predict(object$model, newx = .x)
-        .pred.temp <- exp(matrix(exp(.lp.lasso)) %*% t(as.matrix(-1*object$hazard)))
-        .time.temp <- object$times
-      }
 
+    if(object$library=="LIB_COXen" | object$library=="LIB_COXlasso" | object$library=="LIB_COXridge"
+    ){
+      .x <- model.matrix(object$formula, object$data)[,-1]
+      .lp <-predict(object$model, newx = .x)
+      .times <- all.vars(object$formula)[1]
+      .failures <- all.vars(object$formula)[2]
+      if(!(.times %in% names(newdata))|!(.failures %in% names(newdata))){
+        new<-data.frame(times=rep(0,nrow(newdata)),failures=rep(0,nrow(newdata)))
+        colnames(new)<-c(.times,.failures)
+        newdata<-cbind(new,newdata)
+      }
+      if(nrow(newdata)>1){
+        .x_bis <- model.matrix(object$formula,rbind(newdata,object$data[,names(newdata)]))[1:nrow(newdata),-1]
+      }else{
+        .x_bis <- model.matrix(object$formula, rbind(newdata,object$data[,names(newdata)]))[1,-1]
+      }
+      .lp_bis <-predict(object$model, newx = .x_bis)
+      .b <- glmnet_basesurv(object$data[[.times]], object$data[[.failures]], .lp, centered = FALSE)
+      .H0 <- data.frame(value = .b$cumulative_base_hazard, time = .b$times)
+      .survivals <- exp(matrix(exp(.lp_bis)) %*% t(as.matrix(-1*.H0$value)))
+      .time<-object$times[-1]
 
     }
 
-  }
-
-  if(!is.null(newtimes)){
-    .pred.temp <- cbind(rep(1, dim(.pred.temp )[1]), .pred.temp)
-    .time.temp <- c(0, .time.temp)
-
-    idx=findInterval(newtimes,.time.temp)
-    .pred=.pred.temp[,pmax(1,idx)]
-    .time.temp <- newtimes
-    .pred.temp=.pred
-  }
-
-
-  return(list(times=.time.temp, predictions=.pred.temp)) }
-
-  if(object$library=="LIB_AFTgamma" | object$library=="LIB_AFTggamma"  | object$library=="LIB_AFTweibull"  |
-     object$library=="LIB_AFTllogis" | object$library=="LIB_PHexponential"| object$library=="LIB_PHgompertz" |
-     object$library=="LIB_PHspline" ){
-
-    .flex=object$model
-
-    if(is.null(newdata)){
-      if(is.null(newtimes)){
-        .predlist<-summary(.flex, type = "survival", newdata=object$data, ci = F, se=F )
-        .time.temp=.predlist[[1]]$time
-      }
-      else{
-        .predlist<-summary(.flex, type = "survival", newdata=object$data, ci = F, se=F, t=newtimes)
-        .time.temp=newtimes
-      }
-    }
-    else{
-      if(is.null(newtimes)){
-        .predlist<-summary(.flex, type = "survival", newdata=newdata, ci = F, se=F)
-        .time.temp=.predlist[[1]]$time
-      }
-      else{
-        .predlist<-summary(.flex, type = "survival", newdata=newdata, ci = F, se=F, t=newtimes)
-        .time.temp=newtimes
-      }
-    }
-
-    .pred=matrix(nrow=length(.predlist), ncol=length(.predlist[[1]]$time))
-
-    for (i in 1:length(.predlist)){
-      .pred[i,]=.predlist[[i]]$est
-    }
-
-
-    return(list(times=.time.temp, predictions=.pred))
-  }
-
-  if(object$library=="LIB_RSF"){
-    if(is.null(newdata))  {
-      .survival <- object$predictions
-      .time.interest <- object$times
-    }
-    else {
-      .pred.rf <- predict(object$model, newdata = newdata)
+    if(object$library=="LIB_RSF"){
+      .pred.rf <- predict(object$model,newdata=newdata)
       .survival <- cbind(rep(1, dim(.pred.rf$survival)[1]), .pred.rf$survival)
       .time.interest <- c(0, .pred.rf$time.interest)
+      .time<-object$times[-1]
+      .idx=findInterval(.time,.time.interest)
+      .survivals<-.survival[,.idx]
 
-      idx=findInterval(object$times,.time.interest)
-      .pred=.survival[,pmax(1,idx)]
+    }
 
-      .survival <- .pred
-      .time.interest <- object$times
+    if(object$library=="LIB_PLANN"){
+      formula<-object$formula
+      .times <- all.vars(formula)[1]
+      .failures <- all.vars(formula)[2]
+      if(!(.times %in% names(newdata))|!(.failures %in% names(newdata))){
+        new<-data.frame(times=rep(0,nrow(newdata)),failures=rep(0,nrow(newdata)))
+        colnames(new)<-c(.times,.failures)
+        newdata<-cbind(new,newdata)
+      }
+      if(nrow(newdata)>1){
+        data <- model.matrix(formula,rbind(newdata,object$data[,names(newdata)]))[1:nrow(newdata),]
+      }
+      else{
+        data <- model.matrix(formula, rbind(newdata,object$data[,names(newdata)]))[1,]
+      }
+      .time<-object$times[-1]
+      .survivals <- as.matrix((predict(object$model, newdata = as.data.frame(data), newtimes=.time))$predictions)[,-1]
+
+    }
+
+  }
+  if(!(is.null(newdata)) & !(is.null(newtimes))){
+
+    nrow<-nrow(newdata)
+    ncol<-length(newtimes)
+
+
+    if(object$library=="LIB_AFTgamma" | object$library=="LIB_AFTggamma"  | object$library=="LIB_AFTweibull"  |
+       object$library=="LIB_AFTllogis" | object$library=="LIB_PHexponential"| object$library=="LIB_PHgompertz" |
+       object$library=="LIB_PHspline" ){
+
+      .flex<-object$model
+      .time<-newtimes
+
+      .survivalist<-predict(
+        .flex,
+        newdata=newdata,
+        type = "survival",
+        times = .time
+      )
+
+      if(length(newtimes)>1){
+        .survivals <- t(sapply(.survivalist$.pred, function(x) x[[2]]))
+      }
+      else{
+        .survivals<-.survivalist$.pred_survival
+      }
+
+
+
+    }
+
+    if(object$library=="LIB_COXall" | object$library=="LIB_COXaic"){
+
+      .coxphsurv<-survfit(object$model, newdata = newdata,se.fit = F)
+      .sumcoxphsurv<-summary(.coxphsurv, times=object$times)
+      .surv <- t(.sumcoxphsurv$surv)
+      .time<-newtimes
+      .idx=findInterval(.time,object$times)
+      if(nrow(.surv)==1){
+        .survivals<-.surv[.idx]
+      }
+      else{
+        .survivals<-.surv[,.idx]
+
+      }
+
+    }
+
+    if(object$library=="LIB_COXen" | object$library=="LIB_COXlasso" | object$library=="LIB_COXridge"
+    ){
+
+      .x <- model.matrix(object$formula, object$data)[,-1]
+      .lp <-predict(object$model, newx = .x)
+      .times <- all.vars(object$formula)[1]
+      .failures <- all.vars(object$formula)[2]
+      if(!(.times %in% names(newdata))|!(.failures %in% names(newdata))){
+        new<-data.frame(times=rep(0,nrow(newdata)),failures=rep(0,nrow(newdata)))
+        colnames(new)<-c(.times,.failures)
+        newdata<-cbind(new,newdata)
+      }
+      if(nrow(newdata)>1){
+        .x_bis <- model.matrix(object$formula,rbind(newdata,object$data[,names(newdata)]))[1:nrow(newdata),-1]
+      }else{
+        .x_bis <- model.matrix(object$formula, rbind(newdata,object$data[,names(newdata)]))[1,-1]
+      }
+      .lp_bis <-predict(object$model, newx = .x_bis)
+      .b <- glmnet_basesurv(object$data[[.times]], object$data[[.failures]], .lp, centered = FALSE)
+      .H0 <- data.frame(value = c(0,.b$cumulative_base_hazard), time = c(0,.b$times))
+      .surv <- exp(matrix(exp(.lp_bis)) %*% t(as.matrix(-1*.H0$value)))
+      .time<-newtimes
+      .idx<-findInterval(.time,.H0$time)
+      if(nrow(.surv)==1){
+        .survivals<-.surv[.idx]
+      }else{
+        .survivals<-.surv[,.idx]
+      }
+
+
+
+    }
+
+    if(object$library=="LIB_RSF"){
+      .pred.rf <- predict(object$model,newdata=newdata)
+      .surv <- cbind(rep(1, dim(.pred.rf$survival)[1]), .pred.rf$survival)
+      .time.interest <- c(0, .pred.rf$time.interest)
+      .time<-newtimes
+      .idx=findInterval(.time,.time.interest)
+      .survivals<-.surv[,.idx]
+
+    }
+
+    if(object$library=="LIB_PLANN"){
+      formula<-object$formula
+      .times <- all.vars(formula)[1]
+      .failures <- all.vars(formula)[2]
+      if(!(.times %in% names(newdata))|!(.failures %in% names(newdata))){
+        new<-data.frame(times=rep(0,nrow(newdata)),failures=rep(0,nrow(newdata)))
+        colnames(new)<-c(.times,.failures)
+        newdata<-cbind(new,newdata)
+      }
+      if(nrow(newdata)>1){
+        data <- model.matrix(formula,rbind(newdata,object$data[,names(newdata)]))[1:nrow(newdata),]
+      }
+      else{
+        data <- model.matrix(formula, rbind(newdata,object$data[,names(newdata)]))[1,]
+      }
+
+      .time<-newtimes
+      if(0 %in% .time){
+        .survivals <- as.matrix(predict(object$model, newdata = as.data.frame(data), newtimes = .time)$prediction)
+      }
+      else{
+        .survivals <- as.matrix(predict(object$model, newdata = as.data.frame(data), newtimes = .time)$prediction)[,-1]
+      }
     }
 
 
-    if(!is.null(newtimes)) {
-      .survival <- cbind(rep(1, dim(.survival)[1]), .survival)
-      .time.interest <- c(0, .time.interest)
-
-      idx=findInterval(newtimes,.time.interest)
-      .pred=.survival[,pmax(1,idx)]
-
-      .survival <- .pred
-      .time.interest <- newtimes
-    }
-
-    return(list(times=.time.interest, predictions=.survival))
   }
 
-  #
+
+  .predictions=matrix(.survivals,ncol=ncol,nrow = nrow)
 
   if(object$library=="LIB_PLANN"){
-    if(is.null(newdata))  {
-      .survival <- object$predictions
-      .time.interest <- object$times
-    }
-    else {
-      .pred.plann <- predict(object$model, newdata = newdata)
-      .survival <- cbind(rep(1, dim(.pred.plann$predictions)[1]), .pred.plann$predictions)
-      .time.interest <- c(0, .pred.plann$time.interest)
-
-      idx=findInterval(object$times,.time.interest)
-      .pred=.survival[,pmax(1,idx)]
-
-      .survival <- .pred
-      .time.interest <- object$times
-    }
-
-
-    if(!is.null(newtimes)) {
-      .survival <- cbind(rep(1, dim(.survival)[1]), .survival)
-      .time.interest <- c(0, .time.interest)
-
-      idx=findInterval(newtimes,.time.interest)
-      .pred=.survival[,pmax(1,idx)]
-
-      .survival <- as.matrix(.pred)
-      .time.interest <- newtimes
-    }
-
-    return(list(times=.time.interest, predictions=.survival))
+    .predictions=.survivals
   }
 
-  #
-
-  if(object$library=="LIB_SNN"){
-
-    .times <- object$times
-
-    if(is.null(newdata))  {
-      .pred <- object$predictions
-    }
-    else {
-
-      .var <- c(object$cov.quanti, object$cov.quali)
-
-      .newdata<-newdata[,.var]
-
-      .pred <- predict(object$model, newdata=.newdata)
-      .time.deepsurv<-as.numeric(dimnames(.pred)[[2]])
-
-      idx=findInterval(.times, .time.deepsurv)
-      .pred=.pred[,pmax(1,idx)]
-    }
 
 
-    if(!is.null(newtimes)) {
-      .pred.deepsurv <- cbind(rep(1, dim(.pred)[1]), .pred)
 
-      .time.deepsurv <- c(0, .times)
-
-      idx=findInterval(newtimes, .time.deepsurv)
-      .pred=.pred.deepsurv[,pmax(1,idx)]
-
-      .times <- newtimes
-    }
-
-    return(list(times=.times, predictions=.pred))
-  }
+  return(list(times=.time, predictions=.predictions))
 }
+
+
+
+
+
+
+
 
 
