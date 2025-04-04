@@ -90,6 +90,9 @@ summary.libsl <- function(object, newdata=NULL, ROC.precision=seq(.01,.99,.01), 
         pro.time=pro.time,
         ROC.precision=ROC.precision) )
   }else {
+
+    time<-unique(newdata[[times]])
+    time.pred<-sort(c(time,time.pred))
     survivals.matrix <- predict(object, newdata=newdata, newtimes=time.pred)$predictions
 
     if(as.character(object$model$call[1]) %in% c("flexsurvreg","flexsurvspline")){
