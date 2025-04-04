@@ -272,6 +272,8 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
 
            .Data[[failures]]<-ifelse(is.na(.Data$haz),0,.Data[[failures]])
            .Data$haz<-ifelse(is.na(.Data$haz),10**-7,.Data$haz)
+           .Data$haz<-ifelse(is.infinite(.Data$haz),10**-7,.Data$haz)
+
 
 
 
@@ -282,8 +284,6 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
   data<-.data_bis
   return(as.numeric(RET))
 }
-
-
 
 
 
