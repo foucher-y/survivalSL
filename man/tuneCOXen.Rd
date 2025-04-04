@@ -10,21 +10,19 @@ This function finds the optimal lambda and alpha parameters for an elastic net C
 }
 
 \usage{
-tuneCOXen(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL,
-data, cv=10, parallel=FALSE, alpha, lambda)
+tuneCOXen(formula, data, penalty=NULL,
+ cv=10, parallel=FALSE, alpha, lambda, seed=NULL)
 }
 
 \arguments{
-  \item{times}{The name of the variable related the numeric vector with the follow-up times.}
-  \item{failures}{The name of the variable related the numeric vector with the event indicators (0=right censored, 1=event).}
-  \item{group}{The name of the variable related to the exposure/treatment. This variable shall have only two modalities encoded 0 for the untreated/unexposed patients and 1 for the treated/exposed ones. The default value is \code{NULL}: no specific exposure/treatment is considered. When a specific exposure/treatment is considered, it will be forced in the algorithm or related interactions will be tested when possible.}
-  \item{cov.quanti}{The name(s) of the variable(s) related to the possible quantitative covariates. These variables must be numeric.}
-  \item{cov.quali}{The name(s) of the variable(s) related to the possible qualitative covariates. These variables must be numeric with two levels: 0 and 1. A complete disjunctive form must be used for covariates with more levels.}
-  \item{data}{A data frame for training the model in which to look for the variables related to the status of the follow-up time (\code{times}), the event (\code{failures}), the optional treatment/exposure (\code{group}) and the covariables included in the previous model (\code{cov.quanti} and \code{cov.quali}).}
+   \item{formula}{A formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \code{Surv} function.}
+  \item{data}{A data frame for training the model with the same covariates as in the formula.}
+  \item{penalty}{A numerical vector that allows the covariates not to be penalized. We give the value 0 if we do not want the covariate to be penalized otherwise 1. If \code{NULL}, all covariates are penalized.}
   \item{cv}{The value of the number of folds. The default value is 10.}
   \item{parallel}{If \code{TRUE}, use parallel \code{foreach} to fit each fold. The default is \code{FALSE}.}
   \item{alpha}{The values of the regularization parameter alpha optimized over.}
   \item{lambda}{The values of the regularization parameter lambda optimized over.}
+   \item{seed}{A random seed to ensure reproducibility during the cv process. If \code{NULL}, a seed is randomly assigned.}
  }
 
 \details{
@@ -32,8 +30,8 @@ The function runs the \code{cv.glmnet} function of the \code{glmnet} package.
 }
 
 \value{
-\item{optimal}{The value of lambda that gives the minimum mean cross-validated error.}
-\item{results}{The data frame with the mean cross-validated errors for each lambda values.}
+\item{optimal}{The values of lambda and alpha that gives the minimum cross-validated deviance.}
+\item{results}{The data frame with the cross-validated deviance for each lambda and alpha values.}
 }
 
 \references{
@@ -41,17 +39,17 @@ Simon, N., Friedman, J., Hastie, T. and Tibshirani, R. (2011) Regularization Pat
 }
 
 \examples{
-data(dataDIVAT2)
+data("dataDIVAT2")
 
-tune.model <- tuneCOXen(times="times", failures="failures", data=dataDIVAT2,
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"), cv=5,
+
+formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
+tune.model <- tuneCOXen(formula=formula, data=dataDIVAT2, cv=5,
   alpha=seq(.1, 1, by=.1), lambda=seq(.1, 1, by=.1))
 
 tune.model$optimal$lambda # the estimated lambda value
 
 # The estimation of the training modelwith the corresponding lambda value
-model <- LIB_COXen(times="times", failures="failures", data=dataDIVAT2,
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"),
+model <- LIB_COXen(formula, data=dataDIVAT2,
   alpha=tune.model$optimal$alpha,
   lambda=tune.model$optimal$lambda)
 
