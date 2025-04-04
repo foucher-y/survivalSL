@@ -21,13 +21,15 @@ Print the contribution of learners included in the super learner.
 \value{No return value for this S3 method.}
 
 \examples{
-data(dataDIVAT2)
+data("dataDIVAT2")
 
-sl1 <- survivalSL(method=c("LIB_COXridge", "LIB_AFTggamma"),  metric="ci",
-  data=dataDIVAT2[1:150,],  times="times", failures="failures", pro.time = 12,
-  cov.quanti=c("age"),  cov.quali=c("hla", "retransplant", "ecd"), cv=3)
+
+formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
+sl1 <- survivalSL(formula, method=c("LIB_COXridge", "LIB_AFTggamma"),  metric="auc",
+  data=dataDIVAT2[1:150,], pro.time = 12, cv=3)
 
 print(sl1, digits=4)
 }
 
 \keyword{Printing}
+
