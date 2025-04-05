@@ -47,11 +47,11 @@ data("dataDIVAT2")
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
 model <- LIB_COXridge(formula, data=dataDIVAT2, lambda=.1)
 
-# The apparent AUC at 10-year post-transplantation
+# The apparent AUC 
 metrics(metric="auc", times="times",
 failures="failures", data=dataDIVAT2,
   survivals.matrix=model$predictions,
-  hazards.matrix=NULL, prediction.times=model$times, pro.time=10)
+  hazards.matrix=NULL, prediction.times=model$times)
 
 # The integrated Brier score up to 10 years post-transplanation
 metrics(metric="ribs", times="times", failures="failures",
