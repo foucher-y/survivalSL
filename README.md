@@ -9,7 +9,7 @@ evaluate its prognostic capacities. Several learners are proposed:
 proportional hazard (PH) regressions, penalized PH semi-parametric
 models, accelerated failure times (AFT) models, neural networks, random
 survival forests, etc.). We proposed also a variety of loss functions
-for the estimation of the weights (concordance index (Harrell and Uno versions), Brier score, area
+for the estimation of the weights (concordance index (Pencina and Uno versions), Brier score, area
 under the time-dependent ROC curve, negative binomial log-likelihood,
 etc.). S3 methods are included to evaluate the predictive capacities, as
 well as predicting survival curves from new observations.
