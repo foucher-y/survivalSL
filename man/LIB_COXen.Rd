@@ -17,7 +17,7 @@ data, penalty=NULL, alpha, lambda)
 
 \arguments{
 \item{formula}{A formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \code{Surv} function.}
-  \item{data}{A data frame for training the model in which to look for the variables related to the status of the follow-up time, the event,and the other covariables included in the formula.}
+  \item{data}{A data frame whose columns correspond to the variables present in the formula.}
  \item{penalty}{A numerical vector that allows the covariates not to be penalized. We give the value 0 if we do not want the covariate to be penalized otherwise 1. If \code{NULL}, all covariates are penalized.}
   \item{alpha}{The value of the regularization parameter alpha for penalizing the partial likelihood.}
   \item{lambda}{The value of the regularization parameter lambda for penalizing the partial likelihood.}
