@@ -16,7 +16,7 @@ LIB_AFTgamma(formula, data)
 
 \arguments{
 \item{formula}{A formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \code{Surv} function.}
-  \item{data}{A dataframe whose columns correspond to the variables present in the formula.}
+  \item{data}{A data frame whose columns correspond to the variables present in the formula.}
  }
 
 \details{
