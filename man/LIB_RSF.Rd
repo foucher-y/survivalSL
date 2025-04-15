@@ -17,7 +17,7 @@ data, nodesize, mtry, ntree, seed=NULL)
 
 \arguments{
  \item{formula}{A formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \code{Surv} function.}
-  \item{data}{A data frame for training the model in which to look for the variables related to the status of the follow-up time, the event,and the other covariables included in the formula.}
+  \item{data}{A data frame whose columns correspond to the variables present in the formula.}
   \item{nodesize}{The value of the node size.}
   \item{mtry}{The number of variables randomly sampled as candidates at each split.}
   \item{ntree}{The number of trees.}
