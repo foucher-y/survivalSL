@@ -68,7 +68,12 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
          p_ci={
            status <- ifelse((data[[failures]]==1) & (data[[times]]>pro.time),0,data[[failures]])
            time <- ifelse(data[[times]]>pro.time,pro.time,data[[times]])
-           predicted<-survivals.matrix[,prediction.times>=pro.time][,1]
+           length<-dim(survivals.matrix[,prediction.times>=pro.time])
+           if(is.null(length)){
+             predicted<-survivals.matrix[,prediction.times>=pro.time]
+           }else{
+             predicted<-survivals.matrix[,prediction.times>=pro.time][,1]
+           }
            permissible <- 0 # comparable pairs
            concord <- 0
            n <- length(time)
@@ -121,7 +126,12 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
            RET <- as.matrix(RET)
          },
          bs={
-           score_risque<-survivals.matrix[,prediction.times>=pro.time][,1]
+           length<-dim(survivals.matrix[,prediction.times>=pro.time])
+           if(is.null(length)){
+             score_risque<-survivals.matrix[,prediction.times>=pro.time]
+           }else{
+             score_risque<-survivals.matrix[,prediction.times>=pro.time][,1]
+           }
            help1 <- ifelse(data[[times]] <= pro.time & data[[failures]] == 1,1,0)
            help2 <- ifelse(data[[times]] > pro.time,1,0)
            bs <- mean((0 - score_risque)^2 * help1 * (1/.csurv) + (1 - score_risque)^2 * help2 * (1/.csurv.pro.time))
@@ -129,7 +139,12 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
 
          },
          bll={
-           pro.time.surv<-survivals.matrix[,prediction.times>=pro.time][,1]
+          length<-dim(survivals.matrix[,prediction.times>=pro.time])
+           if(is.null(length)){
+             pro.time.surv<-survivals.matrix[,prediction.times>=pro.time]
+           }else{
+             pro.time.surv<-survivals.matrix[,prediction.times>=pro.time][,1]
+           }
            pro.time.surv[which(pro.time.surv==0)]<-10**-7
            pro.time.surv[which(pro.time.surv==1)]<-1-10**-7
            help1 <- ifelse(data[[times]] <= pro.time & data[[failures]] == 1,1,0)
@@ -198,7 +213,12 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
            RET <- as.matrix(RET)
          },
          auc={
-           pro.time.surv<-survivals.matrix[,prediction.times>=pro.time][,1]
+            length<-dim(survivals.matrix[,prediction.times>=pro.time])
+           if(is.null(length)){
+             pro.time.surv<-survivals.matrix[,prediction.times>=pro.time]
+           }else{
+             pro.time.surv<-survivals.matrix[,prediction.times>=pro.time][,1]
+           }
            .data <- data.frame(times=data[[times]], failures=data[[failures]],
                                variable=(1-pro.time.surv))
            RET <- roc(times="times", failures="failures", variable="variable",
@@ -209,7 +229,12 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
          uno_ci={
            status <- ifelse((data[[failures]]==1) & (data[[times]]>pro.time),0,data[[failures]])
            time <- ifelse(data[[times]]>pro.time,pro.time,data[[times]])
-           predicted<-survivals.matrix[,prediction.times>=pro.time][,1]
+           length<-dim(survivals.matrix[,prediction.times>=pro.time])
+           if(is.null(length)){
+             predicted<-survivals.matrix[,prediction.times>=pro.time]
+           }else{
+             predicted<-survivals.matrix[,prediction.times>=pro.time][,1]
+           }
            permissible <- 0 # comparable pairs
            concord <- 0
            n <- length(time)
