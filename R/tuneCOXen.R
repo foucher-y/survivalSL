@@ -1,82 +1,87 @@
+tuneCOXen<- function(formula, data, penalty = NULL, cv = 10, parallel =
+                       FALSE, alpha, lambda, seed = NULL){
 
-tuneCOXen<- function(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL, data, cv=10,
-                       parallel=FALSE, alpha, lambda){
 
-  .outcome <- paste("Surv(", times, ",", failures, ")")
+  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
 
-  if(!(is.null(group))){
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~", group, "*(",paste("bs(", cov.quanti, ", df=3)", collapse = " + "), " + ",
-                              paste(cov.quali, collapse = " + "),  ")",collapse = " ") )
-    }
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==T){
-      .f <- as.formula( paste(.outcome, "~", group, "*(",paste("bs(", cov.quanti, ", df=3)", collapse = " + "),")" ))
-    }
-    if(is.null(cov.quanti)==T & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~", group, "*(",paste(cov.quali, collapse = " + "),  ")",collapse = " ") )
-    }
-    if(is.null(cov.quanti)==T & is.null(cov.quali)==T){
-      .f <- as.formula( paste(.outcome, "~", group) )
-      return(list(optimal=list(alpha=NA,
-                               lambda=NA),
-                  results = data.frame(alpha=NA,lambda=NA, cvm=NA)))
-    }
 
-    .full <- coxph( .f,  data = data)
-    .l <- length(.full$coefficients)
-    .bs=NULL
-    .bin=NULL
-    if(is.null(cov.quanti)==F){
-      .bs <- eval(parse(text=paste("cbind(",
-                                   paste("bs(data$", cov.quanti,",df=3)", collapse = ", ")
-                                   ,")") ) )
-    }
-    if(is.null(cov.quali)==F){
-      .bin <- eval(parse(text=paste("cbind(",  paste("data$", cov.quali, collapse = ", "), ")") ) )
-    }
 
-    .cov <- cbind(.bs,.bin)
-    .x <- cbind(data[,group], .cov, .cov * data[,group])
-    .y <- Surv(data[,times], data[,failures])
+  if(is.null(seed)){
+    seed<-sample(1:1000,1)
+  }
+
+
+  if (missing(formula)) stop("The 'formula' argument is required.")
+  if (missing(data)) stop("The 'data' argument is required.")
+  if (missing(alpha)) stop("The 'alpha' argument is required.")
+  if (missing(lambda)) stop("The 'lambda' argument is required.")
+
+  variables_formula <- all.vars(formula)
+
+  times <- variables_formula[1]
+  failures <- variables_formula[2]
+
+
+  if("." %in% variables_formula){
+    vars<-setdiff(names(data),c(times,failures))
+    .outcome <- paste("Surv(", times, ",", failures, ")")
+    formula <- as.formula(paste(.outcome, "~", paste(vars, collapse = " + ")))
+    variables_formula <- all.vars(formula)
+  }
+
+  variables_existent <- all(variables_formula %in% names(data))
+  if (!variables_existent) stop("One or more variables from the formula do not exist in the data.")
+
+  rm(variables_existent)
+
+  all_terms <- attr(terms(formula), "term.labels")
+  strata_terms <- grep("strata\\(", all_terms, value = TRUE)
+  if(length(strata_terms) >= 1) stop("The 'glmnet' package does not support the use of 'strata()' in the formula.")
+
+  rm(all_terms,strata_terms)
+
+  is_binary <- all(data[[failures]] %in% c(0, 1))
+
+  if (! is_binary) stop("The 'failures' variable is not coded as 0/1.")
+
+  rm(is_binary)
+
+  if (any(is.na(data[,variables_formula]))){
+    subset_data<-na.omit(data[,variables_formula])
+    data<-cbind(subset_data, data[!colnames(data) %in% colnames(subset_data), drop = FALSE])
+    warning("Data need to be without NA. NA is removed")
+  }
+
+  .y <- Surv(data[[times]], data[[failures]])
+  .x <- model.matrix(formula,data)[,-1]
+  .results<-c()
+
+  set.seed(seed)
+  foldid <- sample(rep(seq(cv), length.out = nrow(.x)))
+
+  if(!(is.null(penalty))) {
+    for( a in 1:length(alpha)){
+      .cv.en<-glmnet::cv.glmnet(x=.x, y=.y, family = "cox",  type.measure = "deviance", foldid=foldid,
+                                foldsid="folds", parallel = parallel, alpha=alpha[a],
+                                penalty.factor = penalty,
+                                lambda=lambda)
+      .results<-rbind(.results,
+                      cbind(rep(alpha[a],length(.cv.en$lambda)),.cv.en$lambda,.cv.en$cvm))
+
+    }
   }
 
   else{
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~", paste("bs(", cov.quanti, ", df=3)", collapse = " + "), " + ", paste(cov.quali, collapse = " + "),
-                              collapse = " ") )
+    for(a in 1:length(alpha)){
+      .cv.en<-glmnet::cv.glmnet(x=.x, y=.y, family = "cox",  type.measure = "deviance", foldid=foldid,
+                                foldsid="folds", parallel = parallel, alpha=alpha[a],
+                                lambda=lambda)
+      .results<-rbind(.results,
+                      cbind(rep(alpha[a],length(.cv.en$lambda)),.cv.en$lambda,.cv.en$cvm))
     }
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==T){
-      .f <- as.formula( paste(.outcome, "~", paste("bs(", cov.quanti, ", df=3)", collapse = " + ")))
-    }
-    if(is.null(cov.quanti)==T & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~",  paste(cov.quali, collapse = " + "),collapse = " ") )
-    }
-    .full <- coxph( .f,  data = data)
-    .l <- length(.full$coefficients)
+  }
 
-    .bs=NULL
-    .bin=NULL
-    if(is.null(cov.quanti)==F){
-      .bs <- eval(parse(text=paste("cbind(",
-                                   paste("bs(data$", cov.quanti,",df=3)", collapse = ", ")
-                                   ,")") ) )
-    }
-    if(is.null(cov.quali)==F){
-      .bin <- eval(parse(text=paste("cbind(",  paste("data$", cov.quali, collapse = ", "), ")") ) )
-    }
-    .cov <- cbind(.bs,.bin)
-    .x <- .cov
-    .y <- Surv(data[,times], data[,failures])
-  }
-  .results<-c()
-  for( a in 1:length(alpha)){
-    .cv.en<-glmnet::cv.glmnet(x=.x, y=.y, family = "cox",  type.measure = "deviance",
-                              foldsid="folds", parallel = parallel, alpha=alpha[a],
-                              # penalty.factor = c(0, rep(1, .l-1)),
-                              lambda=lambda)
-    .results<-rbind(.results,
-                    cbind(rep(alpha[a],length(.cv.en$lambda)),.cv.en$lambda,.cv.en$cvm))
-  }
+
 
   colnames(.results)=c("alpha","lambda","cvm")
   .results=data.frame(.results)
@@ -84,8 +89,9 @@ tuneCOXen<- function(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NUL
 
   return(list(optimal=list(alpha=.results[which(.results$cvm==min(.results$cvm)),1] ,
                            lambda=.results[which(.results$cvm==min(.results$cvm)),2] ),
-                           results = .results))
+              results = .results))
 }
+
 
 
 

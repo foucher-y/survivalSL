@@ -1,25 +1,39 @@
-
 predict.sltime <-function(object, newdata=NULL, newtimes=NULL, ...){
 
-  if(is.null(newtimes)==FALSE){ newtimes<-sort(unique(newtimes)) }
 
-  M <- length(object$method)
 
-  FitVA <- vector("list", M+1)
+  M<-length(object$methods)
 
-  names(FitVA)<-c(names(object$model), "sl")
+  Fit<- vector("list", M+1)
 
-  for (i in 1:M) { FitVA[[i]] <- predict(object$models[[i]], newdata=newdata, newtimes=newtimes)$predictions }
+  if(is.null(newdata) & is.null(newtimes)){
+    for (i in 1:M) { Fit[[i]] <- (predict(object$models[[i]]))$predictions }
+    Fit[[M+1]]<-object$predictions[,-1]
+    time.pred<-object$times[-1]
+  }else {
+    time.pred<-newtimes
 
-  FitVA[[M+1]] <- matrix(0, nrow=dim(FitVA[[1]])[1], ncol=dim(FitVA[[1]])[2])
+    if(is.null(newtimes)) {time.pred <- object$times[-1]}
 
-  w.sl <- object$weights$values
+    if(is.null(newdata)){newdata <- object$data}
 
-  for (i in 1:M) { FitVA[[M+1]]  <- FitVA[[M+1]] + w.sl[i]*FitVA[[i]] }
+    for (i in 1:M) { Fit[[i]] <- (predict(object$models[[i]], newdata=newdata, newtimes=time.pred))$predictions}
 
-  if(is.null(newtimes)) {time.pred <- object$times} else {time.pred <- newtimes}
+    w.sl <- object$weights$values
 
-  return(list(predictions=FitVA,
-              methods=c(object$methods,"sl"),
+    weighted_matrices <- mapply(function(mat, weight) mat * weight, Fit[-(M+1)], w.sl, SIMPLIFY = FALSE)
+    Fit[[M+1]] <- Reduce("+", weighted_matrices)
+
+
+
+
+  }
+
+
+
+  names(Fit)<-c(names(object$model), "sl")
+
+
+  return(list(predictions=Fit,
               times=time.pred))
 }
