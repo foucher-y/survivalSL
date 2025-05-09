@@ -1,110 +1,204 @@
+tunePHspline<- function(formula, data, cv = 10, metric = "auc", k, pro.time
+                        = NULL, seed = NULL, ROC.precision = seq(0.01, 0.99,
+                                                                 by = 0.01)){
 
-tunePHspline<- function(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL, data,
-                          cv=10, k){
 
-.outcome <- paste("Surv(", times, ",", failures, ")")
+  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
 
-if(!(is.null(group))){
-  if(is.null(cov.quanti)==F & is.null(cov.quali)==F){
-    .f <- as.formula( paste(.outcome, "~", group, "+", paste( cov.quanti,  collapse = " + "), " + ", paste(cov.quali, collapse = " + "),
-                            collapse = " ") )
+
+  if(is.null(seed)){
+    seed<-sample(1:1000,1)
   }
-  if(is.null(cov.quanti)==F & is.null(cov.quali)==T){
-    .f <- as.formula( paste(.outcome, "~", group, "+", paste( cov.quanti, collapse = " + "),collapse = " ") )
+
+  if (missing(formula)) stop("The 'formula' argument is required.")
+  if (missing(data)) stop("The 'data' argument is required.")
+  if (missing(k)) stop("The 'k' argument is required.")
+  if (missing(metric)) stop("The 'metric' argument is required.")
+
+
+  variables_formula <- all.vars(formula)
+
+  times <- variables_formula[1]
+  failures <- variables_formula[2]
+
+
+  if("." %in% variables_formula){
+    vars<-setdiff(names(data),c(times,failures))
+    .outcome <- paste("Surv(", times, ",", failures, ")")
+    formula <- as.formula(paste(.outcome, "~", paste(vars, collapse = " + ")))
+    variables_formula <- all.vars(formula)
   }
-  if(is.null(cov.quanti)==T & is.null(cov.quali)==F){
-    .f <- as.formula( paste(.outcome, "~", group, "+",paste(cov.quali, collapse = " + "),collapse = " ") )
+
+
+
+  variables_existent <- all(variables_formula %in% names(data))
+  if (!variables_existent) stop("One or more variables from the formula do not exist in the data.")
+
+  rm(variables_existent)
+
+  all_terms <- attr(terms(formula), "term.labels")
+  strata_terms <- grep("strata\\(", all_terms, value = TRUE)
+  if(length(strata_terms) >= 1) stop("The 'flexsurv' package does not support the use of 'strata()' in the formula.")
+
+  rm(all_terms,strata_terms)
+
+  is_binary <- all(data[[failures]] %in% c(0, 1))
+
+  if (! is_binary) stop("The 'failures' variable is not coded as 0/1.")
+
+  rm(is_binary)
+
+
+  if (any(is.na(data[,variables_formula]))){
+    subset_data<-na.omit(data[,variables_formula])
+    data<-cbind(subset_data, data[!colnames(data) %in% colnames(subset_data), drop = FALSE])
+    warning("Data need to be without NA. NA is removed")
   }
-  if(is.null(cov.quanti)==T & is.null(cov.quali)==T){
-    .f <- as.formula( paste(.outcome, "~", group) )
+
+
+  if(is.null(pro.time)){
+    pro.time=median(data[[times]])
   }
+
+
+  .data_bis<-data
+  .time <- unique(sort(c(0,pro.time,data[[times]])))
+
+
+
+
+  set.seed(seed)
+  sample_id <- sample(nrow(data))
+  folds <- cut(seq(1,nrow(data)), breaks=cv, labels=FALSE)
+  folds_id <- folds[sample_id]
+  data$folds <- folds_id
+  data$id<-1:nrow(data)
+
+  CVtune <- lapply(1:cv, function(i) {
+    list(
+      train = data[data$folds != i, ],
+      valid = data[data$folds == i, ]
+    )})
+
+
+
+
+  if(any(sapply(data,is.factor))){
+    factor_vars<-names(data)[sapply(data,is.factor)]
+    inside<-function(factor,train,valid){
+      result<-all(unique(valid[,factor]) %in% unique(train[,factor]))
+      return(result)
+    }
+    check_CVtune<-function(factors,CV){
+      result<-unlist(lapply(factors,inside,train=CV$train,valid=CV$valid))
+      return(all(result))
+    }
+
+    i<-0
+
+    while(check_CVtune(factor_vars,CVtune)==FALSE){
+      i<-i+1
+      seed<-sample(1:1000,1)
+      warning("The seed has been changed.")
+      set.seed(seed)
+      sample_id <- sample(nrow(data))
+      folds <- cut(seq(1,nrow(data)), breaks=cv, labels=FALSE)
+      folds_id <- folds[sample_id]
+      data$folds <- folds_id
+      data$id<-1:nrow(data)
+
+      CVtune <- lapply(1:cv, function(i) {
+        list(
+          train = data[data$folds != i, ],
+          valid = data[data$folds == i, ]
+        )})
+
+      if(i>=3 & check_CVtune(factor_vars,CVtune)==FALSE)stop("Certain levels of some factor variables in the validation sample are not present in the training sample. Please change the seed.")
+
+    }
+
+
+  }
+
+
+  spline_function<-function(x,knot){
+    .flex<-flexsurvspline(formula, data = x$train, scale="hazard", k=knot,
+                          hessian=F, method="Nelder-Mead")
+
+
+    .haz=NULL
+
+    if(metric=="ll"){
+      .hazlist <- predict(
+        .flex,
+        newdata=x$valid,
+        type = "haz",
+        times = .time
+      )
+      .haz<-t(sapply(.hazlist$.pred, function(x) x[[2]]))
+    }
+
+
+    .survivalist<-predict(
+      .flex,
+      newdata=x$valid,
+      type = "survival",
+      times = .time
+    )
+
+    .survivals <- t(sapply(.survivalist$.pred, function(x) x[[2]]))
+    return(predictions=list(survivals=.survivals, haz=.haz, id=x$valid$id))
+
+  }
+
+  knot_function<-function(knot){
+    result<-lapply(CVtune,spline_function,knot=knot)
+    surv_list<-lapply(result,function(x)(return(x$survivals)))
+    id_list<- lapply(result,function(x)(return(x$id)))
+    survivals<-do.call(rbind,surv_list)
+    id<-unlist(id_list)
+    haz<-NULL
+    if(metric=="ll"){
+      haz_list<-lapply(result,function(x)(return(x$haz)))
+      haz<-do.call(rbind,haz_list)
+    }
+
+    return(predictions=list(survivals=survivals, haz=haz, id=id))
+
+  }
+
+
+  result<-lapply(k,knot_function)
+
+
+  metric_function<-function(x){
+    data<-data[x$id, ]
+    survivals.matrix<-x$survivals
+    hazards.matrix<-NULL
+    if(metric=="ll"){
+      hazards.matrix<-x$haz
+    }
+    resultat<-metrics(metric,times,failures,data,survivals.matrix,hazards.matrix,.time,pro.time,ROC.precision)
+    return(resultat)
+
+  }
+
+
+  metric_results<-unlist(lapply(result,metric_function))
+
+
+  if(metric %in% c("bs","ibs","ribs","bll","ibll","ribll")){
+    .idx<-which.min(metric_results)
+  }
+
+  else{
+    .idx<-which.max(metric_results)
+  }
+
+  data<-.data_bis
+
+
+  return( list(optimal=list(k=k[.idx]), results=data.frame(k=k,metric_results=metric_results)))
 }
-else{
-  if(is.null(cov.quanti)==F & is.null(cov.quali)==F){
-    .f <- as.formula( paste(.outcome, "~", paste( cov.quanti,  collapse = " + "), " + ", paste(cov.quali, collapse = " + "),
-                            collapse = " ") )
-  }
-  if(is.null(cov.quanti)==F & is.null(cov.quali)==T){
-    .f <- as.formula( paste(.outcome, "~", paste( cov.quanti, collapse = " + "),collapse = " ") )
-  }
-  if(is.null(cov.quanti)==T & is.null(cov.quali)==F){
-    .f <- as.formula( paste(.outcome, "~",  paste(cov.quali, collapse = " + "),collapse = " ") )
-  }
-}
 
-.time <- sort(unique(data[,times]))
-.grid <-  expand.grid(k=k, u=0)
-
-sample_id <- sample(nrow(data))
-folds <- cut(seq(1,nrow(data)), breaks=cv, labels=FALSE)
-folds_id <- folds[sample_id]
-data$folds <- folds_id
-
-.CVtune<-vector("list",cv*dim(.grid)[1])
-
-l<-1
-for (i in 1:cv){
-  for (j in 1:dim(.grid)[1]){
-    .CVtune[[l]]<-list(train=data[data$folds!=i, ], valid=data[data$folds==i, ], grid=.grid[j,])
-    l=l+1
-  }
-}
-
-
-ph.spline.par<-function(xx, times, failures, group, cov.quanti, cov.quali, newtimes){
-
-  .k <- xx$grid$k
-  .data <- xx$train
-  .newdata <- xx$valid
-
-  .flex<-flexsurvspline(.f, data = .data, scale="hazard", k=.k,
-                        hessian=F, method="Nelder-Mead")
-
-  .predlist<-summary(.flex, type = "survival", newdata=.newdata, ci = F, se=F )
-
-  .time.ph.spline=.predlist[[1]]$time
-
-  .pred=matrix(nrow=length(.predlist), ncol=length(.time.ph.spline))
-
-  for (i in 1:length(.predlist)){ .pred[i,]=.predlist[[i]]$est }
-
-  if(!is.null(newtimes)) {
-    .pred.ph.spline <- cbind(rep(1, dim(.pred)[1]), .pred)
-    .time.ph.spline <- c(0, .time.ph.spline)
-
-    idx=findInterval(newtimes, .time.ph.spline)
-    .pred=.pred.ph.spline[,pmax(1,idx)]
-    .time <- newtimes
-  }
-  return(.pred)
-}
-
-.preFIT<-list()
-.preFIT<-lapply(.CVtune, ph.spline.par, times=times, failures=failures, group=group,
-                cov.quanti=cov.quanti, cov.quali=cov.quali,newtimes=.time)
-
-.FitCV <- replicate(dim(.grid)[1], matrix(NA, nrow = length(data[,times]),
-                                          ncol = length(.time)), simplify=F)
-l<-1
-for (i in 1:cv){
-  for (j in 1:dim(.grid)[1]){
-    .FitCV[[j]][data$folds==i,] <- .preFIT[[l]]
-    l<-l+1
-  }
-}
-
-ph.best.measure <- function(prediction.matrix, times, failures, data, prediction.times){
-return(metrics(times=times, failures=failures, data=data, prediction.matrix=prediction.matrix,
-              prediction.times=prediction.times, metric="ci")) }
-
-.measure<-sapply(.FitCV, ph.best.measure, times=times, failures=failures,
-                 data=data, prediction.times=.time)
-
-.res <- data.frame(k = .grid[,1], measure = .measure)
-
-.max<-.res[which(.res$measure==max(.res$measure, na.rm=TRUE) & is.na(.res$measure)==FALSE),]
-.max<-.max[1,]
-
-return( list(optimal=list(k=.max$k), results=.res ))
-}
 

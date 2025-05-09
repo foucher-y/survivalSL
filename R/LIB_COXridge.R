@@ -1,117 +1,81 @@
+LIB_COXridge <- function(formula,
+                         data, penalty=NULL, lambda){
 
-LIB_COXridge <- function(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL,
-                      data, lambda){
-  .outcome <- paste("Surv(", times, ",", failures, ")")
-  if(!(is.null(group))){
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~", group, "*(",paste("bs(", cov.quanti, ", df=3)",
-                                                               collapse = " + "), " + ",
-                              paste(cov.quali, collapse = " + "),  ")",collapse = " ") )
-    }
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==T){
-      .f <- as.formula( paste(.outcome, "~", group, "*(",paste("bs(", cov.quanti, ", df=3)",
-                                                               collapse = " + "),")" ))
-    }
-    if(is.null(cov.quanti)==T & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~", group, "*(",paste(cov.quali, collapse = " + "),
-                              ")",collapse = " ") )
-    }
-    if(is.null(cov.quanti)==T & is.null(cov.quali)==T){
-      .f <- as.formula( paste(.outcome, "~", group) )
+  if (missing(formula)) stop("The 'formula' argument is required.")
+  if (missing(data)) stop("The 'data' argument is required.")
+  if (missing(lambda)) stop("The 'lambda' argument is required.")
 
-      .coxph <- coxph(.f, data=data)
+  variables_formula <- all.vars(formula)
 
-      .coxphsurv<-survfit(.coxph, newdata = data, se.fit = F)
+  times <- variables_formula[1]
+  failures <- variables_formula[2]
 
-      .lp.coxph <- predict(.coxph, newdata = data, type="lp")
-      .b <- glmnet_basesurv(data[,times], data[,failures], .lp.coxph, centered = FALSE)
-      .H0 <- data.frame(value = .b$cumulative_base_hazard, time = .b$times)
 
-      .sumcoxphsurv<-summary(.coxphsurv, times=sort(unique(data[,times])))
-      .pred.temp <- t(.sumcoxphsurv$surv)
-      .time.temp <- .sumcoxphsurv$time
-      .obj <- list(model=.coxph,
-                   library="LIB_COXridge",
-                   group=group, cov.quanti=cov.quanti, cov.quali=cov.quali,
-                   data=data.frame(times=data[,times], failures=data[,failures],
-                                   data[, !(dimnames(data)[[2]] %in% c(times, failures))]),
-                   times=.time.temp,  hazard=.H0$value, predictions=.pred.temp)
-
-      class(.obj) <- "libsl"
-
-      return(.obj)
-    }
-
-    .full <- coxph( .f,  data = data)
-    .l <- length(.full$coefficients)
-    .bs=NULL
-    .bin=NULL
-    if(is.null(cov.quanti)==F){
-      .bs <- eval(parse(text=paste("cbind(",
-                                   paste("bs(data$", cov.quanti,",df=3)", collapse = ", ")
-                                   ,")") ) )
-    }
-    if(is.null(cov.quali)==F){
-      .bin <- eval(parse(text=paste("cbind(",  paste("data$", cov.quali, collapse = ", "), ")") ) )
-    }
-
-    .cov <- cbind(.bs,.bin)
-    .x <- cbind(data[,group], .cov, .cov * data[,group])
-    .y <- Surv(data[,times], data[,failures])
-
-    .ridge <- glmnet(x = .x, y = .y, lambda = lambda,  type.measure = "deviance",
-                     family = "cox", alpha = 0,
-                     penalty.factor = c(0, rep(1, .l-1)))
+  if("." %in% variables_formula){
+    vars<-setdiff(names(data),c(times,failures))
+    .outcome <- paste("Surv(", times, ",", failures, ")")
+    formula <- as.formula(paste(.outcome, "~", paste(vars, collapse = " + ")))
+    variables_formula <- all.vars(formula)
   }
+
+
+  variables_existent <- all(variables_formula %in% names(data))
+  if (!variables_existent) stop("One or more variables from the formula do not exist in the data.")
+
+  rm(variables_existent)
+
+  all_terms <- attr(terms(formula), "term.labels")
+  strata_terms <- grep("strata\\(", all_terms, value = TRUE)
+  if(length(strata_terms) >= 1) stop("The 'glmnet' package does not support the use of 'strata()' in the formula.")
+
+  rm(all_terms,strata_terms)
+
+
+  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+
+  is_binary <- all(data[[failures]] %in% c(0, 1))
+
+
+  if (! is_binary) stop("The 'failures' variable is not coded as 0/1.")
+
+  rm(is_binary)
+
+
+  .x <- model.matrix(formula,data)[,-1]
+  .y <- Surv(data[[times]], data[[failures]])
+
+  if(!(is.null(penalty))) {
+    #.penalty.factor <- rep(1,length(colnames(.x)))
+    #.penalty.factor[which(colnames(.x) %in% var)] <- 0
+    .ridge<- glmnet(x = .x, y = .y, lambda = lambda,
+                    type.measure = "deviance", family = "cox",
+                    alpha = 0, penalty.factor = penalty)
+
+  }
+
   else{
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~", paste("bs(", cov.quanti, ", df=3)", collapse = " + "),
-                              " + ", paste(cov.quali, collapse = " + "),
-                              collapse = " ") )
-    }
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==T){
-      .f <- as.formula( paste(.outcome, "~", paste("bs(", cov.quanti, ", df=3)", collapse = " + ")))
-    }
-    if(is.null(cov.quanti)==T & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~",  paste(cov.quali, collapse = " + "),collapse = " ") )
-    }
-    .full <- coxph( .f,  data = data)
-    .l <- length(.full$coefficients)
-
-    .bs=NULL
-    .bin=NULL
-    if(is.null(cov.quanti)==F){
-      .bs <- eval(parse(text=paste("cbind(",
-                                   paste("bs(data$", cov.quanti,",df=3)", collapse = ", ")
-                                   ,")") ) )
-    }
-    if(is.null(cov.quali)==F){
-      .bin <- eval(parse(text=paste("cbind(",  paste("data$", cov.quali, collapse = ", "), ")") ) )
-    }
-    .cov <- cbind(.bs,.bin)
-    .x <- .cov
-    .y <- Surv(data[,times], data[,failures])
-
     .ridge <- glmnet(x = .x, y = .y, lambda = lambda,  type.measure = "deviance",
-                   family = "cox", alpha = 0)
+                     family = "cox", alpha = 0)
   }
 
 
   .lp.ridge <- predict(.ridge, newx = .x)
-  .b <- glmnet_basesurv(data[,times], data[,failures], .lp.ridge, centered = FALSE)
+  .b <- glmnet_basesurv(data[[times]], data[[failures]], .lp.ridge, centered = FALSE)
   .H0 <- data.frame(value = .b$cumulative_base_hazard, time = .b$times)
 
-  .pred.temp <- exp(matrix(exp(.lp.ridge)) %*% t(as.matrix(-1*.H0$value)))
-  .time.temp <- .H0$time
+  .pred <- exp(matrix(exp(.lp.ridge)) %*% t(as.matrix(-1*.H0$value)))
+
+  .survivals<-cbind(rep(1, dim(.pred)[1]), .pred)
 
   .obj <- list(model=.ridge,
                library="LIB_COXridge",
-               group=group, cov.quanti=cov.quanti, cov.quali=cov.quali,
-               data=data.frame(times=data[,times], failures=data[,failures],
-                               data[, !(dimnames(data)[[2]] %in% c(times, failures))]),
-               times=.time.temp,  hazard=.H0$value, predictions=.pred.temp)
+               formula=formula,
+               data=data,
+               times=c(0,.H0$time),predictions=.survivals)
 
   class(.obj) <- "libsl"
 
   return(.obj)
 }
+
+

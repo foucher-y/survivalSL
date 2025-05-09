@@ -1,60 +1,73 @@
+LIB_PHexponential<- function(formula, data){
+
+  if (missing(formula)) stop("The 'formula' argument is required.")
+  if (missing(data)) stop("The 'data' argument is required.")
+
+  variables_formula <- all.vars(formula)
+
+  times <- variables_formula[1]
+  failures <- variables_formula[2]
 
 
-LIB_PHexponential<- function(times, failures, group=NULL, cov.quanti=NULL, cov.quali=NULL, data){
-
-  .outcome <- paste("Surv(", times, ",", failures, ")")
-
-  if(!(is.null(group))){
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~", group, "+", paste( cov.quanti,  collapse = " + "), " + ", paste(cov.quali, collapse = " + "),
-                              collapse = " ") )
-    }
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==T){
-      .f <- as.formula( paste(.outcome, "~", group, "+", paste( cov.quanti, collapse = " + "),collapse = " ") )
-    }
-    if(is.null(cov.quanti)==T & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~", group, "+",paste(cov.quali, collapse = " + "),collapse = " ") )
-    }
-    if(is.null(cov.quanti)==T & is.null(cov.quali)==T){
-      .f <- as.formula( paste(.outcome, "~", group) )
-    }
-  }
-  else{
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~", paste( cov.quanti,  collapse = " + "), " + ", paste(cov.quali, collapse = " + "),
-                              collapse = " ") )
-    }
-    if(is.null(cov.quanti)==F & is.null(cov.quali)==T){
-      .f <- as.formula( paste(.outcome, "~", paste( cov.quanti, collapse = " + "),collapse = " ") )
-    }
-    if(is.null(cov.quanti)==T & is.null(cov.quali)==F){
-      .f <- as.formula( paste(.outcome, "~",  paste(cov.quali, collapse = " + "),collapse = " ") )
-    }
+  if("." %in% variables_formula){
+    vars<-setdiff(names(data),c(times,failures))
+    .outcome <- paste("Surv(", times, ",", failures, ")")
+    formula <- as.formula(paste(.outcome, "~", paste(vars, collapse = " + ")))
+    variables_formula <- all.vars(formula)
   }
 
-  .flex<-flexsurvreg(.f, data = data,
+
+  variables_existent <- all(variables_formula %in% names(data))
+  if (!variables_existent) stop("One or more variables from the formula do not exist in the data.")
+
+  rm(variables_existent)
+
+  all_terms <- attr(terms(formula), "term.labels")
+  strata_terms <- grep("strata\\(", all_terms, value = TRUE)
+  if(length(strata_terms) >= 1) stop("The 'flexsurv' package does not support the use of 'strata()' in the formula.")
+
+  rm(all_terms,strata_terms)
+
+  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+
+
+  is_binary <- all(data[[failures]] %in% c(0, 1))
+
+  if (! is_binary) stop("The 'failures' variable is not coded as 0/1.")
+
+  rm(is_binary)
+
+  if (any(is.na(data[,variables_formula]))){
+    subset_data<-na.omit(data[,variables_formula])
+    data<-cbind(subset_data, data[!colnames(data) %in% colnames(subset_data), drop = FALSE])
+    warning("Data need to be without NA. NA is removed")
+  }
+
+
+  .flex<-flexsurvreg(formula, data = data,
                      dist = "exp",
                      hessian=F, method="Nelder-Mead")
 
-  .flex.cum=summary(.flex, type="cumhaz")
 
-  .H0 <- data.frame(value = .flex.cum$est, time = .flex.cum$time)
+  .survivalist<-predict(
+    .flex,
+    newdata=data,
+    type = "survival",
+    times = unique(sort(c(0,data[[times]])))
+  )
 
-  .predlist<-summary(.flex, type = "survival", newdata=data, ci = F, se=F )
-  .time.temp=.predlist[[1]]$time
 
-  .pred=matrix(nrow=length(.predlist), ncol=length(.predlist[[1]]$time))
 
-  for (i in 1:length(.predlist)){
-    .pred[i,]=.predlist[[i]]$est
-  }
+
+  .survivals <- t(sapply(.survivalist$.pred, function(x) x[[2]]))
+
+
 
   .obj <- list(model=.flex,
                library="LIB_PHexponential",
-               group=group, cov.quanti=cov.quanti, cov.quali=cov.quali,
-               data=data.frame(times=data[,times], failures=data[,failures],
-                               data[, !(dimnames(data)[[2]] %in% c(times, failures))]),
-               times=.time.temp, hazard=.H0$value, predictions=.pred)
+               formula=formula,
+               data=data,
+               times=unique(sort(c(0,data[[times]]))), predictions=.survivals)
 
   class(.obj) <- "libsl"
 
