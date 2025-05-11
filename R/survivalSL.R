@@ -1,4 +1,4 @@
-survivalSL <- function(methods, metric="auc", data, formula, penalty=NULL,
+survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
                        cv=10, param.tune=NULL, pro.time=NULL,  optim.local.min=FALSE,
                        ROC.precision=seq(.01,.99,.01), param.weights.fix=NULL,
                        param.weights.init=NULL,

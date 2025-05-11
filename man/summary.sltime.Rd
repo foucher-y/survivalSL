@@ -43,6 +43,7 @@ The following metrics can be used : "bs" for the Brier score at the prognostic t
 #data("dataDIVAT2")
 
 #formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
+
 #sl1 <- survivalSL(formula, method=c("LIB_AFTgamma", "LIB_PHgompertz"
 #,"LIB_AFTllogis"),  metric="auc",
   #data=dataDIVAT2[1:100,],

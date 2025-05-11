@@ -38,8 +38,9 @@ data("dataDIVAT2")
 
 
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
-sl1 <- survivalSL(formula, methods=c("LIB_AFTgamma", "LIB_PHgompertz"),
-metric="auc", data=dataDIVAT2[1:150,], cv=3)
+
+sl1 <- survivalSL(formula, data=dataDIVAT2[1:150,],
+                  methods=c("LIB_AFTgamma", "LIB_PHgompertz"), metric="auc",  cv=3)
 
 # The calibration plot from the validation sample of 150 patients
 plot(sl1, method="sl", n.groups=5,

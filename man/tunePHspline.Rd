@@ -44,12 +44,11 @@ data("dataDIVAT2")
 
 # The estimation of the hyperparameters on the first 150 patients
 
-
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
 tune.model <- tunePHspline(formula=formula,
-data=dataDIVAT2[1:150,], cv=5, metric="auc",
+data=dataDIVAT2[1:150,], cv=3, metric="auc",
 k=1:2, pro.time=NULL,seed=123,
-ROC.precision=seq(.01, .99, by=.01))
+ROC.precision=seq(.01, .99, by=.02))
 
 # the estimated nodesize value
 

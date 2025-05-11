@@ -10,10 +10,8 @@ Fit survival random forest tree for given values of the regularization parameter
 }
 
 \usage{
-LIB_RSF(formula,
-data, nodesize, mtry, ntree, seed=NULL)
+LIB_RSF(formula, data, nodesize, mtry, ntree, seed=NULL)
 }
-
 
 \arguments{
  \item{formula}{A formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \code{Surv} function.}
@@ -21,7 +19,7 @@ data, nodesize, mtry, ntree, seed=NULL)
   \item{nodesize}{The value of the node size.}
   \item{mtry}{The number of variables randomly sampled as candidates at each split.}
   \item{ntree}{The number of trees.}
-  \item{seed}{A random seed to ensure reproducibility during bootstrap sampling. If \code{NULL}, a seed is randomly assigned. }
+  \item{seed}{A random seed to ensure reproducibility during bootstrap sampling. If \code{NULL}, a seed is randomly assigned.}
  }
 
 \details{
@@ -43,7 +41,6 @@ Simon, N., Friedman, J., Hastie, T. and Tibshirani, R. (2011) Regularization Pat
 
 \examples{
 data("dataDIVAT2")
-
 
 # The estimation of the model
 

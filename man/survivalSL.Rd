@@ -8,7 +8,7 @@ Super Learner for Censored Outcomes
 This function allows to compute a Super Learner (SL) to predict survival outcomes.
 }
 \usage{
-survivalSL(methods, metric="auc", data, formula, penalty=NULL,
+survivalSL(formula, data, methods, metric="auc", penalty=NULL,
 cv=10, param.tune=NULL, pro.time=NULL,
 optim.local.min=FALSE,
 ROC.precision=seq(.01,.99,.01),
@@ -17,10 +17,10 @@ seed=NULL, optim.method="Nelder-Mead",maxit=1000)
 }
 
 \arguments{
-  \item{methods}{A vector of characters with the names of the algorithms included in the SL. At least two algorithms have to be included.}
-    \item{metric}{The loss function or metric used to estimate the weights of the algorithms in the SL. See details.}
   \item{formula}{A formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \code{Surv} function.}
- \item{data}{A data frame whose columns correspond to the variables present in the formula.}
+  \item{data}{A data frame whose columns correspond to the variables present in the formula.}
+  \item{methods}{A vector of characters with the names of the algorithms included in the SL. At least two algorithms have to be included.}
+  \item{metric}{The loss function or metric used to estimate the weights of the algorithms in the SL. See details.}
   \item{penalty}{A numerical vector that allows the integration of covariates into the final model after selection (It concerns \code{"LIB_COXaic"}.) or/and allows the covariates not to be penalized (It concerns : \code{"LIB_COXen"} \code{"LIB_COXlasso"} and \code{"LIB_COXridge"}.). We give the value 0 if we want to force the covariate in the model or/and not to be penalized otherwise 1. If \code{NULL}, all covariates undergo the selection process or/and penalization process. }
  \item{cv}{The number of splits for cross-validation. The default value is 10.}
  \item{param.tune}{A list with a length equals to the number of algorithms included in \code{methods}. If \code{NULL}, the tunning parameters are estimated (see details).}
@@ -101,8 +101,9 @@ data("dataDIVAT2")
 # The Super Learner based from the first 250 individuals of the data base
 
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
-sl1 <- survivalSL(methods=c("LIB_AFTgamma", "LIB_PHgompertz"), formula=formula,
-  data=dataDIVAT2[1:250,])
+
+sl1 <- survivalSL(formula=formula, data=dataDIVAT2[1:250,],
+                  methods=c("LIB_AFTgamma", "LIB_PHgompertz"))
 
 # Individual prediction
 pred <- predict(sl1, newdata=data.frame(age=c(52,52), hla=c(0,1),

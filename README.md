@@ -9,8 +9,8 @@ evaluate its prognostic capacities. Several learners are proposed:
 proportional hazard (PH) regressions, penalized PH semi-parametric
 models, accelerated failure times (AFT) models, neural networks, random
 survival forests, etc.). We proposed also a variety of loss functions
-for the estimation of the weights (concordance index (Pencina and Uno versions), Brier score, area
-under the time-dependent ROC curve, negative binomial log-likelihood,
+for the estimation of the weights (concordance index (Pencina and Uno versions),
+Brier score, area under the time-dependent ROC curve, negative binomial log-likelihood,
 etc.). S3 methods are included to evaluate the predictive capacities, as
 well as predicting survival curves from new observations.
 
@@ -67,8 +67,6 @@ summary(slres, digits=3)
 summary(slres, newdata=data.simul[[2]], digits=3) 
 #>  p_ci uno_ci   auc    bs   ibs  ribs   bll  ibll ribll       ll
 #>  0.722  0.726 0.783 0.192 0.092 0.098 0.57 0.308 0.333 -472.53
-
-
 ```
 
 ## Installation

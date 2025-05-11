@@ -1,30 +1,30 @@
 import(splines)
 import(survival)
 import(survivalPLANN)
-import(RISCA)
+#import(RISCA)
 
 
-importFrom(stats, terms)
-    importFrom(utils, data)
-importFrom(stats, pnorm, dnorm, qnorm, update,  binomial, lm, glm, na.omit, predict, quantile,
+importFrom(stats, terms, pnorm, dnorm, qnorm, update,  binomial, lm, glm, na.omit, predict, quantile,
            sd, optim, pchisq, update.formula, coef, setNames, as.formula, model.matrix,
            median, formula)
 
 importFrom(date, date.mdy, mdy.date, as.date)
-importFrom(utils, methods, tail, combn, txtProgressBar, setTxtProgressBar)
+importFrom(utils, data, methods, tail, combn, txtProgressBar, setTxtProgressBar)
 importFrom(graphics, abline, lines, plot.default, grid, segments)
 importFrom(MASS, mvrnorm, stepAIC)
+importFrom(methods, is, hasArg)
 
 importFrom(glmnet, glmnet, cv.glmnet)
+
 importFrom(caret, train, trainControl, twoClassSummary)
 
-importFrom(methods, is, hasArg)
 importFrom(flexsurv, flexsurvreg, flexsurvspline)
 
 importFrom(randomForestSRC, rfsrc, tune.rfsrc, rfsrc.fast)
 
 importFrom(hdnom, glmnet_basesurv)
-importFrom(glmnetUtils, cv.glmnet)
+
+#importFrom(glmnetUtils, cv.glmnet)
 
 importFrom(dplyr, last)
 
@@ -55,7 +55,7 @@ export(tuneRSF)
 export(tunePLANN)
 export(plot.libsl)
 export(plot.sltime)
-export(roc)
+#export(roc)
 export(metrics)
 export(predict.libsl)
 export(predict.sltime)
@@ -78,6 +78,6 @@ S3method(plot, sltime)
 S3method(print, libsl)
 S3method(print, sltime)
 
-S3method(plot, rocrisca)
+#S3method(plot, rocrisca)
 #S3method(lines, rocrisca)
 
