@@ -25,7 +25,7 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
   
   
   
-  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
   
   
   if(!(optim.method %in% c("SANN","Nelder-Mead")))stop("You can either choose the SANN or Nelder-Mead methods.")
