@@ -2,28 +2,37 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
                        cv=10, param.tune=NULL, pro.time=NULL,  optim.local.min=FALSE,
                        ROC.precision=seq(.01,.99,.01), param.weights.fix=NULL,
                        param.weights.init=NULL,
-                       seed=NULL, optim.method="Nelder-Mead",maxit=1000) {
-
-
-
+                       seed=NULL, optim.method="Nelder-Mead",maxit=1000,show_progress=TRUE) {
+  
+  
+  
   if (missing(methods)) stop("The 'method' argument is required.")
   if (missing(data)) stop("The 'data' argument is required.")
   if (missing(formula)) stop("The 'formula' argument is required.")
-
-
-
-  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
-
-
+  
+  
+  if(show_progress){
+    total<-3*length(unique(methods))+cv+1
+    
+    pb<-txtProgressBar(min=0,max=total,style=3)
+    progress<-0
+    
+    update_progress<-function(){
+      progress<<-progress+1
+      setTxtProgressBar(pb,progress)
+    }
+  }
+  
+  
   if(!(optim.method %in% c("SANN","Nelder-Mead")))stop("You can either choose the SANN or Nelder-Mead methods.")
-
-
+  
+  
   if(is.null(seed)){
     seed<-sample(1:1000,1)
   }
-
-
-
+  
+  
+  
   if(metric=="ll"){
     haz_function<-function(surv,times){
       x<-1
@@ -34,8 +43,8 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
         }
         return(x)
       })
-
-
+      
+      
       df<-data.frame(temps=times,value=-log(surv),result=c(1,result))
       df_unique <- df[!duplicated(df$result), ]
       if(nrow(df_unique)>1){
@@ -49,58 +58,67 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       else{
         bj<-c(rep(Inf,(length(surv)-1)),NA)
       }
-
-
+      
+      
       return(bj)
-
+      
     }
-
-
+    
+    
   }
-
-
-
-
+  
+  
+  
+  
   variables_formula <- all.vars(formula)
-
+  
   times <- variables_formula[1]
   failures <- variables_formula[2]
-
-
+  
+  
   if("." %in% variables_formula){
     vars<-setdiff(names(data),c(times,failures))
     .outcome <- paste("Surv(", times, ",", failures, ")")
     formula <- as.formula(paste(.outcome, "~", paste(vars, collapse = " + ")))
     variables_formula <- all.vars(formula)
   }
-
-
+  
+  
   is_binary <- all(data[[failures]] %in% c(0, 1))
-
-
+  
+  
   if (! is_binary) stop("The 'failures' variable is not coded as 0/1.")
-
+  
   rm(is_binary)
 
+   # Check if all the variables exist in the dataset.
+  variables_existent <- all(variables_formula %in% names(data))
+  if (!variables_existent) stop("One or more variables from the formula do not exist in the data.")
+
+  rm(variables_existent)
+
+  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+
+  
   if (any(is.na(data[,variables_formula]))){
     subset_data<-na.omit(data[,variables_formula])
     data<-cbind(subset_data, data[!colnames(data) %in% colnames(subset_data), drop = FALSE])
     warning("Data need to be without NA. NA is removed")
   }
-
-
+  
+  
   #####################
   ### Quality tests ###
   #####################
-
+  
   if(length(methods)<=1)
   { stop("Number of methods need to be greater or equal to 2 to estimate a SuperLearner")   }
-
+  
   if(length(metric)>1){
     warning(paste0("SuperLearner is currently developped for one metric. Results for metric ",metric[1]))
     metric=metric[1]
   }
-
+  
   if(min(metric%in%c("uno_ci","p_ci","bs","ibs","ibll","bll", "ribs","ribll","auc","ll"))==0){
     stop("The argument \"metric\" must be Brier score (bs),
          Pencina concordance index (p_ci),
@@ -110,21 +128,21 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
          the restricted ibll (ribll),
          the area under the ROC curve (auc), or the log-likelihood (ll)")
   }
-
+  
   if(!is.data.frame(data)){
     stop("The argument \"data\" need to be a data.frame") }
-
-
-
-
+  
+  
+  
+  
   if (min(data[[times]])<=0){
     stop("Time variable need to be positive")
   }
-
+  
   if (cv < 3 | !is.numeric(cv)) {
     stop("nfolds must be bigger than 3; nfolds=10 recommended")
   }
-
+  
   .meth_rm=c()
   if(sum(methods %in% "LIB_AFTgamma")>=2){
     .meth_rm=c(.meth_rm,which(methods=="LIB_AFTgamma")[-1])
@@ -154,18 +172,18 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
     .meth_rm=c(.meth_rm,which(methods=="LIB_PHspline")[-1])
     warning("SuperLearner can use only one LIB_PHspline method. We remove the others.")
   }
-
+  
   if(sum(methods %in% "LIB_COXaic")>=2){
     .meth_rm=c(.meth_rm,which(methods=="LIB_COXaic")[-1])
     warning("SuperLearner can use only one LIB_COXaic method. We remove the others.")
   }
-
-
+  
+  
   if(sum(methods %in% "LIB_COXall")>=2){
     .meth_rm=c(.meth_rm,which(methods=="LIB_COXall")[-1])
     warning("SuperLearner can use only one LIB_COXall method. We remove the others.")
   }
-
+  
   if(sum(methods %in% "LIB_COXlasso")==1){
     if(!(is.null(param.tune[[which(methods=="LIB_COXlasso")]]))){
       if(!is.list(param.tune[[which(methods=="LIB_COXlasso")]])){
@@ -180,7 +198,7 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       }
     }
   }
-
+  
   if(sum(methods %in% "LIB_COXlasso")>=2){
     if(length(param.tune[which(methods=="LIB_COXlasso")])!=length(unique(param.tune[which(methods=="LIB_COXlasso")]))){
       stop("Tune parameters for LIB_COXlasso methods need to be unique")
@@ -200,9 +218,9 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       }
     }
   }
-
-
-
+  
+  
+  
   if(sum(methods %in% "LIB_PHspline")==1){
     if(!(is.null(param.tune[[which(methods=="LIB_PHspline")]]))){
       if(!is.list(param.tune[[which(methods=="LIB_PHspline")]])){
@@ -217,7 +235,7 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       }
     }
   }
-
+  
   if(sum(methods %in% "LIB_PHspline")>=2){
     if(length(param.tune[which(methods=="LIB_PHspline")])!=length(unique(param.tune[which(methods=="LIB_PHspline")]))){
       stop("Tune parameters for LIB_PHspline methods need to be unique")
@@ -237,8 +255,8 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       }
     }
   }
-
-
+  
+  
   if(sum(methods %in% "LIB_COXridge")==1){
     if(!(is.null(param.tune[[which(methods=="LIB_COXridge")]]))){
       if(!is.list(param.tune[[which(methods=="LIB_COXridge")]])){
@@ -272,7 +290,7 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       }
     }
   }
-
+  
   if(sum(methods %in% "LIB_COXen")==1){
     if(!(is.null(param.tune[[which(methods=="LIB_COXen")]]))){
       if(!is.list(param.tune[[which(methods=="LIB_COXen")]])){
@@ -326,9 +344,9 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       }
     }
   }
-
-
-
+  
+  
+  
   if(sum(methods %in% "LIB_RSF")==1){
     if(!(is.null(param.tune[[which(methods=="LIB_RSF")]]))){
       if(!is.list(param.tune[[which(methods=="LIB_RSF")]])){
@@ -390,11 +408,11 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       }
     }
   }
-
-
-
-
-
+  
+  
+  
+  
+  
   if(sum(methods %in% "LIB_PLANN")==1){
     if(!(is.null(param.tune[[which(methods=="LIB_PLANN")]]))){
       if(!is.list(param.tune[[which(methods=="LIB_PLANN")]])){
@@ -484,58 +502,58 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       }
     }
   }
-
-
-
+  
+  
+  
   if(length(.meth_rm)>=1){
     methods=methods[-.meth_rm]
     param.tune=param.tune[-.meth_rm]
   }
-
+  
   if((max(ROC.precision)==1) | (min(ROC.precision)==0)){
     stop("values for ROC.precision need to be in ]0;1[")
   }
-
-
+  
+  
   if(is.null(param.weights.fix)==FALSE & is.null(param.weights.init)==FALSE){
     warning("Weights can not be fix and initial at the same time. SuperLearner ignored initial values")
     param.weights.init<-NULL
   }
-
+  
   if(is.null(param.weights.fix)==FALSE | is.null(param.weights.init)==FALSE){
     if(is.null(param.weights.fix)==FALSE){
       if(is.numeric(param.weights.fix)==FALSE){
         stop("param.weights.fix need to be numeric")
       }
     }
-
+    
     if(is.null(param.weights.init)==FALSE){
       if(is.numeric(param.weights.init)==FALSE){
         stop("param.weights.init need to be numeric")
       }
-
+      
       if(length(param.weights.init)!=(length(methods)-1)){
         stop("wrong lenth for param.weights.init")
       }
-
+      
     }
   }
   if(is.null(param.weights.fix)==TRUE & is.null(param.weights.init)==TRUE){
     param.weights.init<-rep(0,length(methods)-1)
   }
-
-
+  
+  
   if(sum(!(methods %in% c("LIB_COXlasso", "LIB_COXridge", "LIB_RSF", "LIB_COXen",
                           "LIB_AFTweibull","LIB_AFTweibull","LIB_AFTggamma","LIB_AFTgamma",
                           "LIB_PHgompertz","LIB_PHexponential", "LIB_PLANN",
                           "LIB_AFTllogis","LIB_COXaic","LIB_COXall", "LIB_PHspline")))>=1){
     stop("New method is not yet implemented") }
-
-
-
+  
+  
+  
   M <-length((methods))
   N <- length(data[[times]])
-
+  
   names.meth=c(rep(NA,M))
   for(i in unique(methods)){
     if(length(which(methods==i))==1){
@@ -545,22 +563,22 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       names.meth[which(methods==i)]=paste0(i,1:length(which(methods==i)))
     }
   }
-
-
+  
+  
   if(is.null(pro.time)==T & sum(metric %in% c("p_ci","bs","bll","ribs","ribll","auc","uno_ci"))){
     pro.time=median(data[[times]])
   }
-
+  
   time.pred <- unique(sort(c(0,pro.time,data[[times]])))
-
+  
   if("LIB_PLANN" %in% methods){
     maxtime=max(time.pred)+1
   }
-
-
-
-
-
+  
+  
+  
+  
+  
   if(is.null(param.tune)==FALSE){
     if(length(param.tune)!=M){
       stop("Param.tune need to have one element per method. Please modifiy param.tune or set it = NULL")
@@ -595,8 +613,8 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       }
     }
   }
-
-
+  
+  
   if(is.null(param.tune)){
     param.tune=vector("list",M)
     for (me in 1:M){
@@ -625,138 +643,138 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       }
     }
   }
-
-
-
+  
+  
+  
   .model<-vector("list",M)
   names(.model)<-names.meth
-
+  
   .data_bis<-data
   .tune.optimal<-vector("list",M)
   names(.tune.optimal)<-names.meth
-
+  
   .tune.results<-vector("list",M)
   names(.tune.results)<-names.meth
-
-
+  
+  
   for (me in 1:M){
-
+    if(show_progress){ update_progress()}
     if(methods[me] == "LIB_AFTweibull" ){
       .tune.optimal[[me]]=NA
-
+      
       .LIB_AFTweibull <- LIB_AFTweibull(formula=formula,data=data)
-
+      
       .model[[me]]<-.LIB_AFTweibull
-
-
+      
+      
       rm(.LIB_AFTweibull) }
-
+    
     if(methods[me] == "LIB_AFTggamma"){
       .tune.optimal[[me]]=NA
-
+      
       .LIB_AFTggamma <- LIB_AFTggamma(formula=formula,data=data)
-
+      
       .model[[me]]<-.LIB_AFTggamma
-
+      
       rm(.LIB_AFTggamma) }
-
+    
     if(methods[me] == "LIB_AFTgamma" ){
       .tune.optimal[[me]]=NA
-
+      
       .LIB_AFTgamma <- LIB_AFTgamma(formula=formula,data=data)
-
+      
       .model[[me]]<-.LIB_AFTgamma
-
+      
       rm(.LIB_AFTgamma)  }
-
-
+    
+    
     if(methods[me] == "LIB_AFTllogis" ){
       .tune.optimal[[me]]=NA
-
+      
       .LIB_AFTllogis <- LIB_AFTllogis(formula=formula,data=data)
-
+      
       .model[[me]]<-.LIB_AFTllogis
-
+      
       rm(.LIB_AFTllogis)    }
-
+    
     if(methods[me] == "LIB_PHgompertz" ){
       .tune.optimal[[me]]=NA
-
+      
       .LIB_PHgompertz <- LIB_PHgompertz(formula=formula,data=data)
-
+      
       .model[[me]]<-.LIB_PHgompertz
-
+      
       rm(.LIB_PHgompertz) }
-
+    
     if(methods[me] == "LIB_PHexponential"){
       .tune.optimal[[me]]=NA
-
+      
       .LIB_PHexponential <- LIB_PHexponential(formula=formula,data=data)
-
+      
       .model[[me]]<-.LIB_PHexponential
-
+      
       rm(.LIB_PHexponential) }
-
+    
     if(methods[me] == "LIB_COXall"){
       .tune.optimal[[me]]=NA
-
+      
       .LIB_COXall <- LIB_COXall(formula=formula,data=data)
-
+      
       .model[[me]]<-.LIB_COXall
-
+      
       rm(.LIB_COXall) }
-
+    
     if(methods[me] == "LIB_COXaic"){
       .tune.optimal[[me]]=NA
-
+      
       .LIB_COXaic <- LIB_COXaic(formula=formula,data=data,penalty=penalty)
-
+      
       .model[[me]]<-.LIB_COXaic
-
+      
       rm(.LIB_COXaic) }
-
+    
     if(methods[me] == "LIB_PHspline"){
-
+      
       if(is.null(param.tune[[me]]$k)==T | length(param.tune[[me]]$k)>1){
-
+        
         .tune<- tunePHspline(formula=formula, metric=metric,pro.time=pro.time, data=data, cv=cv, seed=seed,
                              ROC.precision=ROC.precision,
                              k=param.tune[[me]]$k)
         .tune.optimal[[me]]=.tune$optimal
         .tune.results[[me]]=.tune$results
         rm(.tune)  }
-
+      
       else{ .tune.optimal[[me]]=list(k=param.tune[[me]]$k) }
-
-
+      
+      
       .LIB_PHspline <- LIB_PHspline(formula=formula,data=data, k=.tune.optimal[[me]]$k)
-
+      
       .model[[me]]<-.LIB_PHspline
-
+      
       rm(.LIB_PHspline)    }
-
+    
     if(methods[me] == "LIB_COXlasso"){
-
+      
       if(is.null(param.tune[[me]]$lambda)==T | length(param.tune[[me]]$lambda)>1){
-
+        
         .tune<- tuneCOXlasso(formula=formula, penalty=penalty, data=data, cv=cv, seed=seed,
                              parallel=FALSE, lambda=param.tune[[me]]$lambda)
-
+        
         .tune.optimal[[me]]=.tune$optimal
         .tune.results[[me]]=.tune$results
         rm(.tune)  }
-
+      
       else{ .tune.optimal[[me]]=list(lambda=param.tune[[me]]$lambda) }
-
-
+      
+      
       .LIB_COXlasso <- LIB_COXlasso(formula=formula,penalty=penalty, data=data, lambda=.tune.optimal[[me]]$lambda)
-
+      
       .model[[me]]<-.LIB_COXlasso
-
+      
       rm(.LIB_COXlasso)  }
-
+    
     if(methods[me] == "LIB_COXridge"){
-
+      
       if(is.null(param.tune[[me]]$lambda)==T | length(param.tune[[me]]$lambda)>1){
         .tune<- tuneCOXridge(formula=formula, penalty=penalty, data=data, cv=cv, seed=seed,
                              parallel=FALSE, lambda=param.tune[[me]]$lambda)
@@ -767,15 +785,15 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       else{
         .tune.optimal[[me]]=list(lambda=param.tune[[me]]$lambda)
       }
-
+      
       .LIB_COXridge <- LIB_COXridge(formula=formula,penalty=penalty, data=data, lambda=.tune.optimal[[me]]$lambda)
       .model[[me]]<-.LIB_COXridge
-
-
+      
+      
       rm(.LIB_COXridge)    }
-
+    
     if(methods[me] == "LIB_COXen"){
-
+      
       if(length(param.tune[[me]]$alpha)==1 & length(param.tune[[me]]$lambda)==1){
         .tune.optimal[[me]]=list(alpha=param.tune[[me]]$alpha, lambda=param.tune[[me]]$lambda)
       }
@@ -786,25 +804,25 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
                            lambda=param.tune[[me]]$lambda)
         .tune.optimal[[me]]<-.tune$optimal
         .tune.results[[me]]<-.tune$results
-
+        
         rm(.tune) }
-
+      
       .LIB_COXen <- LIB_COXen(formula=formula, penalty=penalty, data=data, alpha=.tune.optimal[[me]]$alpha,
                               lambda=.tune.optimal[[me]]$lambda)
-
+      
       .model[[me]]<-.LIB_COXen
-
+      
       rm(.LIB_COXen) }
-
+    
     if (methods[me] == "LIB_RSF"){
-
+      
       if(length(param.tune[[me]]$nodesize)!=1 | length(param.tune[[me]]$mtry)!=1 |
          length(param.tune[[me]]$ntree)!=1){
         .tune<-tuneRSF(formula=formula, data=data,
                        nodesize=param.tune[[me]]$nodesize,
                        mtry=param.tune[[me]]$mtry,
                        ntree=param.tune[[me]]$ntree,seed=seed)
-
+        
         .tune.optimal[[me]]<-.tune$optimal
         .tune.results[[me]]<-.tune$results
         rm(.tune)
@@ -817,17 +835,17 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       .LIB_RSF <-LIB_RSF(formula=formula, data=data,
                          nodesize=.tune.optimal[[me]]$nodesize,
                          mtry=.tune.optimal[[me]]$mtry, ntree=.tune.optimal[[me]]$ntree, seed=seed)
-
+      
       .model[[me]]<-.LIB_RSF
-
+      
       rm(.LIB_RSF) }
-
+    
     if (methods[me] == "LIB_PLANN"){
-
+      
       if(length(param.tune[[me]]$inter)!=1 | length(param.tune[[me]]$size)!=1 |
          length(param.tune[[me]]$decay)!=1 | length(param.tune[[me]]$maxit)!=1 |
          length(param.tune[[me]]$MaxNWts)!=1){
-
+        
         .tune <- tunePLANN(formula=formula, data=data, cv=cv,
                            inter=param.tune[[me]]$inter,
                            size=param.tune[[me]]$size,
@@ -847,7 +865,7 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
                                   maxit=param.tune[[me]]$maxit,
                                   MaxNWts=param.tune[[me]]$MaxNWts)
       }
-
+      
       .LIB_PLANN <-LIB_PLANN(formula=formula, data=data,
                              inter=as.numeric(.tune.optimal[[me]]$inter),
                              size=as.integer(.tune.optimal[[me]]$size),
@@ -855,36 +873,37 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
                              maxit=as.integer(.tune.optimal[[me]]$maxit),
                              maxtime=maxtime,
                              MaxNWts=as.integer(.tune.optimal[[me]]$MaxNWts))
-
-
+      
+      
       .model[[me]]<-.LIB_PLANN
-
-
+      
+      
       rm(.LIB_PLANN)    }
-
-
+    
+    
   }
-
+  
   ########################
   ### Cross-Validation  ##
   ########################
-
-
-
+  
+  
+  
   set.seed(seed)
   data$id=1:nrow(data)
   data$folds<-sample(rep(1:cv, length.out = nrow(data)))
-
-
+  
+  
   CVtune <- lapply(1:cv, function(i) {
+    if(show_progress){ update_progress()}
     list(
       train = data[data$folds != i, ],
       valid = data[data$folds == i, ],
       id=data[data$folds == i, "id"]
     )})
-
-
-
+  
+  
+  
   if(any(sapply(data,is.factor))){
     factor_vars<-names(data)[sapply(data,is.factor)]
     inside<-function(factor,train,valid){
@@ -895,9 +914,9 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       result<-unlist(lapply(factors,inside,train=CV$train,valid=CV$valid))
       return(all(result))
     }
-
+    
     i<-0
-
+    
     while(check_CVtune(factor_vars,CVtune)==FALSE){
       i<-i+1
       seed<-sample(1:1000,1)
@@ -905,30 +924,30 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
       set.seed(seed)
       data$id=1:nrow(data)
       data$folds<-sample(rep(1:cv, length.out = nrow(data)))
-
+      
       CVtune <- lapply(1:cv, function(i) {
         list(
           train = data[data$folds != i, ],
           valid = data[data$folds == i, ],
           id=data[data$folds == i, "id"]
         )})
-
-
+      
+      
       if(i>=3 & check_CVtune(factor_vars,CVtune)==FALSE)stop("Certain levels of some factor variables in the validation sample are not present in the training sample. Please change the seed.")
-
+      
     }
-
-
+    
+    
   }
-
-
-
-
+  
+  
+  
+  
   id_vect<- unlist(lapply(CVtune,function(x)(return(x$id))))
-
-
-
-
+  
+  
+  
+  
   CV_one_method<-function(meth, Tune, CV, penalty, formula, time.pred){
     if(meth == "LIB_AFTweibull"){
       fit<-LIB_AFTweibull(formula=formula, data=CV$train)
@@ -972,26 +991,26 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
     if(meth =="LIB_COXridge"){
       fit<-LIB_COXridge(formula=formula, penalty=penalty, data=CV$train, lambda=Tune$LIB_COXridge$lambda)
       pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
-
+      
     }
     if(meth =="LIB_COXaic"){
       fit<-LIB_COXaic(formula=formula, penalty=penalty, data=CV$train)
       pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
-
+      
     }
     if(meth =="LIB_COXall"){
       fit<-LIB_COXall(formula=formula, data=CV$train)
       pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
-
+      
     }
     if(meth =="LIB_RSF"){
       fit<-LIB_RSF(formula=formula,  data=CV$train,
                    nodesize=as.numeric(Tune$LIB_RSF$nodesize), mtry=as.numeric(Tune$LIB_RSF$mtry),
                    ntree=as.numeric(Tune$LIB_RSF$ntree),seed=seed)
       pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
-
+      
     }
-
+    
     if(meth =="LIB_PLANN"){
       fit<-LIB_PLANN(formula=formula, data=CV$train,
                      inter=as.numeric(Tune$LIB_PLANN$inter),
@@ -1002,40 +1021,38 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
                      maxtime=maxtime)
       pred<-predict(fit, newtimes=time.pred, newdata=CV$valid)$predictions
     }
-
+    
     return(survivals=pred)
-
+    
   }
-
-
-
+  
+  
+  
   cv_function<-function(meth, Tune, penalty, formula, time.pred, CVtune){
     result<-lapply(CVtune,CV_one_method, meth=meth, Tune=Tune,penalty=penalty, formula=formula, time.pred=time.pred)
     survivals<-do.call(rbind,result)
     return(list(survivals=survivals))
-
+    
   }
-
-
+  
+  
   cv_all_meth<-list()
-
+  
   for(i in 1:M){
+    if(show_progress){ update_progress()}
     Tune<-.tune.optimal[i]
     meth<-methods[i]
     survivals<-((cv_function(meth,Tune,penalty,formula,time.pred,CVtune))$survivals)[order(id_vect),]
     cv_all_meth[[i]]<-survivals
-
+    
   }
-
-
-
-
-
-
+  
+  
+  
   ########################
   ### Fonction  ##
   ########################
-
+  
   metric_weight_function<-function(param,list_surv,metric){
     param<-exp(param)/(1+sum(exp(param)))
     param<-c(param,1-sum(param))
@@ -1048,72 +1065,73 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
     result<-metrics(metric=metric, times=times, failures=failures, data=.data_bis, survivals.matrix=survivals.matrix, hazards.matrix=hazards.matrix,prediction.times=time.pred,pro.time=pro.time, ROC.precision=ROC.precision)
     if(metric %in% c("uno_ci","p_ci","auc","ll")){result<-(-result)}
     return(result)
-
+    
   }
-
-
-
-
+  
+  
+  
+  
   if(is.null(param.weights.fix)==TRUE){
     set.seed(seed)
     estim<-optim(par=param.weights.init, fn=metric_weight_function, list_surv=cv_all_meth, metric=metric,
                  hessian=F,
                  method=optim.method,control=list(maxit=maxit))
-
+    
     if(optim.local.min==T){
       start_par=estim$par
       estim<-optim(par=start_par, fn=metric_weight_function, list_surv = cv_all_meth,
                    metric=metric, hessian=F,
                    method=optim.method, control=list(maxit=maxit))
     }
-
+    
   }
-
-
-
-
-
-
-
-
+  
+  
+  
+  
+  
+  
+  
+  
   ############################
   # Compute Survival from SL #
   ############################
-
+  
   if(is.null(param.weights.fix)==FALSE){
     estim=list()
     estim$par=param.weights.fix
   }
-
-
+  
+  
   rm(cv_all_meth)
-
+  
   w.sl <- c(exp(c(estim$par,0)) / ( 1+sum(exp(estim$par))) )
-
+  
   FitALL<- vector("list",M)
-
+  
   for(me in 1:M){
+    if(show_progress){ update_progress()}
     FitALL[[me]]<-predict(object= .model[[me]],newtimes=time.pred)$predictions
   }
-
+  
   weighted_matrices <- mapply(function(mat, weight) mat * weight, FitALL, w.sl, SIMPLIFY = FALSE)
   survivals <- Reduce("+", weighted_matrices)
-
+  
   ######################
   # PREPARATION RETURN #
   ######################
-
-
-
-
+  
+  
+  
+  
   value<-estim$value
-
+  
   if(metric %in% c("uno_ci","p_ci","auc","ll")){
     value<-(-estim$value)
   }
-
+  
   data<-.data_bis
-
+  
   res<-list(times=time.pred,
             predictions=survivals,
             FitALL=FitALL,
@@ -1129,13 +1147,14 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
             seed=seed,
             optim.method=optim.method,
             param.tune=list(optimal=.tune.optimal, results=.tune.results))
-
+  
   class(res) <- "sltime"
-
-
-
+  if(show_progress){ update_progress()}
+  if(show_progress){close(pb)}
+  
   return(res)
 }
+
 
 
 
