@@ -94,6 +94,15 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
   if (! is_binary) stop("The 'failures' variable is not coded as 0/1.")
   
   rm(is_binary)
+
+   # Check if all the variables exist in the dataset.
+  variables_existent <- all(variables_formula %in% names(data))
+  if (!variables_existent) stop("One or more variables from the formula do not exist in the data.")
+
+  rm(variables_existent)
+
+  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+
   
   if (any(is.na(data[,variables_formula]))){
     subset_data<-na.omit(data[,variables_formula])
