@@ -1,9 +1,5 @@
 tuneRSF <- function(formula, data, nodesize, mtry, ntree, seed=NULL){
 
-
-  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
-
-
   if(is.null(seed)){
     seed<-sample(1:1000,1)
   }
@@ -34,6 +30,7 @@ tuneRSF <- function(formula, data, nodesize, mtry, ntree, seed=NULL){
 
   rm(variables_existent)
 
+  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
 
   is_binary <- all(data[[failures]] %in% c(0, 1))
 

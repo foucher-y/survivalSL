@@ -1,9 +1,6 @@
 tunePLANN <- function(formula, data, cv=10, inter, size, decay, maxit, MaxNWts,maxtime=NULL,seed=NULL,metric="auc",pro.time=NULL,ROC.precision=seq(.01, .99, by=.01)){
 
 
-  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
-
-
   if(is.null(seed)){
     seed<-sample(1:1000,1)
   }
@@ -35,6 +32,9 @@ tunePLANN <- function(formula, data, cv=10, inter, size, decay, maxit, MaxNWts,m
   if (!variables_existent) stop("One or more variables from the formula do not exist in the data.")
 
   rm(variables_existent)
+
+  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+
 
   all_terms <- attr(terms(formula), "term.labels")
   strata_terms <- grep("strata\\(", all_terms, value = TRUE)

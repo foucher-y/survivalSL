@@ -13,7 +13,8 @@ cv=10, param.tune=NULL, pro.time=NULL,
 optim.local.min=FALSE,
 ROC.precision=seq(.01,.99,.01),
 param.weights.fix=NULL, param.weights.init=NULL,
-seed=NULL, optim.method="Nelder-Mead",maxit=1000)
+seed=NULL, optim.method="Nelder-Mead",maxit=1000,
+show_progress=TRUE)
 }
 
 \arguments{
@@ -32,6 +33,7 @@ seed=NULL, optim.method="Nelder-Mead",maxit=1000)
    \item{seed}{A random seed to ensure reproducibility during the cv process. If \code{NULL}, a seed is randomly assigned.}
    \item{optim.method}{The optimization method used to estimate the weights. It can be either \code{"SANN"} or \code{"Nelder-Mead"}. By default we use \code{Nelder-Mead}.}
    \item{maxit}{The number of iterations during the weight optimization process. By default, it is set to 1000.}
+   \item{show_progress}{Parameter to display the progress bar. By default, it is set to \code{TRUE}.}
  }
 
 
