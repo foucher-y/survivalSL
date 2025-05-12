@@ -2,10 +2,6 @@ tunePHspline<- function(formula, data, cv = 10, metric = "auc", k, pro.time
                         = NULL, seed = NULL, ROC.precision = seq(0.01, 0.99,
                                                                  by = 0.01)){
 
-
-  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
-
-
   if(is.null(seed)){
     seed<-sample(1:1000,1)
   }
@@ -35,6 +31,9 @@ tunePHspline<- function(formula, data, cv = 10, metric = "auc", k, pro.time
   if (!variables_existent) stop("One or more variables from the formula do not exist in the data.")
 
   rm(variables_existent)
+
+  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+
 
   all_terms <- attr(terms(formula), "term.labels")
   strata_terms <- grep("strata\\(", all_terms, value = TRUE)
