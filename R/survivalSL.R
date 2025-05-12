@@ -10,6 +10,16 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
   if (missing(data)) stop("The 'data' argument is required.")
   if (missing(formula)) stop("The 'formula' argument is required.")
 
+  
+  total<-3*length(unique(methods))+cv+1
+
+  pb<-txtProgressBar(min=0,max=total,style=3)
+  progress<-0
+
+  update_progress<-function(){
+    progress<<-progress+1
+    setTxtProgressBar(pb,progress)
+  }
 
 
   if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
@@ -640,7 +650,7 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
 
 
   for (me in 1:M){
-
+    update_progress()
     if(methods[me] == "LIB_AFTweibull" ){
       .tune.optimal[[me]]=NA
 
@@ -877,6 +887,7 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
 
 
   CVtune <- lapply(1:cv, function(i) {
+    update_progress()
     list(
       train = data[data$folds != i, ],
       valid = data[data$folds == i, ],
@@ -1020,15 +1031,13 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
   cv_all_meth<-list()
 
   for(i in 1:M){
+    update_progress()
     Tune<-.tune.optimal[i]
     meth<-methods[i]
     survivals<-((cv_function(meth,Tune,penalty,formula,time.pred,CVtune))$survivals)[order(id_vect),]
     cv_all_meth[[i]]<-survivals
 
   }
-
-
-
 
 
 
@@ -1093,6 +1102,7 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
   FitALL<- vector("list",M)
 
   for(me in 1:M){
+    update_progress()
     FitALL[[me]]<-predict(object= .model[[me]],newtimes=time.pred)$predictions
   }
 
@@ -1131,8 +1141,8 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
             param.tune=list(optimal=.tune.optimal, results=.tune.results))
 
   class(res) <- "sltime"
-
-
+  update_progress()
+  close(pb)
 
   return(res)
 }
