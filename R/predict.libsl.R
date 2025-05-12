@@ -8,10 +8,10 @@ predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
   
   if(!(is.null(newdata))){
     variables_formula <- all.vars(object$formula)
-    if(any(sapply(newdata[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+    if(!all(variables_formula[-c(1,2)] %in% names(newdata)))stop("Error : some variables of the formula are missing.")
+    if(any(sapply(newdata[,variables_formula[-c(1,2)]],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
     
   }
-  
   
   
   
