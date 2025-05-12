@@ -40,7 +40,7 @@ LIB_COXaic<- function(formula, data, penalty=NULL){
   rm(all_terms,strata_terms)
 
 
-  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
 
 
   is_binary <- all(data[[failures]] %in% c(0, 1))
