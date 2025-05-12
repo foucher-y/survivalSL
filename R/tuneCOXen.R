@@ -2,8 +2,6 @@ tuneCOXen<- function(formula, data, penalty = NULL, cv = 10, parallel =
                        FALSE, alpha, lambda, seed = NULL){
 
 
-  if(any(sapply(data,is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
-
 
 
   if(is.null(seed)){
@@ -33,6 +31,9 @@ tuneCOXen<- function(formula, data, penalty = NULL, cv = 10, parallel =
   if (!variables_existent) stop("One or more variables from the formula do not exist in the data.")
 
   rm(variables_existent)
+
+  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+
 
   all_terms <- attr(terms(formula), "term.labels")
   strata_terms <- grep("strata\\(", all_terms, value = TRUE)
