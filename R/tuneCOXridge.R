@@ -80,4 +80,3 @@ tuneCOXridge <- function(formula, data, penalty = NULL, cv = 10, parallel =
               results = data.frame( lambda=.cv.ridge$lambda, deviance=.cv.ridge$cvm)))
 }
 
-
