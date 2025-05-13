@@ -40,7 +40,6 @@ Jackson, C. (2016). flexsurv: A Platform for Parametric Survival Modeling in R. 
 \examples{
 data("dataDIVAT2")
 
-
 # The estimation of the model from the first 200 lines
 
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd

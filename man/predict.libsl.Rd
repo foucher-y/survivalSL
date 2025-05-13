@@ -29,9 +29,7 @@ Predict the survival based on a model or algorithm from an object of the class \
 \examples{
 data("dataDIVAT2")
 
-
 # The estimation of the model from the first 200 lines
-
 
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
 model <- LIB_PHgompertz(formula, data=dataDIVAT2[1:200,])

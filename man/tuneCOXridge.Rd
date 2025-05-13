@@ -28,8 +28,6 @@ tuneCOXridge(formula, data, penalty=NULL,
 The function runs the \code{cv.glmnet} function of the \code{glmnet} package.
 }
 
-
-
 \value{
 \item{optimal}{The value of lambda that gives the minimum cross-validated deviance.}
 \item{results}{The data frame with the cross-validated deviance for each lambda value.}
@@ -42,9 +40,7 @@ Simon, N., Friedman, J., Hastie, T. and Tibshirani, R. (2011) Regularization Pat
 \examples{
 data("dataDIVAT2")
 
-
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
-
 
 tune.model <- tuneCOXridge(formula=formula, data=dataDIVAT2,
   cv=5, lambda=seq(0, 10, by=.1))

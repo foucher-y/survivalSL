@@ -10,8 +10,8 @@ This function finds the optimal nodesize, mtry, and ntree parameters for a survi
 }
 
 \usage{
-tuneRSF(formula, data, nodesize=c(2, 4, 6, 10, 20, 30, 50, 100), 
-mtry, ntree=500, seed=NULL)
+tuneRSF(formula, data, nodesize=c(2, 4, 6, 10, 20, 30, 50, 100),
+   mtry, ntree=500, seed=NULL)
 }
 
 \arguments{
@@ -38,7 +38,6 @@ Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 7(2):
 
 \examples{
 data("dataDIVAT2")
-
 
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
 

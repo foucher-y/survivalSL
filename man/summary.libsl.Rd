@@ -9,9 +9,8 @@ Return predictive performances of a model or algorithm obtained by a library  of
 }
 
 \usage{
-\method{summary}{libsl}(object, newdata=NULL,
-ROC.precision=seq(.01,.99,.01),
-digits=7, pro.time=NULL, ...)
+\method{summary}{libsl}(object, newdata=NULL, ROC.precision=seq(.01,.99,.01),
+      digits=7, pro.time=NULL, ...)
 }
 
 \arguments{
@@ -40,7 +39,6 @@ The following metrics can be used : "bs" for the Brier score at the prognostic t
 
 \examples{
 data("dataDIVAT2")
-
 
 # The training of the gompertz  model with the first 400 patients
 

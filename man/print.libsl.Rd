@@ -19,11 +19,8 @@ Print the model or algorithm.
 
 \value{No return value for this S3 method.}
 
-
-
 \examples{
 data("dataDIVAT2")
-
 
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
 model <- LIB_AFTgamma(formula,  data=dataDIVAT2[1:100,])

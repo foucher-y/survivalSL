@@ -1,4 +1,4 @@
-LIB_AFTgamma <- function(formula,data){
+LIB_AFTgamma <- function(formula, data){
 
   if (missing(formula)) stop("The 'formula' argument is required.")
   if (missing(data)) stop("The 'data' argument is required.")

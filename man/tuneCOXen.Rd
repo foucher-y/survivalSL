@@ -41,7 +41,6 @@ Simon, N., Friedman, J., Hastie, T. and Tibshirani, R. (2011) Regularization Pat
 \examples{
 data("dataDIVAT2")
 
-
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
 tune.model <- tuneCOXen(formula=formula, data=dataDIVAT2, cv=5,
   alpha=seq(.1, 1, by=.1), lambda=seq(.1, 1, by=.1))

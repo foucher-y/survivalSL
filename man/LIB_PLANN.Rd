@@ -10,8 +10,8 @@ Fit a  neural network based on the partial logistic regression.
 }
 
 \usage{
-LIB_PLANN(formula,
-data, inter, size, decay, maxit, MaxNWts, maxtime=NULL)
+LIB_PLANN(formula, data, inter, size, decay,
+          maxit, MaxNWts, maxtime=NULL)
 }
 
 \arguments{
@@ -47,15 +47,14 @@ Biganzoli E, Boracchi P, Mariani L, and et al. Feed forward neural networks for 
 \examples{
 data("dataDIVAT2")
 
-
 # The neural network based from the first 300 individuals of the data base
-
 
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
 model <- LIB_PLANN(formula, data=dataDIVAT2[1:300,],
   inter=0.5, size=32, decay=0.01, maxit=100, MaxNWts=10000, maxtime=NULL)
 
 # The predicted survival of the first subject of the training sample
+
 plot(y=model$predictions[1,], x=model$times, xlab="Time (years)",
 ylab="Predicted survival", col=1, type="l", lty=1, lwd=2, ylim=c(0,1))
 }

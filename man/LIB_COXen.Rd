@@ -10,8 +10,7 @@ Fit an elastic net Cox regression for fixed values of the regularization paramet
 }
 
 \usage{
-LIB_COXen(formula,
-data, penalty=NULL, alpha, lambda)
+LIB_COXen(formula, data, penalty=NULL, alpha, lambda)
 }
 
 
@@ -45,7 +44,6 @@ Simon, N., Friedman, J., Hastie, T. and Tibshirani, R. (2011) Regularization Pat
 
 \examples{
 data("dataDIVAT2")
-
 
 # The estimation of the model from the first 200 lignes
 

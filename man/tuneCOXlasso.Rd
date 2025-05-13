@@ -44,7 +44,6 @@ Simon et al. (2011) Regularization Paths for Cox's Proportional Hazards Model vi
 \examples{
 data("dataDIVAT2")
 
-
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
 
 tune.model <- tuneCOXlasso(formula=formula, data=dataDIVAT2,

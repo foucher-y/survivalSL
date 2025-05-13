@@ -30,7 +30,6 @@ The plot represents the observed survival and the related 95\% confidence interv
 \examples{
 data("dataDIVAT2")
 
-
 # The estimation of the model
 
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd

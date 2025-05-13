@@ -17,8 +17,8 @@ data, k)
 
 \arguments{
 \item{formula}{A formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \code{Surv} function.}
-  \item{data}{A data frame whose columns correspond to the variables present in the formula.}
-   \item{k}{Number of knots.}
+\item{data}{A data frame whose columns correspond to the variables present in the formula.}
+\item{k}{Number of knots.}
  }
 
 
@@ -30,13 +30,13 @@ data, k)
 \item{times}{A vector of numeric values with the times of the \code{predictions}.}
 \item{predictions}{A matrix with the predictions of survivals of each subject (lines) for each observed time (columns).}
 }
+
 \references{
 Jackson, C. (2016). flexsurv: A Platform for Parametric Survival Modeling in R. Journal of Statistical Software, 70(8), 1-33. doi:10.18637/jss.v070.i08
 }
 
 \examples{
 data("dataDIVAT2")
-
 
 # The estimation of the model from the first 200 lines
 

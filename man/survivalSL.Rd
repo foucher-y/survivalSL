@@ -10,10 +10,9 @@ This function allows to compute a Super Learner (SL) to predict survival outcome
 \usage{
 survivalSL(formula, data, methods, metric="auc", penalty=NULL,
 cv=10, param.tune=NULL, pro.time=NULL,
-optim.local.min=FALSE,
-ROC.precision=seq(.01,.99,.01),
+optim.local.min=FALSE, ROC.precision=seq(.01,.99,.01),
 param.weights.fix=NULL, param.weights.init=NULL,
-seed=NULL, optim.method="Nelder-Mead",maxit=1000,
+seed=NULL, optim.method="Nelder-Mead", maxit=1000,
 show_progress=TRUE)
 }
 

@@ -26,7 +26,8 @@ data("dataDIVAT2")
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
 
 sl1 <- survivalSL(formula, data=dataDIVAT2[1:150,],
-                  method=c("LIB_COXridge", "LIB_AFTggamma"),  metric="auc", pro.time = 12, cv=3)
+          method=c("LIB_COXridge", "LIB_AFTggamma"),
+          metric="auc", pro.time = 12, cv=3)
 
 print(sl1, digits=4)
 }

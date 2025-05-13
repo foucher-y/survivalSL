@@ -16,9 +16,9 @@ LIB_COXaic(formula, data, penalty=NULL)
 }
 
 \arguments{
-\item{formula}{A formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the \code{Surv} function.}
+\item{formula}{A formula object, with the response on the left of a ~ operator, and the predictoes on the right. The response must be a survival object as returned by the \code{Surv} function.}
   \item{data}{A data frame whose columns correspond to the variables present in the formula.}
-  \item{penalty}{A numerical vector that allows the integration of covariates into the final model after selection. We give the value 0 if we want to force the covariate in the model otherwise 1. If \code{NULL}, all covariates undergo the selection process. }
+  \item{penalty}{A numerical vector with a length equals to the number of predictors. It allows the integration of covariates into the final model, i.e. with no selection: the value 0 to force the covariate in the model, 1 otherwise. If \code{NULL}, all covariates undergo the selection process.}
  }
 
 
@@ -38,7 +38,6 @@ Simon, N., Friedman, J., Hastie, T. and Tibshirani, R. (2011) Regularization Pat
 
 \examples{
 data("dataDIVAT2")
-
 
 # The estimation of the model from the first 200 lines
 

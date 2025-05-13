@@ -32,8 +32,6 @@ ROC.precision=seq(.01, .99, by=.01))
    \item{ROC.precision}{The percentiles (between 0 and 1) of the prognostic variable used for computing each point of the time dependent ROC curve. Only used when \code{metric="auc"}. 0 (min) and 1 (max) are not allowed. By default: \code{seq(.01,.99,.01)}.}
  }
 
-
-
  \details{
 The function runs the \code{flexsurvspline} function of the \code{flexsurv} package. The following metrics can be used : "bs" for the Brier score at the prognostic time \code{pro.time}, "p_ci" and "uno_ci" for the concordance index at the prognostic time \code{pro.time} (Pencina and Uno versions), "ll" for the log-likelihood, "ibs" for the integrated Brier score up to the last observed time in the training data, "ibll" for the integrated binomial log-likelihood up to the last observed time in the training data, "ribs" for the restricted integrated Brier score up to the prognostic time \code{pro.time}, "ribll" for the restricted integrated binomial log-likelihood up to the prognostic time \code{pro.time}, "bll" for the binomial log-likelihood, "auc" for the area under the time-dependent ROC curve up to the prognostic time \code{pro.time}.
 }
@@ -53,8 +51,7 @@ data("dataDIVAT2")
 
 formula<-Surv(times,failures) ~ age + hla + retransplant + ecd
 tune.model <- tunePLANN(formula=formula, data=dataDIVAT2[1:150,],
-cv=5, inter=c(2,1), size=c(16,32), decay=0.01,
-maxit=100, MaxNWts=1000,
+cv=5, inter=c(2,1), size=c(16,32), decay=0.01, maxit=100, MaxNWts=1000,
 maxtime=NULL,seed=123,metric="auc",
 pro.time=NULL,ROC.precision=seq(.01, .99, by=.01))
 
