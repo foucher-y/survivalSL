@@ -11,7 +11,7 @@ This function finds the optimal lambda and alpha parameters for an elastic net C
 
 \usage{
 tuneCOXen(formula, data, penalty=NULL,
- cv=10, parallel=FALSE, alpha, lambda, seed=NULL)
+ cv=10, parallel=FALSE, alpha=seq(.1,.9,.1), lambda=NULL, seed=NULL)
 }
 
 \arguments{

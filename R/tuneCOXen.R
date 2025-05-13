@@ -1,5 +1,5 @@
 tuneCOXen<- function(formula, data, penalty = NULL, cv = 10, parallel =
-                       FALSE, alpha, lambda, seed = NULL){
+                       FALSE, alpha=seq(.1,.9,.1), lambda=NULL, seed = NULL){
 
 
 
@@ -92,7 +92,6 @@ tuneCOXen<- function(formula, data, penalty = NULL, cv = 10, parallel =
                            lambda=.results[which(.results$cvm==min(.results$cvm)),2] ),
               results = .results))
 }
-
 
 
 

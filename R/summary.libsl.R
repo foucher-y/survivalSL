@@ -91,7 +91,6 @@ summary.libsl <- function(object, newdata=NULL, ROC.precision=seq(.01,.99,.01), 
         ROC.precision=ROC.precision) )
   }else {
 
-    time<-unique(newdata[[times]])
     time.pred<-sort(c(time,time.pred))
     survivals.matrix <- predict(object, newdata=newdata, newtimes=time.pred)$predictions
 
@@ -141,6 +140,8 @@ summary.libsl <- function(object, newdata=NULL, ROC.precision=seq(.01,.99,.01), 
 
   }
 }
+
+
 
 
 
