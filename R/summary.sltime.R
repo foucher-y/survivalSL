@@ -49,9 +49,6 @@ summary.sltime <- function(object, newdata=NULL, method="sl",
 
   if(is.null(newdata)){
 
-
-    time.pred <- unique(sort(c(0,pro.time,object$times)))
-
     survivals.matrix <- predict(object, newdata=object$data, newtimes=time.pred)$predictions[[method]]
 
     if(!(method %in% c("sl","LIB_PLANN","LIB_SNN","LIB_RSF","LIB_COXall","LIB_COXaic","LIB_COXlasso","LIB_COXen","LIB_COXridge"))){
@@ -100,9 +97,6 @@ summary.sltime <- function(object, newdata=NULL, method="sl",
 
   }else{
 
-    time<-unique(newdata[[times]])
-
-    time.pred<-sort(c(time,time.pred))
 
     survivals.matrix <- predict(object, newdata=newdata, newtimes=time.pred)$predictions[[method]]
 
