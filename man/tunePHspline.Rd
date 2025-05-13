@@ -11,7 +11,7 @@ This function finds the optimal number of knots of the spline function.
 
 \usage{
 tunePHspline(formula,
-data, cv=10, metric="auc", k, pro.time=NULL,
+data, cv=10, metric="auc", k=1:4, pro.time=NULL,
 seed=NULL, ROC.precision=seq(.01, .99, by=.01))
 }
 

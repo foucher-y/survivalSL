@@ -1,5 +1,5 @@
 tuneCOXlasso<- function(formula, data, penalty = NULL, cv = 10, parallel =
-                          FALSE, lambda, seed = NULL){
+                          FALSE, lambda=NULL, seed = NULL){
 
 
   if(is.null(seed)){
@@ -77,4 +77,5 @@ tuneCOXlasso<- function(formula, data, penalty = NULL, cv = 10, parallel =
 
   return(list(optimal=list(lambda=.cv.lasso$lambda.min), results = data.frame(lambda=.cv.lasso$lambda, deviance=.cv.lasso$cvm)))
 }
+
 

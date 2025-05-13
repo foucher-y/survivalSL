@@ -106,6 +106,3 @@ plot.libsl <- function(x, n.groups=5, pro.time=NULL, newdata=NULL, ...)
   }
 }
 
-
-
-
