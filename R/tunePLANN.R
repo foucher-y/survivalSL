@@ -134,42 +134,42 @@ tunePLANN <- function(formula, data, cv=10, inter, size, decay, maxit, MaxNWts,m
 
 
 
-   if(any(sapply(data,is.factor))){
-     factor_vars<-names(data)[sapply(data,is.factor)]
-     inside<-function(factor,train,valid){
-       result<-all(unique(valid[,factor]) %in% unique(train[,factor]))
-       return(result)
-     }
-     check_CVtune<-function(factors,CV){
-       result<-unlist(lapply(factors,inside,train=CV$train,valid=CV$valid))
-       return(all(result))
-     }
+  if(any(sapply(data,is.factor))){
+    factor_vars<-names(data)[sapply(data,is.factor)]
+    inside<-function(factor,train,valid){
+      result<-all(unique(valid[,factor]) %in% unique(train[,factor]))
+      return(result)
+    }
+    check_CVtune<-function(factors,CV){
+      result<-unlist(lapply(factors,inside,train=CV$train,valid=CV$valid))
+      return(all(result))
+    }
 
-     i<-0
+    i<-0
 
-     while(check_CVtune(factor_vars,CVtune)==FALSE){
-       i<-i+1
-       seed<-sample(1:1000,1)
-       warning("The seed has been changed.")
-       set.seed(seed)
-       sample_id <- sample(nrow(data))
-       folds <- cut(seq(1,nrow(data)), breaks=cv, labels=FALSE)
-       folds_id <- folds[sample_id]
-       data$folds <- folds_id
-       data$id<-1:nrow(data)
+    while(check_CVtune(factor_vars,CVtune)==FALSE){
+      i<-i+1
+      seed<-sample(1:1000,1)
+      warning("The seed has been changed.")
+      set.seed(seed)
+      sample_id <- sample(nrow(data))
+      folds <- cut(seq(1,nrow(data)), breaks=cv, labels=FALSE)
+      folds_id <- folds[sample_id]
+      data$folds <- folds_id
+      data$id<-1:nrow(data)
 
-       CVtune <- lapply(1:cv, function(i) {
-         list(
-           train = data[data$folds != i, ],
-           valid = data[data$folds == i, ]
-         )})
+      CVtune <- lapply(1:cv, function(i) {
+        list(
+          train = data[data$folds != i, ],
+          valid = data[data$folds == i, ]
+        )})
 
-       if(i>=3 & check_CVtune(factor_vars,CVtune)==FALSE)stop("Certain levels of some factor variables in the validation sample are not present in the training sample. Please change the seed.")
+      if(i>=3 & check_CVtune(factor_vars,CVtune)==FALSE)stop("Certain levels of some factor variables in the validation sample are not present in the training sample. Please change the seed.")
 
-     }
+    }
 
 
-   }
+  }
 
 
 
