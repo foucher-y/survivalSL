@@ -94,4 +94,3 @@ tuneRSF <- function(formula, data, nodesize, mtry, ntree, seed=NULL){
   return(list(optimal=.optimal, results = t(.tune.rf)))
 }
 
-
