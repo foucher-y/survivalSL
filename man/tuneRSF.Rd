@@ -10,7 +10,7 @@ This function finds the optimal nodesize, mtry, and ntree parameters for a survi
 }
 
 \usage{
-tuneRSF(formula, data, nodesize, mtry, ntree, seed=NULL)
+tuneRSF(formula, data, nodesize=c(2, 4, 6, 10, 20, 30, 50, 100), mtry, ntree=500, seed=NULL)
 }
 
 \arguments{

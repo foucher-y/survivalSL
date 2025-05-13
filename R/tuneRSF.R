@@ -1,4 +1,4 @@
-tuneRSF <- function(formula, data, nodesize, mtry, ntree, seed=NULL){
+tuneRSF <- function(formula, data, nodesize=c(2, 4, 6, 10, 20, 30, 50, 100), mtry, ntree=500, seed=NULL){
 
   if(is.null(seed)){
     seed<-sample(1:1000,1)

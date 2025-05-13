@@ -1,4 +1,4 @@
-tunePHspline<- function(formula, data, cv = 10, metric = "auc", k, pro.time
+tunePHspline<- function(formula, data, cv = 10, metric = "auc",k=1:4, pro.time
                         = NULL, seed = NULL, ROC.precision = seq(0.01, 0.99,
                                                                  by = 0.01)){
 

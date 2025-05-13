@@ -1,5 +1,5 @@
 tuneCOXridge <- function(formula, data, penalty = NULL, cv = 10, parallel =
-                           FALSE, lambda, seed = NULL){
+                           FALSE, lambda=NULL, seed = NULL){
 
   if(is.null(seed)){
     seed<-sample(1:1000,1)

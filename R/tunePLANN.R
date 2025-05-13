@@ -1,4 +1,4 @@
-tunePLANN <- function(formula, data, cv=10, inter, size, decay, maxit, MaxNWts,maxtime=NULL,seed=NULL,metric="auc",pro.time=NULL,ROC.precision=seq(.01, .99, by=.01)){
+tunePLANN <- function(formula, data, cv=10, inter=1, size=c(2, 4, 6, 8, 10), decay=c(0.001, 0.01, 0.02, 0.05), maxit=100, MaxNWts=10000,maxtime=NULL,seed=NULL,metric="auc",pro.time=NULL,ROC.precision=seq(.01, .99, by=.01)){
 
 
   if(is.null(seed)){

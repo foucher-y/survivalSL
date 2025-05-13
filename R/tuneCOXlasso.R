@@ -1,5 +1,5 @@
 tuneCOXlasso<- function(formula, data, penalty = NULL, cv = 10, parallel =
-                          FALSE, lambda, seed = NULL){
+                          FALSE, lambda=NULL, seed = NULL){
 
 
   if(is.null(seed)){

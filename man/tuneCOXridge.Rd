@@ -11,7 +11,7 @@ This function finds the optimal lambda parameter for a ridge Cox regression.
 
 \usage{
 tuneCOXridge(formula, data, penalty=NULL,
- cv=10, parallel=FALSE, lambda, seed=NULL)
+ cv=10, parallel=FALSE, lambda=NULL, seed=NULL)
 }
 
 \arguments{

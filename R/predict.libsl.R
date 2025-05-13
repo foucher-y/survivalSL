@@ -132,6 +132,7 @@ predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
         colnames(new)<-c(.times,.failures)
         newdata<-cbind(new,newdata)
       }
+      newdata<-newdata[,variables_formula]
       if(nrow(newdata)>1){
         .x_bis <- model.matrix(object$formula,rbind(newdata,object$data[,names(newdata)]))[1:nrow(newdata),-1]
       }else{
@@ -156,6 +157,7 @@ predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
     }
 
     if(object$library=="LIB_PLANN"){
+  
       formula<-object$formula
       .times <- all.vars(formula)[1]
       .failures <- all.vars(formula)[2]
@@ -164,6 +166,7 @@ predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
         colnames(new)<-c(.times,.failures)
         newdata<-cbind(new,newdata)
       }
+      newdata<-newdata[,variables_formula]
       if(nrow(newdata)>1){
         data <- model.matrix(formula,rbind(newdata,object$data[,names(newdata)]))[1:nrow(newdata),]
       }
@@ -226,7 +229,6 @@ predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
 
     if(object$library=="LIB_COXen" | object$library=="LIB_COXlasso" | object$library=="LIB_COXridge"
     ){
-
       .x <- model.matrix(object$formula, object$data)[,-1]
       .lp <-predict(object$model, newx = .x)
       .times <- all.vars(object$formula)[1]
@@ -236,6 +238,7 @@ predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
         colnames(new)<-c(.times,.failures)
         newdata<-cbind(new,newdata)
       }
+      newdata<-newdata[,variables_formula]
       if(nrow(newdata)>1){
         .x_bis <- model.matrix(object$formula,rbind(newdata,object$data[,names(newdata)]))[1:nrow(newdata),-1]
       }else{
@@ -268,6 +271,7 @@ predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
     }
 
     if(object$library=="LIB_PLANN"){
+
       formula<-object$formula
       .times <- all.vars(formula)[1]
       .failures <- all.vars(formula)[2]
@@ -276,6 +280,7 @@ predict.libsl <- function(object, newdata=NULL, newtimes=NULL, ...){
         colnames(new)<-c(.times,.failures)
         newdata<-cbind(new,newdata)
       }
+      newdata<-newdata[,variables_formula]
       if(nrow(newdata)>1){
         data <- model.matrix(formula,rbind(newdata,object$data[,names(newdata)]))[1:nrow(newdata),]
       }
