@@ -66,9 +66,10 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
 
 
   }
-
-
-
+  
+  
+ 
+  
 
   variables_formula <- all.vars(formula)
 

@@ -25,7 +25,7 @@ LIB_COXall<- function(formula, data){
 
   all_terms <- attr(terms(formula), "term.labels")
   strata_terms <- grep("strata\\(", all_terms, value = TRUE)
-  if(length(strata_terms) > 1) stop("More than one 'strata' term found in the formula. Only one stratified variable is allowed.")
+  if(length(strata_terms) >= 1) stop("More than one 'strata' term found in the formula. No stratified variable is allowed.")
 
   rm(all_terms,strata_terms)
 
