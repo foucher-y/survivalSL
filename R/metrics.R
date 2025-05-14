@@ -1,26 +1,29 @@
-metrics <- function(metric, times, failures, data, survivals.matrix, hazards.matrix=NULL,
-                    prediction.times, pro.time=NULL, ROC.precision=seq(.01, .99, by=.01))
+metrics <- function(metric, formula=NULL, data=NULL, survivals.matrix=NULL, hazards.matrix=NULL,
+                    prediction.times=NULL, object=NULL, pro.time=NULL, ROC.precision=seq(.01, .99, by=.01))
 {
 
-
-  if (missing(times)) stop("The 'times' argument is required.")
-  if (missing(failures)) stop("The 'failures' argument is required.")
-  if (missing(survivals.matrix)) stop("The 'prediction.matrix' argument is required.")
-  if (missing(prediction.times)) stop("The 'prediction.times' argument is required.")
-  if (missing(data)) stop("The 'data' argument is required.")
+  
   if (missing(metric)) stop("The 'metric' argument is required.")
-
-
-  if((metric=="ll") & is.null(hazards.matrix))stop("The 'hazards.matrix' argument is required.")
-
-
-  if (!(is.character(times))) stop("The 'times' argument must be character.")
-  if (! (is.character(failures))) stop("The 'failures' argument must be character.")
   if (! (is.character(metric))) stop("The 'metric' argument must be character.")
+  
+  if(is.null(object)){
+    if (is.null(formula)) stop("The 'formula' argument is required.")
+    if (is.null(survivals.matrix)) stop("The 'survivals.matrix' argument is required.")
+    if (is.null(prediction.times)) stop("The 'prediction.times' argument is required.")
+    if (is.null(data)) stop("The 'data' argument is required.")
+    if(length(prediction.times)!=ncol(survivals.matrix))stop("prediction.times length must equal survivals.matrix number of columns")
+    if((metric=="ll") & is.null(hazards.matrix))stop("The 'hazards.matrix' argument is required.")
+    
+  }else{
+    data<-object$data
+    formula<-object$formula
+  }
+  
+  variables_formula <- all.vars(formula)
+  
+  times <- variables_formula[1]
+  failures <- variables_formula[2]
 
-  if(!(times %in% colnames(data)))stop(paste("The variable",times, "does not exist."))
-
-  if(!(failures %in% colnames(data)))stop(paste("The variable",failures, "does not exist."))
 
   if(min(metric %in% c("uno_ci","p_ci","bs","ibs","ibll","bll", "ribs","ribll","auc","ll"))==0){
     stop("The argument \"metric\" must be Brier score (bs),
@@ -31,9 +34,59 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
          the restricted ibll (ribll), the log-likelihood (loglik),
          the area under the ROC curve (auc), or the log-likelihood (ll)")
   }
+  
 
 
   if(is.null(pro.time) & !(metric %in% c("ll","ibll","ibs"))) {pro.time <- median(data[[times]])}
+  
+  if(!(is.null(object))){
+    prediction.times<-sort(unique(c(pro.time,object$times)))
+    survivals.matrix<-predict(object,newdata=data,newtimes=prediction.times)$predictions
+    if((as.character(object$model$call[1]) %in% c("flexsurvreg","flexsurvspline"))& metric=="ll"){
+      .haz<-predict(
+        object$model,
+        newdata=data,
+        type = "haz",
+        times = prediction.times
+      )
+      
+      hazards.matrix <- t(sapply(.haz$.pred, function(x) x[[2]]))
+      
+    }
+    
+    if(object$model$call[1]!="flexsurvreg()"& metric=="ll"){
+      haz_function<-function(surv,times){
+        x<-1
+        result<-sapply(2:length(surv),function(i){
+          value<-surv[i]
+          if(value!=surv[i-1]){
+            x<<- x+1
+            }
+            return(x)
+          })
+        df<-data.frame(temps=times,value=-log(surv),result=c(1,result))
+        df_unique <- df[!duplicated(df$result), ]
+        if(nrow(df_unique)>1){
+          diff_1<-diff(df_unique$temps)
+          diff_2 <- diff(df_unique$value)
+          resultat <- diff_2/diff_1
+          resultat<-c(Inf,resultat,NA)
+          idx=findInterval(times,c(0,df_unique$temps))
+          bj<-c(Inf,resultat[idx])
+          }else{
+            bj<-c(rep(Inf,(length(surv)-1)),NA)
+          }
+        return(bj)
+          
+        }
+      hazards.matrix<-t(apply(survivals.matrix[,-1],1,haz_function,times=prediction.times[-1]))
+      
+      
+    }
+    
+  }
+  
+  
 
   data.times <- data[[times]]  # our times
   data.failures <- data[[failures]] # our events

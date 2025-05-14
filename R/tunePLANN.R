@@ -221,7 +221,7 @@ tunePLANN <- function(formula, data, cv=10, inter=1, size=c(2, 4, 6, 8, 10), dec
     if(metric=="ll"){
       hazards.matrix<-t(apply(x$survivals[,-1],1,haz_function,times=.time))
     }
-    resultat<-metrics(metric=metric,times=times,failures=failures,data=data,survivals.matrix=survivals.matrix,hazards.matrix=hazards.matrix,prediction.times=.time,pro.time=pro.time,ROC.precision=ROC.precision)
+    resultat<-metrics(metric=metric,formula=formula,data=data,survivals.matrix=survivals.matrix,hazards.matrix=hazards.matrix,prediction.times=.time,pro.time=pro.time,ROC.precision=ROC.precision)
     return(resultat)
 
   }

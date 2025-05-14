@@ -1070,7 +1070,7 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
     if(metric=="ll"){
       hazards.matrix<-t(apply(survivals.matrix[,-1],1,haz_function,times=time.pred[-1]))
     }
-    result<-metrics(metric=metric, times=times, failures=failures, data=.data_bis, survivals.matrix=survivals.matrix, hazards.matrix=hazards.matrix,prediction.times=time.pred,pro.time=pro.time, ROC.precision=ROC.precision)
+    result<-metrics(metric=metric,formula=formula, data=.data_bis, survivals.matrix=survivals.matrix, hazards.matrix=hazards.matrix,prediction.times=time.pred,pro.time=pro.time, ROC.precision=ROC.precision)
     if(metric %in% c("uno_ci","p_ci","auc","ll")){result<-(-result)}
     return(result)
 

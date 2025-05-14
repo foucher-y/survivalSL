@@ -177,7 +177,7 @@ tunePHspline<- function(formula, data, cv = 10, metric = "auc",k=1:4, pro.time
     if(metric=="ll"){
       hazards.matrix<-x$haz
     }
-    resultat<-metrics(metric,times,failures,data,survivals.matrix,hazards.matrix,.time,pro.time,ROC.precision)
+    resultat<-metrics(metric=metric,formula=formula,data=data,survivals.matrix=survivals.matrix,hazards.matrix=hazards.matrix,prediction.times=.time,pro.time=pro.time,ROC.precision=ROC.precision)
     return(resultat)
 
   }
