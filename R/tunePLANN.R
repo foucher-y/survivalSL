@@ -33,7 +33,7 @@ tunePLANN <- function(formula, data, cv=10, inter=1, size=c(2, 4, 6, 8, 10), dec
 
   rm(variables_existent)
 
-  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+  if(any(sapply(data[,variables_formula],is.character)))stop("Some columns are of type character. Only numeric or factor variables are allowed.")
 
 
   all_terms <- attr(terms(formula), "term.labels")

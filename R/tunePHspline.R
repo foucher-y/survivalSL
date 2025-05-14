@@ -32,7 +32,7 @@ tunePHspline<- function(formula, data, cv = 10, metric = "auc",k=1:4, pro.time
 
   rm(variables_existent)
 
-  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+  if(any(sapply(data[,variables_formula],is.character)))stop("Some columns are of type character. Only numeric or factor variables are allowed.")
 
 
   all_terms <- attr(terms(formula), "term.labels")

@@ -98,7 +98,7 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
 
   rm(variables_existent)
 
-  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+  if(any(sapply(data[,variables_formula],is.character)))stop("Some columns are of type character. Only numeric or factor variables are allowed.")
 
 
   if (any(is.na(data[,variables_formula]))){
@@ -106,6 +106,13 @@ survivalSL <- function(formula, data, methods, metric="auc", penalty=NULL,
     data<-cbind(subset_data, data[!colnames(data) %in% colnames(subset_data), drop = FALSE])
     warning("Data need to be without NA. NA is removed")
   }
+  
+  
+  if(!(is.null(penalty))){
+    
+    if(length(penalty)!=length(variables_formula[-c(1,2)]))stop("Penalty length does not equal the number of variables.")
+    if(!all(unique(penalty) %in% c(0,1)))stop("Penalty must be numeric and have only 0 or 1.")}
+  
 
 
   #####################

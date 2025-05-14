@@ -30,7 +30,7 @@ LIB_COXaic<- function(formula, data, penalty=NULL){
   rm(all_terms,strata_terms)
   
   
-  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+  if(any(sapply(data[,variables_formula],is.character)))stop("Some columns are of type character. Only numeric or factor variables are allowed.")
   
   
   is_binary <- all(data[[failures]] %in% c(0, 1))
@@ -53,8 +53,8 @@ LIB_COXaic<- function(formula, data, penalty=NULL){
   
   if(!(is.null(penalty))){
     
-    if(length(penalty)!=length(variables_formula_bis))stop("Error : penalty length does not equal the number of variables.")
-    if(!all(unique(penalty) %in% c(0,1)))stop("Error : penalty must be numeric and have only 0 or 1.")
+    if(length(penalty)!=length(variables_formula_bis))stop("Penalty length does not equal the number of variables.")
+    if(!all(unique(penalty) %in% c(0,1)))stop("Penalty must be numeric and have only 0 or 1.")
     var<- variables_formula_bis[ifelse(penalty==0,TRUE,FALSE)]}
 
 

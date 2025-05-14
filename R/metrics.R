@@ -234,7 +234,7 @@ metrics <- function(metric, times, failures, data, survivals.matrix, hazards.mat
 
              form0 <- update.formula(confounders, temp ~ .)
 
-             if((length(data[[failures]]) - summary(glm(form0, data=data))$df.null - 1) > 0) {stop("Error: missing values are not allowed")}
+             if((length(data[[failures]]) - summary(glm(form0, data=data))$df.null - 1) > 0) {stop("Missing values are not allowed")}
 
 
 

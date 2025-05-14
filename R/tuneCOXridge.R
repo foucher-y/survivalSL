@@ -31,7 +31,7 @@ tuneCOXridge <- function(formula, data, penalty = NULL, cv = 10, parallel =
 
   rm(variables_existent)
 
-  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+  if(any(sapply(data[,variables_formula],is.character)))stop("Some columns are of type character. Only numeric or factor variables are allowed.")
 
 
   all_terms <- attr(terms(formula), "term.labels")
@@ -54,6 +54,14 @@ tuneCOXridge <- function(formula, data, penalty = NULL, cv = 10, parallel =
 
   .y <- Surv(data[[times]], data[[failures]])
   .x <- model.matrix(formula,data)[,-1]
+  
+  if(!(is.null(penalty))){
+    
+    if(length(penalty)!=length(variables_formula[-c(1,2)]))stop("Penalty length does not equal the number of variables.")
+    if(!all(unique(penalty) %in% c(0,1)))stop("Penalty must be numeric and have only 0 or 1.")}
+  
+  
+  
   set.seed(seed)
   foldid <- sample(rep(seq(cv), length.out = nrow(.x)))
 
