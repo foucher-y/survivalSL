@@ -46,7 +46,7 @@ LIB_RSF <- function(formula,
 
 
 
-  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+  if(any(sapply(data[,variables_formula],is.character)))stop("Some columns are of type character. Only numeric or factor variables are allowed.")
 
 
   is_binary <- all(data[[failures]] %in% c(0, 1))
