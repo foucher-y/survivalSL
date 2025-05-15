@@ -31,7 +31,7 @@ LIB_COXridge <- function(formula,
   rm(all_terms,strata_terms)
 
 
-  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+  if(any(sapply(data[,variables_formula],is.character)))stop("Some columns are of type character. Only numeric or factor variables are allowed.")
 
   is_binary <- all(data[[failures]] %in% c(0, 1))
 
@@ -43,6 +43,12 @@ LIB_COXridge <- function(formula,
 
   .x <- model.matrix(formula,data)[,-1]
   .y <- Surv(data[[times]], data[[failures]])
+  
+  if(!(is.null(penalty))){
+    
+    if(length(penalty)!=length(variables_formula[-c(1,2)]))stop("Penalty length does not equal the number of variables.")
+    if(!all(unique(penalty) %in% c(0,1)))stop("Penalty must be numeric and have only 0 or 1.")}
+  
 
   if(!(is.null(penalty))) {
     #.penalty.factor <- rep(1,length(colnames(.x)))

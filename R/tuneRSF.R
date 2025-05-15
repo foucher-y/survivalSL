@@ -30,7 +30,7 @@ tuneRSF <- function(formula, data, nodesize=c(2, 4, 6, 10, 20, 30, 50, 100), mtr
 
   rm(variables_existent)
 
-  if(any(sapply(data[,variables_formula],is.character)))stop("Error : some columns are of type character. Only numeric or factor variables are allowed.")
+  if(any(sapply(data[,variables_formula],is.character)))stop("Some columns are of type character. Only numeric or factor variables are allowed.")
 
   is_binary <- all(data[[failures]] %in% c(0, 1))
 
