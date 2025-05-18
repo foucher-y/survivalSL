@@ -2,25 +2,25 @@ metrics <- function(metric, formula=NULL, data=NULL, survivals.matrix=NULL, haza
                     prediction.times=NULL, object=NULL, pro.time=NULL, ROC.precision=seq(.01, .99, by=.01))
 {
 
-  
+
   if (missing(metric)) stop("The 'metric' argument is required.")
   if (! (is.character(metric))) stop("The 'metric' argument must be character.")
-  
+
   if(is.null(object)){
-    if (is.null(formula)) stop("The 'formula' argument is required.")
-    if (is.null(survivals.matrix)) stop("The 'survivals.matrix' argument is required.")
-    if (is.null(prediction.times)) stop("The 'prediction.times' argument is required.")
-    if (is.null(data)) stop("The 'data' argument is required.")
+    if (is.null(formula)) stop("Because the 'object' is missing, the 'formula' argument is required.")
+    if (is.null(survivals.matrix)) stop("Because the 'object' is missing, the 'survivals.matrix' argument is required.")
+    if (is.null(prediction.times)) stop("Because the 'object' is missing, the 'prediction.times' argument is required.")
+    if (is.null(data)) stop("Because the 'object' is missing, the 'data' argument is required.")
     if(length(prediction.times)!=ncol(survivals.matrix))stop("prediction.times length must equal survivals.matrix number of columns")
-    if((metric=="ll") & is.null(hazards.matrix))stop("The 'hazards.matrix' argument is required.")
-    
+    if((metric=="ll") & is.null(hazards.matrix))stop("The 'hazards.matrix' argument is required to compute the log-likelihood.")
+
   }else{
     data<-object$data
     formula<-object$formula
   }
-  
+
   variables_formula <- all.vars(formula)
-  
+
   times <- variables_formula[1]
   failures <- variables_formula[2]
 
@@ -34,11 +34,11 @@ metrics <- function(metric, formula=NULL, data=NULL, survivals.matrix=NULL, haza
          the restricted ibll (ribll), the log-likelihood (loglik),
          the area under the ROC curve (auc), or the log-likelihood (ll)")
   }
-  
+
 
 
   if(is.null(pro.time) & !(metric %in% c("ll","ibll","ibs"))) {pro.time <- median(data[[times]])}
-  
+
   if(!(is.null(object))){
     prediction.times<-sort(unique(c(pro.time,object$times)))
     survivals.matrix<-predict(object,newdata=data,newtimes=prediction.times)$predictions
@@ -49,11 +49,11 @@ metrics <- function(metric, formula=NULL, data=NULL, survivals.matrix=NULL, haza
         type = "haz",
         times = prediction.times
       )
-      
+
       hazards.matrix <- t(sapply(.haz$.pred, function(x) x[[2]]))
-      
+
     }
-    
+
     if(object$model$call[1]!="flexsurvreg()"& metric=="ll"){
       haz_function<-function(surv,times){
         x<-1
@@ -77,16 +77,16 @@ metrics <- function(metric, formula=NULL, data=NULL, survivals.matrix=NULL, haza
             bj<-c(rep(Inf,(length(surv)-1)),NA)
           }
         return(bj)
-          
+
         }
       hazards.matrix<-t(apply(survivals.matrix[,-1],1,haz_function,times=prediction.times[-1]))
-      
-      
+
+
     }
-    
+
   }
-  
-  
+
+
 
   data.times <- data[[times]]  # our times
   data.failures <- data[[failures]] # our events
