@@ -10,7 +10,7 @@ importFrom(stats, terms, pnorm, dnorm, qnorm, update,  binomial, lm, glm, na.omi
 
 importFrom(date, date.mdy, mdy.date, as.date)
 importFrom(utils, data, methods, tail, combn, txtProgressBar, setTxtProgressBar)
-importFrom(graphics, abline, lines, plot.default, grid, segments)
+importFrom(graphics, abline, lines, plot.default, grid, segments, text)
 importFrom(MASS, mvrnorm, stepAIC)
 importFrom(methods, is, hasArg)
 

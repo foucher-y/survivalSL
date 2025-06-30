@@ -55,9 +55,11 @@ plot.sltime <- function(x, method="sl", n.groups=5, pro.time=NULL, newdata=NULL,
     if(hasArg(ylim)==FALSE) {ylim <- c(0,1)} else {ylim <- list(...)$ylim}
     if(hasArg(xlim)==FALSE) {xlim  <- c(0,1)} else {xlim <- list(...)$xlim}
 
-    if(hasArg(ylab)==FALSE) {ylab <- "Observed survival"} else {ylab <- list(...)$ylab}
-    if(hasArg(xlab)==FALSE) {xlab <- "Predicted survival"} else {xlab <- list(...)$xlab}
-
+    if(hasArg(ylab)==FALSE) {ylab <- "Mean of survival predictions"} 
+    else {ylab <- list(...)$ylab}
+    if(hasArg(xlab)==FALSE) {xlab <- "Kaplan-Meier estimations"} else 
+    {xlab <- list(...)$xlab}
+    
     plot(.est, .obs, cex = cex, cex.lab = cex.lab, cex.axis = cex.axis, cex.main = cex.main,
          type = type, col = col, lty = lty, lwd = lwd,
          pch = pch, ylim = ylim, xlim = xlim, ylab=ylab, xlab=xlab)
@@ -65,6 +67,8 @@ plot.sltime <- function(x, method="sl", n.groups=5, pro.time=NULL, newdata=NULL,
     abline(c(0,1), lty=2)
 
     segments(x0 = .est, y0 = .lower, x1 = .est, y1 = .upper, col = col, lwd = lwd)
+    text(x = 0.2, y = 0.02, labels = paste("Calculated at time =", 
+                                           round(pro.time, 2)), pos = 4, cex = 1)
   }
 
   else
@@ -117,9 +121,10 @@ plot.sltime <- function(x, method="sl", n.groups=5, pro.time=NULL, newdata=NULL,
     if(hasArg(ylim)==FALSE) {ylim <- c(0,1)} else {ylim <- list(...)$ylim}
     if(hasArg(xlim)==FALSE) {xlim  <- c(0,1)} else {xlim <- list(...)$xlim}
 
-    if(hasArg(ylab)==FALSE) {ylab <- "Observed survival"} else {ylab <- list(...)$ylab}
-    if(hasArg(xlab)==FALSE) {xlab <- "Predicted survival"} else {xlab <- list(...)$xlab}
-
+    if(hasArg(ylab)==FALSE) {ylab <- "Mean of survival predictions"} 
+    else {ylab <- list(...)$ylab}
+    if(hasArg(xlab)==FALSE) {xlab <- "Kaplan-Meier estimations"} else 
+    {xlab <- list(...)$xlab}
     plot(.est, .obs, cex = cex, cex.lab = cex.lab, cex.axis = cex.axis, cex.main = cex.main,
          type = type, col = col, lty = lty, lwd = lwd, pch = pch,
          ylim = ylim, xlim = xlim, ylab=ylab, xlab=xlab)
@@ -127,6 +132,8 @@ plot.sltime <- function(x, method="sl", n.groups=5, pro.time=NULL, newdata=NULL,
     abline(c(0,1), lty=2)
 
     segments(x0 = .est, y0 = .lower, x1 = .est, y1 = .upper, col = col, lwd = lwd)
+    text(x = 0.2, y = 0.02, labels = paste("Calculated at time =", 
+                                           round(pro.time, 2)), pos = 4, cex = 1)
   }
 }
 
