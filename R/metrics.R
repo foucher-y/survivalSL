@@ -208,7 +208,7 @@ metrics <- function(metric, formula=NULL, data=NULL, survivals.matrix=NULL, haza
            {pro.time<-prediction.times[j]
            .csurv.pro.time<-summary(.temp, times=pro.time, extend=TRUE)$surv
            .csurv.pro.time<-ifelse(.csurv.pro.time==0,Inf,.csurv.pro.time)
-           score_risque<-survivals.matrix[,j]
+           score_risque<-unlist(survivals.matrix[,j])
            score_risque[which(score_risque==0)]<-10**-7
            score_risque[which(score_risque==1)]<-1-10**-7
            help1 <- ifelse(data[[times]] <= pro.time & data[[failures]] == 1,1,0)
