@@ -24,7 +24,7 @@ tuneRSF(formula, data, nodesize=c(2, 4, 6, 10, 20, 30, 50, 100),
  }
 
 \details{
-The function runs the \code{tune.rfsrc} function of the \code{randomForestSRC} package.
+The function runs the \code{rfsrc} function of the \code{randomForestSRC} package.
 }
 
 \value{

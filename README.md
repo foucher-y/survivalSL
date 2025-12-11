@@ -66,7 +66,7 @@ summary(slres, digits=3)
 # prognostic capacities from validation sample
 summary(slres, newdata=data.simul[[2]], digits=3) 
 #>  p_ci uno_ci   auc    bs   ibs  ribs   bll  ibll ribll       ll
-#>  0.722  0.726 0.784 0.192 0.093 0.098 0.57 0.312 0.333 -472.514
+#>  0.722  0.726 0.784 0.192 0.093 0.098 0.57 0.312 0.333 -475.514
 ```
 
 ## Installation
