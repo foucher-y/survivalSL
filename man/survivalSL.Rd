@@ -29,7 +29,7 @@ show_progress=TRUE)
  \item{ROC.precision}{The percentiles (between 0 and 1) of the prognostic variable used for computing each point of the time dependent ROC curve. Only used when \code{metric="auc"}. 0 (min) and 1 (max) are not allowed. By default: \code{seq(.01,.99,.01)}.}
   \item{param.weights.fix}{A vector with the parameters of the multinomial logistic regression which generates the weights of the algorithms declared in \code{methods}. When completed, the related parameters are not estimated. The default value is NULL: the parameters are estimated by a \code{cv}-fold cross-validation. See details.}
    \item{param.weights.init}{A vector with the initial values of the parameters of the multinomial logistic regression which generates the weights of the algorithms declared in \code{methods}. The default value is NULL: the initial values are equaled to 0. See details.}
-   \item{seed}{A random seed to ensure reproducibility during the cv process. If \code{NULL}, a seed is randomly assigned.}
+   \item{seed}{A random seed to ensure reproducibility. If \code{NULL}, a seed is randomly assigned.}
    \item{optim.method}{The optimization method used to estimate the weights. It can be either \code{"SANN"} or \code{"Nelder-Mead"}. By default we use \code{Nelder-Mead}.}
    \item{maxit}{The number of iterations during the weight optimization process. By default, it is set to 1000.}
    \item{show_progress}{Parameter to display the progress bar. By default, it is set to \code{TRUE}.}
