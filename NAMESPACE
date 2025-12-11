@@ -23,6 +23,7 @@ importFrom(flexsurv, flexsurvreg, flexsurvspline)
 importFrom(randomForestSRC, rfsrc, tune.rfsrc, rfsrc.fast)
 
 importFrom(hdnom, glmnet_basesurv)
+importFrom("graphics", "text")
 
 #importFrom(glmnetUtils, cv.glmnet)
 
