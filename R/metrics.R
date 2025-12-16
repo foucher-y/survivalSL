@@ -209,8 +209,8 @@ metrics <- function(metric, formula=NULL, data=NULL, survivals.matrix=NULL, haza
            .csurv.pro.time<-summary(.temp, times=pro.time, extend=TRUE)$surv
            .csurv.pro.time<-ifelse(.csurv.pro.time==0,Inf,.csurv.pro.time)
            score_risque<-unlist(survivals.matrix[,j])
-           score_risque[which(score_risque==0)]<-10**-7
-           score_risque[which(score_risque==1)]<-1-10**-7
+           score_risque[which(score_risque < 1e-15)]<-1e-7
+           score_risque[which(score_risque > 1-1e-15)]<-1-1e-7
            help1 <- ifelse(data[[times]] <= pro.time & data[[failures]] == 1,1,0)
            help2 <- ifelse(data[[times]] > pro.time ,1,0)
            bll <- -mean(log(1-score_risque) * help1 * (1/.csurv) + log(score_risque) * help2 * (1/.csurv.pro.time))
@@ -229,8 +229,8 @@ metrics <- function(metric, formula=NULL, data=NULL, survivals.matrix=NULL, haza
            .csurv.pro.time<-summary(.temp, times=pro.time, extend=TRUE)$surv
            .csurv.pro.time<-ifelse(.csurv.pro.time==0,Inf,.csurv.pro.time)
            score_risque<-survivals.matrix[,j]
-           score_risque[which(score_risque==0)]<-10**-7
-           score_risque[which(score_risque==1)]<-1-10**-7
+           score_risque[which(score_risque < 1e-15)]<-1e-7
+           score_risque[which(score_risque > 1-1e-15)]<-1-1e-7
            help1 <- ifelse(data[[times]] <= pro.time & data[[failures]] == 1,1,0)
            help2 <- ifelse(data[[times]] > pro.time ,1,0)
            bll <- -mean(log(1-score_risque) * help1 * (1/.csurv) + log(score_risque) * help2 * (1/.csurv.pro.time))
