@@ -49,7 +49,7 @@ LIB_PHgompertz <- function(formula,data){
 
   .flex<-flexsurvreg(formula, data = data,
                      dist = "gompertz",
-                     inits=c(-1,1/mean(data[,times])),
+                     inits=c(-1,1/mean(data[[times]])),
                      hessian=F, method="Nelder-Mead")
 
 
